@@ -17,6 +17,14 @@
   </a>
 </div>
 
+<div align="center">
+  <h4>
+    <a href="https://nuxt-pogton-starter.netlify.app/">View Demo</a>
+    <span> · </span>
+    <a href="https://github.com/antonandresen/nuxt-pogton-starter/issues">Report Bug</a>
+  </h4>
+</div>
+
 <br>
 
 ## ✨ Features
