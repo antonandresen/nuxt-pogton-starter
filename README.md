@@ -44,7 +44,7 @@
 
 1. Clone the repository:
 
-    git clone https://github.com/yourusername/nuxt-pogton-starter.git
+    git clone https://github.com/antonandresen/nuxt-pogton-starter.git
     cd nuxt-pogton-starter
 
 2. Install dependencies:
