@@ -1,5 +1,13 @@
 <template>
-  <section id="team" class="py-16 bg-muted/50">
+  <section 
+    id="team" 
+    :class="[
+      'py-16',
+      background === 'muted' ? 'bg-accent' : 
+      background === 'primary' ? 'bg-primary text-primary-foreground' : 
+      'bg-background'
+    ]"
+  >
     <div class="container mx-auto text-center">
       <h2 class="text-3xl font-bold mb-8">Meet Our Team</h2>
       <div class="grid md:grid-cols-3 gap-8">
@@ -25,6 +33,11 @@
 import { ref } from 'vue'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import type { SectionBackground } from '@/types/section'
+
+defineProps<{
+  background?: SectionBackground
+}>()
 
 const teamMembers = ref([
   {

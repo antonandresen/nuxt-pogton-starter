@@ -1,5 +1,13 @@
 <template>
-  <section id="features" class="py-16">
+  <section 
+    id="features" 
+    :class="[
+      'py-16',
+      background === 'muted' ? 'bg-accent' : 
+      background === 'primary' ? 'bg-primary text-primary-foreground' : 
+      'bg-background'
+    ]"
+  >
     <div class="container mx-auto text-center">
       <h2 class="text-3xl font-bold mb-8">Our Features</h2>
       <div class="grid md:grid-cols-3 gap-8">
@@ -24,6 +32,11 @@
 import { ref } from 'vue'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Zap, Shield, HeadphonesIcon } from 'lucide-vue-next'
+import type { SectionBackground } from '@/types/section'
+
+defineProps<{
+  background?: SectionBackground
+}>()
 
 const features = ref([
   {

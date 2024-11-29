@@ -1,12 +1,12 @@
 <template>
   <main>
     <HeroSection />
-    <FeaturesSection />
+    <FeaturesSection background="muted" />
     <PricingSection />
-    <TeamSection />
+    <TeamSection background="muted" />
     <TestimonialsSection />
-    <FAQSection />
-    <CTASection />
+    <FAQSection background="muted" />
+    <CTASection background="primary" />
   </main>
 </template>
 

@@ -1,7 +1,15 @@
 <template>
-  <section id="faq" class="py-16">
-    <div class="container mx-auto">
-      <h2 class="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+  <section 
+    id="faq" 
+    :class="[
+      'py-16',
+      background === 'muted' ? 'bg-accent' : 
+      background === 'primary' ? 'bg-primary text-primary-foreground' : 
+      'bg-background'
+    ]"
+  >
+    <div class="container mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-8">Frequently Asked Questions</h2>
       <div class="max-w-3xl mx-auto">
         <Accordion type="single" collapsible>
           <AccordionItem
@@ -28,6 +36,11 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from '@/components/ui/accordion'
+import type { SectionBackground } from '@/types/section'
+
+defineProps<{
+  background?: SectionBackground
+}>()
 
 const faqs = ref([
   {

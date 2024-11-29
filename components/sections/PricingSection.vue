@@ -3,9 +3,9 @@
     id="pricing" 
     :class="[
       'py-16',
-      background === 'muted' ? 'bg-muted/50' : 
+      background === 'muted' ? 'bg-accent' : 
       background === 'primary' ? 'bg-primary text-primary-foreground' : 
-      ''
+      'bg-background'
     ]"
   >
     <div class="container mx-auto text-center">

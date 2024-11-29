@@ -1,7 +1,15 @@
 <template>
-  <section id="testimonials" class="py-16 bg-muted/50">
+  <section 
+    id="testimonials" 
+    :class="[
+      'py-16',
+      background === 'muted' ? 'bg-accent' : 
+      background === 'primary' ? 'bg-primary text-primary-foreground' : 
+      'bg-background'
+    ]"
+  >
     <div class="container mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-8">What Our Customers Say</h2>
+      <h2 class="text-3xl font-bold mb-8">What Our Clients Say</h2>
       <Carousel class="max-w-3xl mx-auto">
         <CarouselContent>
           <CarouselItem v-for="testimonial in testimonials" :key="testimonial.author">
@@ -23,6 +31,11 @@
 </template>
 
 <script setup lang="ts">
+import type { SectionBackground } from '@/types/section'
+
+defineProps<{
+  background?: SectionBackground
+}>()
 
 const testimonials = ref([
   {

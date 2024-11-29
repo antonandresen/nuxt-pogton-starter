@@ -1,6 +1,7 @@
 <template>
-  <header class="border-b">
+  <header class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
     <div class="container mx-auto">
+      <!-- Mobile Navigation -->
       <div class="flex items-center justify-between py-4 md:hidden">
         <NuxtLink to="/" class="text-xl font-bold">
           MyCompany
@@ -13,16 +14,29 @@
                 <Menu class="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" class="w-[300px]">
-              <nav class="flex flex-col gap-4">
-                <NuxtLink
-                  v-for="item in mainNavItems"
-                  :key="item.title"
-                  :to="item.href"
-                  class="block px-2 py-1 hover:text-primary"
-                >
-                  {{ item.title }}
-                </NuxtLink>
+            <SheetContent side="right" class="w-[300px] overflow-y-auto">
+              <nav class="flex flex-col gap-6">
+                <div v-for="item in mainNavItems" :key="item.title" class="space-y-3">
+                  <h4 class="font-medium">{{ item.title }}</h4>
+                  <div v-if="item.items?.length" class="pl-3 space-y-2">
+                    <NuxtLink
+                      v-for="subItem in item.items"
+                      :key="subItem.title"
+                      :to="subItem.href"
+                      class="block text-sm text-muted-foreground hover:text-primary"
+                    >
+                      <div class="font-medium">{{ subItem.title }}</div>
+                      <p class="text-xs text-muted-foreground">{{ subItem.description }}</p>
+                    </NuxtLink>
+                  </div>
+                  <NuxtLink
+                    v-else
+                    :to="item.href"
+                    class="block pl-3 text-sm text-muted-foreground hover:text-primary"
+                  >
+                    View Pricing
+                  </NuxtLink>
+                </div>
               </nav>
             </SheetContent>
           </Sheet>
@@ -30,47 +44,46 @@
       </div>
 
       <!-- Desktop Navigation -->
-      <NavigationMenu class="hidden md:block py-4">
-        <NavigationMenuList class="flex justify-between w-full">
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <NuxtLink to="/" class="text-xl font-bold">
-                MyCompany
-              </NuxtLink>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
+      <div class="hidden md:flex items-center justify-between py-4">
+        <NuxtLink to="/" class="text-xl font-bold">
+          MyCompany
+        </NuxtLink>
+        
+        <div class="flex items-center gap-8">
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem v-for="item in mainNavItems" :key="item.title">
+                <NavigationMenuTrigger v-if="item.items?.length">
+                  {{ item.title }}
+                </NavigationMenuTrigger>
+                <NavigationMenuLink v-else :href="item.href" class="px-4 py-2">
+                  {{ item.title }}
+                </NavigationMenuLink>
 
-          <div class="flex items-center space-x-2">
-            <NavigationMenuItem v-for="item in mainNavItems" :key="item.title">
-              <NavigationMenuTrigger v-if="item.items?.length">
-                {{ item.title }}
-              </NavigationMenuTrigger>
-              <NavigationMenuLink v-else :href="item.href" class="px-4 py-2">
-                {{ item.title }}
-              </NavigationMenuLink>
-
-              <NavigationMenuContent v-if="item.items?.length">
-                <ul class="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
-                  <li v-for="subItem in item.items" :key="subItem.title">
-                    <NavigationMenuLink asChild>
-                      <a
-                        class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                        :href="subItem.href"
-                      >
-                        <div class="text-sm font-medium leading-none">{{ subItem.title }}</div>
-                        <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          {{ subItem.description }}
-                        </p>
-                      </a>
-                    </NavigationMenuLink>
-                  </li>
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-            <ThemeToggle />
-          </div>
-        </NavigationMenuList>
-      </NavigationMenu>
+                <NavigationMenuContent v-if="item.items?.length">
+                  <ul class="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
+                    <li v-for="subItem in item.items" :key="subItem.title">
+                      <NavigationMenuLink asChild>
+                        <a
+                          class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          :href="subItem.href"
+                        >
+                          <div class="text-sm font-medium leading-none">{{ subItem.title }}</div>
+                          <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            {{ subItem.description }}
+                          </p>
+                        </a>
+                      </NavigationMenuLink>
+                    </li>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+          
+          <ThemeToggle />
+        </div>
+      </div>
     </div>
   </header>
 </template>

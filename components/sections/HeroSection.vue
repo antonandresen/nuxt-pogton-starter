@@ -1,9 +1,9 @@
 <template>
-  <section class="relative">
+  <section class="relative min-h-[calc(100vh-4rem)]">
     <!-- Background Pattern -->
     <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]" />
     
-    <div class="container mx-auto px-4 py-24 md:py-32">
+    <div class="container mx-auto px-4 py-24 md:py-32 min-h-[calc(100vh-4rem)] flex items-center">
       <div class="flex flex-col items-center text-center space-y-8 max-w-3xl mx-auto">
         <span class="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm font-medium">
           🚀 Launching something special
