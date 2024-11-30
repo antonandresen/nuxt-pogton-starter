@@ -5,8 +5,19 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     'shadcn-nuxt',
-    '@nuxtjs/color-mode'
+    '@nuxtjs/color-mode',
+    '@vueuse/nuxt',
+    '@nuxt/eslint',
+    '@nuxt/test-utils/module',
+    '@nuxt/fonts',
+    '@nuxtjs/seo',
   ],
+  site: {
+    url: 'https://nuxt-pogton-starter.netlify.app/',
+    name: 'Nuxt Pogton Starter',
+    description: 'Nuxt Pogton Starter',
+    defaultLocale: 'en', // not needed if you have @nuxtjs/i18n installed
+  },
   shadcn: {
     /**
      * Prefix for all the imported component

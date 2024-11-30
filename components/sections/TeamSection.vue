@@ -41,23 +41,23 @@ defineProps<{
 
 const teamMembers = ref([
   {
-    name: 'John Doe',
+    name: 'Hannah Doe',
     position: 'CEO',
-    photo: '/team/john.jpg',
-    initials: 'JD',
+    photo: 'img/team/hannah.png',
+    initials: 'HD',
     bio: 'Passionate about creating amazing products.',
   },
   {
     name: 'Jane Smith',
     position: 'CTO',
-    photo: '/team/jane.jpg',
+    photo: 'img/team/jane.png',
     initials: 'JS',
     bio: 'Leading the tech team with innovation.',
   },
   {
     name: 'Mike Johnson',
     position: 'COO',
-    photo: '/team/mike.jpg',
+    photo: 'img/team/mike.png',
     initials: 'MJ',
     bio: 'Ensuring smooth operations across the company.',
   },
