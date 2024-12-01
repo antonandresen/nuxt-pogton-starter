@@ -29,6 +29,36 @@ export default defineNuxtConfig({
     layoutTransition: {
       name: 'slide',
       mode: 'out-in'
+    },
+    head: {
+      titleTemplate: '%s - Pogton',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'The Ultimate Nuxt.js Starter for Your Next SaaS Project' },
+        { name: 'theme-color', content: '#ffffff' },
+        
+        // Open Graph
+        { property: 'og:type', content: 'website' },
+        { property: 'og:title', content: 'Pogton - Modern Nuxt.js SaaS Starter' },
+        { property: 'og:description', content: 'The Ultimate Nuxt.js Starter for Your Next SaaS Project' },
+        { property: 'og:image', content: 'https://nuxt-pogton-starter.netlify.app/og-image.jpg' },
+        { property: 'og:url', content: 'https://nuxt-pogton-starter.netlify.app/' },
+        
+        // Twitter
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:site', content: '@antonandresen' },
+        { name: 'twitter:creator', content: '@antonandresen' },
+        { name: 'twitter:title', content: 'Pogton - Modern Nuxt.js SaaS Starter' },
+        { name: 'twitter:description', content: 'The Ultimate Nuxt.js Starter for Your Next SaaS Project' },
+        { name: 'twitter:image', content: 'https://nuxt-pogton-starter.netlify.app//og-image.jpg' },
+      ],
+      link: [
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+        { rel: 'canonical', href: 'https://nuxt-pogton-starter.netlify.app' },
+        { rel: 'manifest', href: '/site.webmanifest' }
+      ]
     }
   },
   shadcn: {
