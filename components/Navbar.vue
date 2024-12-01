@@ -3,8 +3,9 @@
     <div class="container mx-auto">
       <!-- Mobile Navigation -->
       <div class="flex items-center justify-between py-4 md:hidden">
-        <NuxtLink to="/" class="text-xl font-bold">
-          MyCompany
+        <NuxtLink to="/" class="flex items-center space-x-2">
+          <Zap class="h-6 w-6 text-primary" />
+          <span class="text-xl font-bold">Pogton</span>
         </NuxtLink>
         <div class="flex items-center gap-2">
           <ThemeToggle />
@@ -15,6 +16,10 @@
               </Button>
             </SheetTrigger>
             <SheetContent side="right" class="w-[300px] overflow-y-auto">
+              <div class="flex items-center space-x-2 mb-8">
+                <Zap class="h-6 w-6 text-primary" />
+                <span class="text-xl font-bold">Pogton</span>
+              </div>
               <nav class="flex flex-col gap-6">
                 <div v-for="item in mainNavItems" :key="item.title" class="space-y-3">
                   <h4 class="font-medium">{{ item.title }}</h4>
@@ -23,7 +28,7 @@
                       v-for="subItem in item.items"
                       :key="subItem.title"
                       :to="subItem.href"
-                      class="block text-sm text-muted-foreground hover:text-primary"
+                      class="block p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-accent"
                     >
                       <div class="font-medium">{{ subItem.title }}</div>
                       <p class="text-xs text-muted-foreground">{{ subItem.description }}</p>
@@ -32,9 +37,9 @@
                   <NuxtLink
                     v-else
                     :to="item.href"
-                    class="block pl-3 text-sm text-muted-foreground hover:text-primary"
+                    class="block pl-3 p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-accent"
                   >
-                    View Pricing
+                    {{ item.title }}
                   </NuxtLink>
                 </div>
               </nav>
@@ -45,8 +50,9 @@
 
       <!-- Desktop Navigation -->
       <div class="hidden md:flex items-center justify-between py-4">
-        <NuxtLink to="/" class="text-xl font-bold">
-          MyCompany
+        <NuxtLink to="/" class="flex items-center space-x-2">
+          <Zap class="h-6 w-6 text-primary" />
+          <span class="text-xl font-bold">Pogton</span>
         </NuxtLink>
         
         <div class="flex items-center gap-8">
@@ -56,7 +62,11 @@
                 <NavigationMenuTrigger v-if="item.items?.length">
                   {{ item.title }}
                 </NavigationMenuTrigger>
-                <NavigationMenuLink v-else :href="item.href" class="px-4 py-2">
+                <NavigationMenuLink 
+                  v-else 
+                  :href="item.href"
+                  class="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+                >
                   {{ item.title }}
                 </NavigationMenuLink>
 
@@ -81,7 +91,15 @@
             </NavigationMenuList>
           </NavigationMenu>
           
-          <ThemeToggle />
+          <div class="flex items-center gap-4">
+            <Button variant="ghost" asChild>
+              <NuxtLink to="/login">Sign in</NuxtLink>
+            </Button>
+            <Button asChild>
+              <NuxtLink to="/register">Get Started</NuxtLink>
+            </Button>
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </div>
@@ -99,7 +117,7 @@ import {
 } from '@/components/ui/navigation-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
-import { Menu } from 'lucide-vue-next'
+import { Menu, Zap } from 'lucide-vue-next'
 import ThemeToggle from './ThemeToggle.vue'
 
 const mainNavItems = [
