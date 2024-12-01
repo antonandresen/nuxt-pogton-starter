@@ -11,12 +11,25 @@ export default defineNuxtConfig({
     '@nuxt/test-utils/module',
     '@nuxt/fonts',
     '@nuxtjs/seo',
+    'nuxt-security',
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt'
   ],
   site: {
     url: 'https://nuxt-pogton-starter.netlify.app/',
     name: 'Nuxt Pogton Starter',
     description: 'Nuxt Pogton Starter',
     defaultLocale: 'en', // not needed if you have @nuxtjs/i18n installed
+  },
+  app: {
+    pageTransition: {
+      name: 'fade',
+      mode: 'out-in'
+    },
+    layoutTransition: {
+      name: 'slide',
+      mode: 'out-in'
+    }
   },
   shadcn: {
     /**
