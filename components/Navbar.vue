@@ -92,12 +92,19 @@
           </NavigationMenu>
           
           <div class="flex items-center gap-4">
-            <Button variant="ghost" asChild>
-              <NuxtLink to="/login">Sign in</NuxtLink>
-            </Button>
-            <Button asChild>
-              <NuxtLink to="/register">Get Started</NuxtLink>
-            </Button>
+            <template v-if="isAuthenticated">
+              <Button variant="ghost" @click="handleLogout">
+                Sign out
+              </Button>
+            </template>
+            <template v-else>
+              <Button variant="ghost" asChild>
+                <NuxtLink to="/login">Sign in</NuxtLink>
+              </Button>
+              <Button asChild>
+                <NuxtLink to="/register">Get Started</NuxtLink>
+              </Button>
+            </template>
             <ThemeToggle />
           </div>
         </div>
@@ -192,6 +199,14 @@ const mainNavItems = [
     ],
   },
 ]
+
+const { isAuthenticated, logout } = useAuth()
+const router = useRouter()
+
+const handleLogout = async () => {
+  await logout()
+  router.push('/login')
+}
 </script>
 
 <style scoped>

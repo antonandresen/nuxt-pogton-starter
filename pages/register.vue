@@ -62,6 +62,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Eye, EyeOff, Loader2 } from 'lucide-vue-next'
 
+const { register } = useAuth()
+const router = useRouter()
+
 const form = reactive({
   email: '',
   password: ''
@@ -101,22 +104,20 @@ const validateForm = () => {
 
 const handleSubmit = async () => {
   if (!validateForm()) return
-
+  
   isLoading.value = true
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    console.log('Form submitted:', form)
-    // Handle successful registration
-  } catch (error) {
-    console.error('Registration error:', error)
+    await register(form.email, form.password)
+    router.push('/dashboard') // or wherever you want to redirect after registration
+  } catch (error: any) {
+    errors.password = error.message
   } finally {
     isLoading.value = false
   }
 }
 
-const socialLogin = (provider: string) => {
-  console.log(`Logging in with ${provider}`)
-  // Implement social login logic
+const socialLogin = async (provider: string) => {
+  // Implement social login logic here
+  console.log('Social login with:', provider)
 }
 </script>
