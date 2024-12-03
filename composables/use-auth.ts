@@ -1,53 +1,22 @@
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
+import { useAsyncData } from '#app'
 
 interface User {
-  id: string
+  id: number
   email: string
   createdAt: string
 }
 
-const user = ref<User | null>(null)
-const isAuthenticated = computed(() => !!user.value)
-
 export function useAuth() {
-  const login = async (email: string, password: string) => {
-    try {
-      const response = await $fetch('/api/auth/login', {
-        method: 'POST',
-        body: { email, password }
-      })
-      user.value = response.user
-      return response
-    } catch (error: any) {
-      throw new Error(error.message)
-    }
-  }
+  const user = useState<User | null>('user', () => null)
+  const isAuthenticated = computed(() => !!user.value)
 
-  const register = async (email: string, password: string) => {
-    try {
-      const response = await $fetch('/api/auth/signup', {
-        method: 'POST',
-        body: { email, password }
-      })
-      user.value = response.user
-      return response
-    } catch (error: any) {
-      throw new Error(error.message)
-    }
-  }
-
-  const logout = async () => {
-    try {
-      await $fetch('/api/auth/logout', { method: 'POST' })
-      user.value = null
-    } catch (error: any) {
-      throw new Error(error.message)
-    }
-  }
-
+  // Define getUser before using it
   const getUser = async () => {
     try {
-      const response = await $fetch('/api/auth/user')
+      const response = await $fetch('/api/auth/user', {
+        credentials: 'include',
+      })
       user.value = response.user
       return response.user
     } catch (error) {
@@ -56,9 +25,49 @@ export function useAuth() {
     }
   }
 
-  // Initialize auth state
-  if (!user.value) {
+  // Initialize auth state on first use
+  if (process.client && user.value === null) {
     getUser()
+  }
+
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await $fetch('/api/auth/login', {
+        method: 'POST',
+        body: { email, password },
+        credentials: 'include',
+      })
+      user.value = response.user
+      return response
+    } catch (error: any) {
+      throw new Error(error.data?.message || error.message)
+    }
+  }
+
+  const register = async (email: string, password: string) => {
+    try {
+      const response = await $fetch('/api/auth/signup', {
+        method: 'POST',
+        body: { email, password },
+        credentials: 'include',
+      })
+      user.value = response.user
+      return response
+    } catch (error: any) {
+      throw new Error(error.data?.message || error.message)
+    }
+  }
+
+  const logout = async () => {
+    try {
+      await $fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      })
+      user.value = null
+    } catch (error: any) {
+      throw new Error(error.data?.message || error.message)
+    }
   }
 
   return {
@@ -67,6 +76,6 @@ export function useAuth() {
     login,
     register,
     logout,
-    getUser
+    getUser,
   }
 }

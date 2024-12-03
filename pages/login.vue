@@ -71,7 +71,6 @@ import { Label } from '@/components/ui/label'
 import { Eye, EyeOff, Loader2 } from 'lucide-vue-next'
 
 const { login } = useAuth()
-const router = useRouter()
 
 const form = reactive({
   email: '',
@@ -113,8 +112,8 @@ const handleSubmit = async () => {
   isLoading.value = true
   try {
     await login(form.email, form.password)
-    router.push('/dashboard') // or wherever you want to redirect after login
-  } catch (error: any) {
+    navigateTo('/dashboard')
+  } catch (error: Error) {
     errors.password = error.message
   } finally {
     isLoading.value = false

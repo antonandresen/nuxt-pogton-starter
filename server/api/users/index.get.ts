@@ -1,17 +1,10 @@
-import prisma from '~/server/utils/prisma'
+import prisma from '@/server/utils/prisma'
+import auth from '@/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
-  try {
-    // Check if user is authenticated
-    // const session = await getServerSession(event)
-    // if (!session) {
-    //   throw createError({
-    //     statusCode: 401,
-    //     message: 'Unauthorized'
-    //   })
-    // }
+  await auth(event)
 
-    // Fetch all users from the database
+  try {
     const users = await prisma.user.findMany({
       select: {
         id: true,
