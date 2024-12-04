@@ -1,5 +1,4 @@
 import { computed } from 'vue'
-import { useAsyncData } from '#app'
 
 interface User {
   id: number
@@ -8,28 +7,9 @@ interface User {
 }
 
 export function useAuth() {
-  const user = useState<User | null>('user', () => null)
+  const user = useState<User | null>('auth-user')
   const isAuthenticated = computed(() => !!user.value)
-
-  // Define getUser before using it
-  const getUser = async () => {
-    try {
-      const response = await $fetch('/api/auth/user', {
-        credentials: 'include',
-      })
-      user.value = response.user
-      return response.user
-    } catch (error) {
-      user.value = null
-      return null
-    }
-  }
-
-  // Initialize auth state on first use
-  if (process.client && user.value === null) {
-    getUser()
-  }
-
+  
   const login = async (email: string, password: string) => {
     try {
       const response = await $fetch('/api/auth/login', {
@@ -76,6 +56,5 @@ export function useAuth() {
     login,
     register,
     logout,
-    getUser,
   }
 }

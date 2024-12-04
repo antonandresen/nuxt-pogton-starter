@@ -1,8 +1,7 @@
 export default defineNuxtRouteMiddleware((to) => {
-  const { isAuthenticated } = useAuth()
+  const user = useState('auth-user')
 
-  // If user is not authenticated, redirect to login
-  if (!isAuthenticated.value) {
+  if (!user.value) {
     return navigateTo({
       path: '/login',
       query: {
