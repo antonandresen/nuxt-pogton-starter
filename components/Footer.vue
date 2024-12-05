@@ -80,9 +80,9 @@
             © {{ new Date().getFullYear() }} Pogton. All rights reserved.
           </p>
           <div class="flex items-center space-x-4 text-sm text-muted-foreground">
-            <a href="/privacy" class="hover:text-primary">Privacy</a>
-            <a href="/terms" class="hover:text-primary">Terms</a>
-            <a href="/cookies" class="hover:text-primary">Cookies</a>
+            <a href="/privacy-policy" class="hover:text-primary">Privacy</a>
+            <a href="/terms-of-service" class="hover:text-primary">Terms</a>
+            <a href="/cookie-policy" class="hover:text-primary">Cookies</a>
           </div>
         </div>
       </div>
