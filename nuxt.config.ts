@@ -13,7 +13,8 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     'nuxt-security',
     '@pinia/nuxt',
-    'pinia-plugin-persistedstate/nuxt'
+    'pinia-plugin-persistedstate/nuxt',
+    '@nuxtjs/ngrok'
   ],
   site: {
     url: 'https://nuxt-pogton-starter.netlify.app/',
@@ -63,7 +64,12 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     JWT_SECRET: process.env.JWT_SECRET,
-    public: {}
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+
+    public: {
+      STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
+    }
   },
   shadcn: {
     /**
@@ -85,4 +91,8 @@ export default defineNuxtConfig({
     fallback: 'light',
     classSuffix: ''
   },
+  ngrok: {
+    authtoken: process.env.NGROK_AUTH_TOKEN,
+    domain: 'splendid-admittedly-falcon.ngrok-free.app' // Put your ngrok URL here
+  }
 })
