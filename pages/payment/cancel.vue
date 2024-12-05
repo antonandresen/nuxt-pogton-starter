@@ -8,8 +8,6 @@
   </template>
   
   <script setup>
-  // Add any necessary logic here
-  import Button from '~/components/ui/Button.vue'
   </script>
   
   <style scoped>
