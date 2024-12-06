@@ -1,19 +1,16 @@
-// server/api/webhooks/stripe.js
 import Stripe from 'stripe'
 
 export default defineEventHandler(async (event) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
   const sig = event.req.headers['stripe-signature']
 
-  const body = await readBody(event)
+  const rawBody = await readRawBody(event)
 
-  console.log('In Stripe Webhook', body)
-  
   let eventStripe
 
   try {
     eventStripe = stripe.webhooks.constructEvent(
-      body,
+      rawBody,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     )
@@ -29,7 +26,14 @@ export default defineEventHandler(async (event) => {
   switch (eventStripe.type) {
     case 'checkout.session.completed':
       const session = eventStripe.data.object
-      // Fulfill the purchase, e.g., update the user's subscription status
+      console.log('Checkout Session Data:', {
+        customerId: session.customer, // Stripe Customer ID
+        customerEmail: session.customer_email,
+        customerDetails: session.customer_details,
+        clientReferenceId: session.client_reference_id, // Custom ID we can set
+        subscriptionId: session.subscription,
+        paymentStatus: session.payment_status,
+      })
       await handleCheckoutSession(session)
       break
     // ... handle other event types
@@ -37,11 +41,28 @@ export default defineEventHandler(async (event) => {
       console.log(`Unhandled event type ${eventStripe.type}`)
   }
 
-  event.res.statusCode = 200
   return { received: true }
 })
 
-async function handleCheckoutSession(session) {
-  // Implement your logic to activate the user's subscription
-  // Typically, you would find the user by session.customer_email and update their account
+async function handleCheckoutSession(session: Stripe.Checkout.Session) {
+  // Get customer information from the session
+  const customerId = session.customer
+  const customerEmail = session.customer_email
+  const subscriptionId = session.subscription
+
+  // You can also fetch additional customer details from Stripe if needed
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+  const customer = await stripe.customers.retrieve(session.customer as string)
+  console.log('Customer', customer)
+  
+  // Update your database with the subscription info
+  // For example, with Supabase:
+  // await supabaseAdmin
+  //   .from('profiles')
+  //   .update({
+  //     stripe_customer_id: customerId,
+  //     stripe_subscription_id: subscriptionId,
+  //     subscription_status: 'active'
+  //   })
+  //   .eq('email', customerEmail)
 }
