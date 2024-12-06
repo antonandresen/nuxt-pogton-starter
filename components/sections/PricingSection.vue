@@ -22,7 +22,7 @@
           v-for="plan in plans" 
           :key="plan.name"
           :class="[
-            'relative overflow-hidden transition-all duration-300 hover:shadow-lg',
+            'relative overflow-hidden transition-all duration-300 hover:shadow-lg flex flex-col',
             plan.name === 'Pro' && 'border-primary shadow-md'
           ]"
         >
@@ -41,7 +41,7 @@
             </CardDescription>
           </CardHeader>
 
-          <CardContent>
+          <CardContent class="flex-grow">
             <div class="space-y-4">
               <div 
                 v-for="feature in plan.features" 
@@ -54,7 +54,7 @@
             </div>
           </CardContent>
 
-          <CardFooter>
+          <CardFooter class="mt-auto">
             <Button 
               class="w-full" 
               :variant="plan.name === 'Pro' ? 'default' : 'outline'"
