@@ -1,6 +1,5 @@
 import { defineNuxtPlugin, useState, useRuntimeConfig } from '#app'
 import * as jose from 'jose'
-import prisma from '~/server/utils/prisma'
 
 interface User {
   id: number
@@ -39,6 +38,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       const userId = payload.userId as number
 
       if (process.server) {
+        // Dynamically import prisma only on the server
+        const { default: prisma } = await import('~/server/utils/prisma')
+        
         // Fetch user data from the database on the server
         const dbUser = await prisma.user.findUnique({
           where: { id: userId },
