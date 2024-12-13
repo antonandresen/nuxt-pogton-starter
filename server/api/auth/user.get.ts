@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
       id: true,
       email: true,
       createdAt: true,
+      role: true,
     },
   })
 

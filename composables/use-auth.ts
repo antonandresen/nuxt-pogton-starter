@@ -3,6 +3,7 @@ import { computed } from 'vue'
 interface User {
   id: number
   email: string
+  role: 'USER' | 'ADMIN'
   createdAt: string
 }
 

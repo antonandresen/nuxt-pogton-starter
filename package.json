@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "create-admin": "npx tsx server/commands/create-admin.ts"
   },
   "dependencies": {
     "@nuxt/eslint": "^0.7.2",
@@ -27,6 +28,7 @@
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
     "embla-carousel-vue": "^8.5.1",
     "eslint": "^9.16.0",
     "jose": "^5.9.6",

@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
   // Generate JWT using jose
   const secret = new TextEncoder().encode(config.jwtSecret)
-  const token = await new jose.SignJWT({ userId: user.id })
+  const token = await new jose.SignJWT({ userId: user.id, role: user.role })
     .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime('7d')
     .sign(secret)

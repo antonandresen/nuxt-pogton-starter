@@ -48,6 +48,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
             id: true,
             email: true,
             createdAt: true,
+            role: true
           },
         })
 

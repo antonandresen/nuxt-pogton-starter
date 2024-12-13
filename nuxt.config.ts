@@ -94,5 +94,10 @@ export default defineNuxtConfig({
   ngrok: {
     authtoken: process.env.NGROK_AUTH_TOKEN,
     domain: 'splendid-admittedly-falcon.ngrok-free.app' // Put your ngrok URL here
+  },
+  robots: {
+    enabled: true,  
+    allow: ['*'],
+    groups: []
   }
 })

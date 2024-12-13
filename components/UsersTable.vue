@@ -12,10 +12,6 @@
             v-model="searchQuery"
           />
         </div>
-        <Button>
-          <Plus class="mr-2 h-4 w-4" />
-          Add User
-        </Button>
       </div>
     </div>
 
@@ -24,6 +20,7 @@
         <TableHeader>
           <TableRow>
             <TableHead>Email</TableHead>
+            <TableHead>Role</TableHead>
             <TableHead>Created</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
@@ -31,6 +28,22 @@
         <TableBody>
           <TableRow v-for="user in filteredUsers" :key="user.id">
             <TableCell>{{ user.email }}</TableCell>
+            <TableCell>
+              <Select 
+                v-if="currentUser?.role === 'ADMIN'"
+                :model-value="user.role"
+                @update:model-value="(role) => updateUserRole(user.id, role)"
+              >
+                <SelectTrigger class="w-[120px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="USER">User</SelectItem>
+                  <SelectItem value="ADMIN">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+              <span v-else>{{ user.role }}</span>
+            </TableCell>
             <TableCell>{{ formatDate(user.createdAt) }}</TableCell>
             <TableCell>
               <Button variant="ghost" size="icon">
@@ -49,25 +62,52 @@ import { ref, computed, onMounted } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Search, Plus, MoreHorizontal } from 'lucide-vue-next'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Search, MoreHorizontal } from 'lucide-vue-next'
+import { useToast } from '@/components/ui/toast/use-toast'
 
 interface User {
-  id: string
+  id: number
   email: string
+  role: 'USER' | 'ADMIN'
   createdAt: string
 }
 
 const users = ref<User[]>([])
 const searchQuery = ref('')
+const { toast } = useToast()
+const { user: currentUser } = useAuth()
 
 const fetchUsers = async () => {
   try {
-    console.log('Fetching users...')
     const response = await $fetch('/api/users')
-    console.log('Users response:', response)
     users.value = response.users
-  } catch (error) {
-    console.error('Failed to fetch users:', error)
+  } catch (error: any) {
+    toast({
+      title: 'Failed to fetch users',
+      description: error.data?.message || 'Please try again later',
+      variant: 'destructive'
+    })
+  }
+}
+
+const updateUserRole = async (userId: number, role: 'USER' | 'ADMIN') => {
+  try {
+    await $fetch(`/api/users/${userId}/role`, {
+      method: 'PATCH',
+      body: { role }
+    })
+    toast({
+      title: 'User role updated successfully',
+      variant: 'success'
+    })
+    await fetchUsers() // Refresh the list
+  } catch (error: any) {
+    toast({
+      title: 'Failed to update user role',
+      description: error.data?.message || 'Please try again later',
+      variant: 'destructive'
+    })
   }
 }
 
@@ -84,7 +124,6 @@ const formatDate = (date: string) => {
 }
 
 onMounted(() => {
-  console.log('UsersTable onMounted')
   fetchUsers()
 })
 </script>
