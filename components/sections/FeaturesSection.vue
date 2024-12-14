@@ -1,61 +1,41 @@
 <template>
-  <section 
-    id="features" 
-    :class="[
-      'py-24',
-      background === 'muted' ? 'bg-accent' : 
-      background === 'primary' ? 'bg-primary text-primary-foreground' : 
-      'bg-background'
-    ]"
+  <Section
+    id="features"
+    :background="background"
+    badge="Features"
+    title="Everything you need"
+    subtitle="Our platform provides all the features you need to succeed"
   >
-    <div class="container mx-auto px-4">
-      <div class="text-center max-w-3xl mx-auto mb-16">
-        <Badge variant="outline" class="mb-4">Features</Badge>
-        <h2 class="text-4xl font-bold tracking-tight mb-4">Everything you need</h2>
-        <p class="text-muted-foreground text-lg">
-          Carefully crafted features to help you succeed
-        </p>
-      </div>
-
-      <div class="grid md:grid-cols-3 gap-8">
-        <HoverCard v-for="feature in features" :key="feature.title">
-          <HoverCardTrigger>
-            <Card class="overflow-hidden transition-all hover:shadow-lg">
-              <CardHeader>
-                <div class="flex items-center gap-4">
-                  <div class="p-2 rounded-lg bg-primary/10">
-                    <component 
-                      :is="feature.icon" 
-                      class="h-6 w-6 text-primary"
-                    />
-                  </div>
-                  <CardTitle>{{ feature.title }}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p class="text-muted-foreground">{{ feature.description }}</p>
-              </CardContent>
-            </Card>
-          </HoverCardTrigger>
-          <HoverCardContent class="w-80">
-            <div class="space-y-2">
-              <h4 class="text-sm font-semibold">{{ feature.title }}</h4>
-              <p class="text-sm text-muted-foreground">
-                {{ feature.extendedDescription }}
-              </p>
-            </div>
-          </HoverCardContent>
-        </HoverCard>
-      </div>
+    <div class="grid gap-8 md:grid-cols-3">
+      <Card v-for="feature in features" :key="feature.title">
+        <CardHeader>
+          <CardTitle class="flex items-center gap-2">
+            <component :is="feature.icon" class="h-5 w-5" />
+            {{ feature.title }}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p class="text-muted-foreground">{{ feature.description }}</p>
+          <HoverCard v-if="feature.extendedDescription">
+            <HoverCardTrigger>
+              <Button variant="link" class="p-0 h-auto">Learn more</Button>
+            </HoverCardTrigger>
+            <HoverCardContent>
+              {{ feature.extendedDescription }}
+            </HoverCardContent>
+          </HoverCard>
+        </CardContent>
+      </Card>
     </div>
-  </section>
+  </Section>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import Section from '@/components/sections/Section.vue'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+import { Button } from '@/components/ui/button'
 import { Zap, Shield, HeadphonesIcon } from 'lucide-vue-next'
 import type { SectionBackground } from '@/types/section'
 
@@ -68,7 +48,6 @@ const features = ref([
     icon: Zap,
     title: 'Lightning Fast',
     description: 'Experience blazing fast performance.',
-    extendedDescription: 'Built on cutting-edge technology to ensure your application runs at peak performance.'
   },
   {
     icon: Shield,

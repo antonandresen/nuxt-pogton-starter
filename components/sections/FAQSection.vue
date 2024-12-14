@@ -1,56 +1,45 @@
 <template>
-  <section 
-    id="faq" 
-    :class="[
-      'py-24',
-      background === 'muted' ? 'bg-accent' : 
-      background === 'primary' ? 'bg-primary text-primary-foreground' : 
-      'bg-background'
-    ]"
+  <Section
+    id="faq"
+    :background="background"
+    badge="FAQ"
+    title="Common questions"
+    subtitle="Find answers to frequently asked questions about our platform"
   >
-    <div class="container mx-auto px-4">
-      <div class="text-center max-w-3xl mx-auto mb-16">
-        <Badge variant="outline" class="mb-4">FAQ</Badge>
-        <h2 class="text-4xl font-bold tracking-tight mb-4">Common questions</h2>
-        <p class="text-muted-foreground text-lg">
-          Find answers to frequently asked questions about our platform
-        </p>
-      </div>
-
-      <div class="max-w-3xl mx-auto">
-        <Accordion type="single" collapsible class="w-full">
-          <AccordionItem
-            v-for="(faq, index) in faqs"
-            :key="index"
-            :value="'item-' + index"
-            class="border-b-0 [&_button]:border-b"
-          >
-            <AccordionTrigger class="text-left hover:no-underline">
-              <div class="flex items-center gap-4">
-                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
-                  {{ index + 1 }}
-                </div>
-                <span class="text-lg font-medium">{{ faq.question }}</span>
+    <div class="max-w-3xl mx-auto">
+      <Accordion type="single" collapsible class="w-full">
+        <AccordionItem
+          v-for="(faq, index) in faqs"
+          :key="index"
+          :value="'item-' + index"
+          class="border-b-0 [&_button]:border-b"
+        >
+          <AccordionTrigger class="text-left hover:no-underline">
+            <div class="flex items-center gap-4">
+              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
+                {{ index + 1 }}
               </div>
-            </AccordionTrigger>
-            <AccordionContent class="pt-4 pb-8 px-12">
-              <p class="text-muted-foreground">{{ faq.answer }}</p>
-              <div v-if="faq.links" class="mt-4 space-y-2">
-                <div v-for="link in faq.links" :key="link.text" class="flex items-center gap-2 text-sm">
-                  <ArrowRight class="h-4 w-4 text-primary" />
-                  <a :href="link.url" class="text-primary hover:underline">{{ link.text }}</a>
-                </div>
+              <span class="text-lg font-medium">{{ faq.question }}</span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent class="pt-4 pb-8 px-12">
+            <p class="text-muted-foreground">{{ faq.answer }}</p>
+            <div v-if="faq.links" class="mt-4 space-y-2">
+              <div v-for="link in faq.links" :key="link.text" class="flex items-center gap-2 text-sm">
+                <ArrowRight class="h-4 w-4 text-primary" />
+                <a :href="link.url" class="text-primary hover:underline">{{ link.text }}</a>
               </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
-  </section>
+  </Section>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import Section from '@/components/sections/Section.vue'
 import { Badge } from '@/components/ui/badge'
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
 import { ArrowRight } from 'lucide-vue-next'
@@ -60,6 +49,7 @@ defineProps<{
   background?: SectionBackground
 }>()
 
+// Reference original faqs data
 const faqs = ref([
   {
     question: 'How do I get started?',
@@ -92,5 +82,4 @@ const faqs = ref([
 </script>
 
 <style>
-
 </style>

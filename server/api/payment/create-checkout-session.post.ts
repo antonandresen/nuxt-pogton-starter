@@ -17,8 +17,8 @@ export default defineEventHandler(async (event) => {
           quantity: 1,
         },
       ],
-      success_url: `${process.env.BASE_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.BASE_URL}/payment/cancel`,
+      success_url: `${process.env.BASE_URL}/dashboard/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.BASE_URL}/dashboard/payment/cancel`,
     })
 
     return { sessionId: session.id }

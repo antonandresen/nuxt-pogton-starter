@@ -29,7 +29,7 @@ defineProps<{
 }>()
 
 const handleCTA = () => {
-  // Handle CTA click
+  navigateTo('/login')
 }
 </script>
 
