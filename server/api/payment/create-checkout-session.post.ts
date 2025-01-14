@@ -1,7 +1,10 @@
 import Stripe from 'stripe'
 import { defineEventHandler, readBody } from 'h3'
+import authMiddleware from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
+  await authMiddleware(event)
+
   const body = await readBody(event)
   const { priceId } = body
 

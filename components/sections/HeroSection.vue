@@ -10,7 +10,7 @@
         </span>
         
         <h1 class="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-          Transform Your Business with Our Platform
+          {{ $t('title') }}
         </h1>
         
         <p class="text-muted-foreground text-lg sm:text-xl">

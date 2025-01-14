@@ -14,7 +14,9 @@ export default defineNuxtConfig({
     'nuxt-security',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
-    '@nuxtjs/ngrok'
+    '@nuxtjs/ngrok',
+    'nuxt-cron',
+    '@nuxtjs/i18n'
   ],
   site: {
     url: 'https://nuxt-pogton-starter.netlify.app/',
@@ -99,5 +101,30 @@ export default defineNuxtConfig({
     enabled: true,  
     allow: ['*'],
     groups: []
+  },
+  cron: {
+    jobsDir: 'cron'
+  },
+  i18n: {
+    vueI18n: './i18n.config.ts',
+    strategy: 'no_prefix',
+    defaultLocale: 'en',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root' // recommended
+    },
+    locales: [
+      {
+        code: 'en',
+        language: 'en-US',
+        name: 'English'
+      },
+      {
+        code: 'se',
+        language: 'sv-SE',
+        name: 'Svenska'
+      }
+    ]
   }
 })

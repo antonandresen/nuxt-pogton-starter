@@ -8,6 +8,7 @@
           <span class="text-xl font-bold">Pogton</span>
         </NuxtLink>
         <div class="flex items-center gap-2">
+          <LocalePicker />
           <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
@@ -92,6 +93,7 @@
           </NavigationMenu>
           
           <div class="flex items-center gap-4">
+            <LocalePicker />
             <template v-if="isAuthenticated">
               <Button variant="ghost" @click="handleLogout">
                 Sign out
@@ -125,7 +127,6 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { Menu, Zap } from 'lucide-vue-next'
-import ThemeToggle from './ThemeToggle.vue'
 
 const mainNavItems = [
   {
