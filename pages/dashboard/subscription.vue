@@ -91,7 +91,8 @@ import { loadStripe } from '@stripe/stripe-js'
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: ['auth']
+  middleware: ['auth'],
+  breadcrumb: 'Subscription'
 })
 
 interface Plan {

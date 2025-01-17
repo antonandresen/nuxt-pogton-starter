@@ -101,7 +101,8 @@ import {
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: ['auth', 'admin']
+  middleware: ['auth', 'admin'],
+  breadcrumb: 'Admin'
 })
 
 // Example stats data - replace with real data fetching

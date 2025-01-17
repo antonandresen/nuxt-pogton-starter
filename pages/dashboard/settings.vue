@@ -131,7 +131,8 @@ import { Loader2 } from 'lucide-vue-next'
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: ['auth']
+  middleware: ['auth'],
+  breadcrumb: 'Settings'
 })
 
 const { toast } = useToast()

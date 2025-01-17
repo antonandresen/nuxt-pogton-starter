@@ -194,7 +194,8 @@ import { Progress } from '@/components/ui/progress'
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: ['auth', 'admin']
+  middleware: ['auth', 'admin'],
+  breadcrumb: 'Resume'
 })
 
 const professionalSkills = [

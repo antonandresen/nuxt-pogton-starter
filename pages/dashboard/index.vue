@@ -88,7 +88,8 @@ import {
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: ['auth']
+  middleware: ['auth'],
+  breadcrumb: undefined
 })
 
 // Example stats data - replace with real data fetching

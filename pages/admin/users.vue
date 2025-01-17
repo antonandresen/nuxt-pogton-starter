@@ -12,6 +12,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'dashboard',
-  middleware: ['auth', 'admin']
+  middleware: ['auth', 'admin'],
+  breadcrumb: 'Users'
 })
 </script> 

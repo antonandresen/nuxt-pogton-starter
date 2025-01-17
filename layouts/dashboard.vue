@@ -104,6 +104,10 @@
     </Sidebar>
 
     <SidebarContent class="flex-1 p-6">
+      <div class="flex items-center gap-2">
+        <SidebarTrigger />
+        <DashboardBreadcrumb :breadcrumbs="breadcrumbs" />
+      </div>
       <slot />
     </SidebarContent>
   </SidebarProvider>
@@ -137,10 +141,25 @@ import {
 import { useAuth } from '@/composables/use-auth'
 
 const { user, logout } = useAuth()
-const router = useRouter()
+const route = useRoute()
+
+const breadcrumbs = computed(() => {
+  return [
+    {
+      title: 'Dashboard',
+      route: '/dashboard',
+      isCurrent: !route.meta.breadcrumb
+    },
+    ...(route.meta.breadcrumb ? [{
+      title: route.meta.breadcrumb as string,
+      route: route.path,
+      isCurrent: true
+    }] : [])
+  ]
+})
 
 const handleLogout = async () => {
   await logout()
-  router.push('/login')
+  navigateTo('/login')
 }
 </script>
