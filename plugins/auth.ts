@@ -16,7 +16,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   let token: string | undefined
 
-  if (process.server) {
+  if (import.meta.server) {
     // On server, get token from the event context
     const event = nuxtApp.ssrContext?.event
     token = event?.req.headers.cookie?.split(';')
@@ -37,7 +37,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
       const userId = payload.userId as number
 
-      if (process.server) {
+      if (import.meta.server) {
         // Dynamically import prisma only on the server
         const { default: prisma } = await import('~/server/utils/prisma')
         

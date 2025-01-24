@@ -36,6 +36,7 @@ export default defineEventHandler(async (event) => {
       id: user.id,
       email: user.email,
       createdAt: user.createdAt,
+      role: user.role,
     },
   }
 })
