@@ -41,6 +41,7 @@
   ])
   
   const redirectToCheckout = async (priceId) => {
+    console.log('stripe publishablekey', config.public.STRIPE_PUBLISHABLE_KEY)
     const stripe = await loadStripe(config.public.STRIPE_PUBLISHABLE_KEY)
   
     try {
