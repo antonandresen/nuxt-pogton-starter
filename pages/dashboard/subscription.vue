@@ -208,8 +208,10 @@ const cancelSubscription = async () => {
   }
 }
 
-const redirectToCheckout = async (priceId) => {
+const redirectToCheckout = async (priceId: string) => {
+    console.log('stripe publishablekey', config.public.STRIPE_PUBLISHABLE_KEY)
     const stripe = await loadStripe(config.public.STRIPE_PUBLISHABLE_KEY)
+    console.log('stripe', stripe)
   
     try {
       // Call the server to create a Checkout Session
@@ -217,6 +219,8 @@ const redirectToCheckout = async (priceId) => {
         method: 'POST',
         body: { priceId },
       })
+
+      console.log('sessionId', sessionId)
   
       // Redirect to Stripe Checkout
       await stripe.redirectToCheckout({ sessionId })
