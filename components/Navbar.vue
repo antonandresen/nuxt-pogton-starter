@@ -11,7 +11,7 @@
           <LocalePicker />
           <ThemeToggle />
           <Sheet>
-            <SheetTrigger asChild>
+            <SheetTrigger as-child>
               <Button variant="ghost" size="icon">
                 <Menu class="h-6 w-6" />
               </Button>
@@ -74,7 +74,7 @@
                 <NavigationMenuContent v-if="item.items?.length">
                   <ul class="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
                     <li v-for="subItem in item.items" :key="subItem.title">
-                      <NavigationMenuLink asChild>
+                      <NavigationMenuLink as-child>
                         <a
                           class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           :href="subItem.href"
@@ -95,15 +95,21 @@
           <div class="flex items-center gap-4">
             <LocalePicker />
             <template v-if="isAuthenticated">
+              <Button variant="default" as-child>
+                <NuxtLink to="/dashboard" class="flex items-center">
+                  <LayoutDashboard class="h-4 w-4 mr-2" />
+                  Dashboard
+                </NuxtLink>
+              </Button>
               <Button variant="ghost" @click="handleLogout">
                 Sign out
               </Button>
             </template>
             <template v-else>
-              <Button variant="ghost" asChild>
+              <Button variant="ghost" as-child>
                 <NuxtLink to="/login">Sign in</NuxtLink>
               </Button>
-              <Button asChild>
+              <Button as-child>
                 <NuxtLink to="/register">Get Started</NuxtLink>
               </Button>
             </template>
@@ -126,7 +132,7 @@ import {
 } from '@/components/ui/navigation-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
-import { Menu, Zap } from 'lucide-vue-next'
+import { Menu, Zap, LayoutDashboard } from 'lucide-vue-next'
 
 const mainNavItems = [
   {
@@ -208,6 +214,10 @@ const handleLogout = async () => {
   await logout()
   router.push('/login')
 }
+
+defineOptions({
+  name: 'MainNavbar'
+})
 </script>
 
 <style scoped>

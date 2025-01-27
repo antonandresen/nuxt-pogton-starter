@@ -46,6 +46,7 @@ export function useAuth() {
         credentials: 'include',
       })
       user.value = null
+      window.location.href = '/login'
     } catch (error: any) {
       throw new Error(error.data?.message || error.message)
     }

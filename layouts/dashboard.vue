@@ -160,6 +160,5 @@ const breadcrumbs = computed(() => {
 
 const handleLogout = async () => {
   await logout()
-  navigateTo('/login')
 }
 </script>
