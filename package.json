@@ -8,7 +8,10 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "create-admin": "npx tsx server/commands/create-admin.ts"
+    "create-admin": "npx tsx server/commands/create-admin.ts",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push"
   },
   "dependencies": {
     "@nuxt/eslint": "^0.7.2",

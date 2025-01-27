@@ -1,84 +1,126 @@
 <template>
-  <Section
-    id="faq"
-    :background="background"
-    badge="FAQ"
-    title="Common questions"
-    subtitle="Find answers to frequently asked questions about our platform"
-  >
-    <div class="max-w-3xl mx-auto">
-      <Accordion type="single" collapsible class="w-full">
-        <AccordionItem
-          v-for="(faq, index) in faqs"
-          :key="index"
-          :value="'item-' + index"
-          class="border-b-0 [&_button]:border-b"
-        >
-          <AccordionTrigger class="text-left hover:no-underline">
-            <div class="flex items-center gap-4">
-              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
-                {{ index + 1 }}
-              </div>
-              <span class="text-lg font-medium">{{ faq.question }}</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent class="pt-4 pb-8 px-12">
-            <p class="text-muted-foreground">{{ faq.answer }}</p>
-            <div v-if="faq.links" class="mt-4 space-y-2">
-              <div v-for="link in faq.links" :key="link.text" class="flex items-center gap-2 text-sm">
-                <ArrowRight class="h-4 w-4 text-primary" />
-                <a :href="link.url" class="text-primary hover:underline">{{ link.text }}</a>
-              </div>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+  <section class="relative py-24 overflow-hidden">
+    <!-- Background Elements -->
+    <div class="absolute inset-0 bg-grid-pattern opacity-5" />
+    <div class="absolute left-1/4 bottom-1/2 translate-y-1/2 w-1/2 aspect-square bg-secondary/5 rounded-full blur-3xl" />
+    
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+          Frequently asked questions
+        </h2>
+        <p class="mt-4 text-lg text-muted-foreground">
+          Everything you need to know about our platform and services.
+        </p>
+      </div>
+
+      <!-- FAQ Grid -->
+      <div class="grid gap-8 md:grid-cols-2 max-w-6xl mx-auto">
+        <div class="space-y-4">
+          <Accordion v-for="(faq, i) in faqs.slice(0, Math.ceil(faqs.length/2))" :key="i" type="single" collapsible class="w-full">
+            <AccordionItem :value="'faq-' + i">
+              <AccordionTrigger class="text-left">{{ faq.question }}</AccordionTrigger>
+              <AccordionContent>
+                <p class="text-muted-foreground">{{ faq.answer }}</p>
+                <div v-if="faq.links" class="mt-4 flex gap-4">
+                  <Button v-for="link in faq.links" :key="link.text" variant="outline" size="sm" as-child>
+                    <NuxtLink :to="link.url">
+                      {{ link.text }}
+                      <ArrowRight class="ml-2 h-4 w-4" />
+                    </NuxtLink>
+                  </Button>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+
+        <div class="space-y-4">
+          <Accordion v-for="(faq, i) in faqs.slice(Math.ceil(faqs.length/2))" :key="i" type="single" collapsible class="w-full">
+            <AccordionItem :value="'faq-' + (i + Math.ceil(faqs.length/2))">
+              <AccordionTrigger class="text-left">{{ faq.question }}</AccordionTrigger>
+              <AccordionContent>
+                <p class="text-muted-foreground">{{ faq.answer }}</p>
+                <div v-if="faq.links" class="mt-4 flex gap-4">
+                  <Button v-for="link in faq.links" :key="link.text" variant="outline" size="sm" as-child>
+                    <NuxtLink :to="link.url">
+                      {{ link.text }}
+                      <ArrowRight class="ml-2 h-4 w-4" />
+                    </NuxtLink>
+                  </Button>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </div>
+
+      <!-- Contact CTA -->
+      <div class="mt-16 text-center">
+        <p class="text-muted-foreground mb-4">Still have questions?</p>
+        <Button size="lg" as-child>
+          <NuxtLink to="/contact">
+            Contact Support
+            <MessageCircle class="ml-2 h-4 w-4" />
+          </NuxtLink>
+        </Button>
+      </div>
     </div>
-  </Section>
+  </section>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import Section from '@/components/sections/Section.vue'
-import { Badge } from '@/components/ui/badge'
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
-import { ArrowRight } from 'lucide-vue-next'
-import type { SectionBackground } from '@/types/section'
+import { ArrowRight, MessageCircle } from 'lucide-vue-next'
+import { Button } from '@/components/ui/button'
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/components/ui/accordion'
 
-defineProps<{
-  background?: SectionBackground
-}>()
-
-// Reference original faqs data
-const faqs = ref([
+const faqs = [
   {
-    question: 'How do I get started?',
-    answer: 'Getting started is easy! Simply sign up for a free account and follow our quick setup guide. No credit card required for the trial period.',
+    question: 'How does the free trial work?',
+    answer: 'Our 14-day free trial gives you full access to all features. No credit card required. At the end of the trial, you can choose to upgrade to a paid plan or continue with limited features.',
     links: [
-      { text: 'View Setup Guide', url: '/docs/getting-started' },
-      { text: 'Watch Tutorial', url: '/tutorials/quickstart' }
+      { text: 'Start Trial', url: '/register' },
+      { text: 'View Pricing', url: '#pricing' }
     ]
   },
   {
     question: 'What payment methods do you accept?',
-    answer: 'We accept all major credit cards (Visa, MasterCard, American Express) and PayPal. For enterprise customers, we also offer invoice-based billing.',
+    answer: 'We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and offer invoice payment for annual enterprise plans.',
   },
   {
-    question: 'Is there a free trial available?',
-    answer: 'Yes! We offer a 14-day free trial on all plans. You\'ll have full access to all features during the trial period.',
+    question: 'Can I change my plan later?',
+    answer: 'Yes, you can upgrade, downgrade, or cancel your plan at any time. Plan changes take effect immediately, and we will prorate any payments.',
   },
   {
-    question: 'How does your pricing work?',
-    answer: 'Our pricing is based on a monthly subscription model. Choose from Basic, Pro, or Enterprise plans. All plans include core features, with additional capabilities in higher tiers.',
-    links: [
-      { text: 'Compare Plans', url: '#pricing' }
-    ]
+    question: 'Is there a long-term contract?',
+    answer: 'No, our services are provided on a month-to-month basis. You can cancel at any time without penalty. For annual plans, we offer a 30-day money-back guarantee.',
   },
   {
     question: 'What kind of support do you offer?',
-    answer: 'We provide 24/7 support via email and chat for all customers. Enterprise customers also get dedicated phone support and a personal account manager.',
+    answer: 'We offer email support for all plans, priority support for Pro plans, and 24/7 phone support for Enterprise customers. Our average response time is under 2 hours.',
+    links: [{ text: 'Contact Support', url: '/contact' }]
+  },
+  {
+    question: 'How secure is my data?',
+    answer: 'We use industry-standard encryption and security practices. Your data is stored in secure, SOC 2 compliant data centers, and we perform regular security audits.',
+    links: [{ text: 'Security Details', url: '/security' }]
+  },
+  {
+    question: 'Can I export my data?',
+    answer: 'Yes, you can export your data at any time in standard formats (CSV, JSON). We also offer API access for automated data synchronization.',
+  },
+  {
+    question: 'Do you offer custom solutions?',
+    answer: 'Yes, our Enterprise plan includes custom integration options, dedicated support, and can be tailored to your specific needs. Contact our sales team to learn more.',
+    links: [{ text: 'Contact Sales', url: '/contact' }]
   }
-])
+]
 </script>
 
 <style>
