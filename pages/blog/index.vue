@@ -76,7 +76,7 @@
       <!-- Posts Grid -->
       <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         <Card v-for="post in filteredPosts" :key="post.slug" class="group hover:shadow-lg transition-all">
-          <CardContent class="p-0">
+          <CardContent class="p-0 flex flex-col h-full">
             <!-- Image -->
             <div class="relative aspect-[16/9] overflow-hidden">
               <img 
@@ -92,7 +92,7 @@
               </Badge>
             </div>
             <!-- Content -->
-            <div class="p-6">
+            <div class="p-6 flex flex-col flex-grow">
               <div class="flex items-center gap-2 text-sm text-muted-foreground mb-3">
                 <Calendar class="h-4 w-4" />
                 <time>{{ post.date }}</time>
@@ -101,8 +101,8 @@
                 <span>{{ post.readTime }} read</span>
               </div>
               <h3 class="text-xl font-semibold mb-3">{{ post.title }}</h3>
-              <p class="text-muted-foreground text-sm mb-4">{{ post.excerpt }}</p>
-              <div class="flex items-center justify-between pt-4 border-t">
+              <p class="text-muted-foreground text-sm mb-4 flex-grow">{{ post.excerpt }}</p>
+              <div class="flex items-center justify-between pt-4 border-t mt-auto">
                 <div class="flex items-center gap-2">
                   <Avatar class="h-8 w-8">
                     <AvatarImage :src="post.author.avatar" />

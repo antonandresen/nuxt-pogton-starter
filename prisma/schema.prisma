@@ -9,11 +9,37 @@ generator client {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
-  password   String
-  createdAt  DateTime @default(now())
-  role       Role     @default(USER)
+  id               Int      @id @default(autoincrement())
+  email            String   @unique
+  password         String
+  stripeCustomerId String?  @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
+  deletedAt        DateTime?
+  role             Role     @default(USER)
+  subscriptions    Subscription[]
+}
+
+
+model Subscription {
+  id                  Int       @id @default(autoincrement())
+  userId              Int
+  stripeSubscriptionId String
+  status              String    @db.VarChar(50)
+  priceId             String?
+  currentPeriodStart  DateTime?
+  currentPeriodEnd    DateTime?
+  cancelAtPeriodEnd   Boolean   @default(false)
+  paymentMethodBrand  String?   @db.VarChar(50)
+  paymentMethodLast4  String?   @db.VarChar(4)
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @default(now()) @updatedAt
+  deletedAt           DateTime?
+
+  user                User      @relation(fields: [userId], references: [id])
+
+  @@map("subscriptions")
 }
 
 enum Role {
