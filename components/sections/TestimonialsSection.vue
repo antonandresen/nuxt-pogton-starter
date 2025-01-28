@@ -57,23 +57,23 @@
       <!-- Testimonial Grid -->
       <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         <Card v-for="testimonial in testimonials" :key="testimonial.author" class="relative group">
-          <CardContent class="p-6">
+          <CardContent class="p-6 flex flex-col h-full">
             <!-- Rating -->
             <div class="flex gap-1 mb-4">
               <Star
-v-for="i in 5" :key="i" 
+                v-for="i in 5" :key="i" 
                 class="h-4 w-4" 
                 :class="i <= testimonial.rating ? 'text-yellow-400 fill-yellow-400' : 'text-muted'" 
               />
             </div>
 
             <!-- Quote -->
-            <blockquote class="mb-6">
+            <blockquote class="mb-6 flex-grow">
               <p class="text-sm">{{ testimonial.quote }}</p>
             </blockquote>
 
             <!-- Author -->
-            <footer class="flex items-center gap-3">
+            <footer class="flex items-center gap-3 mt-auto">
               <Avatar class="h-10 w-10">
                 <AvatarImage :src="`https://i.pravatar.cc/100?u=${testimonial.id}`" />
                 <AvatarFallback>{{ testimonial.author[0] }}</AvatarFallback>

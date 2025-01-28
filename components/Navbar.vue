@@ -163,7 +163,7 @@ const mainNavItems = [
   },
   {
     title: 'Pricing',
-    href: '#pricing',
+    href: '/pricing',
   },
   {
     title: 'Resources',

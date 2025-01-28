@@ -18,7 +18,7 @@
       <!-- Pricing Toggle -->
       <div class="flex justify-center items-center gap-4 mb-8">
         <span class="text-sm font-medium" :class="{ 'text-primary': !isAnnual }">Monthly</span>
-        <Switch v-model="isAnnual" />
+        <Switch :checked="isAnnual" @update:checked="isAnnual = $event" />
         <span class="text-sm font-medium" :class="{ 'text-primary': isAnnual }">
           Annual
           <Badge variant="secondary" class="ml-2">Save 20%</Badge>
@@ -42,15 +42,25 @@ v-for="plan in plans" :key="plan.name"
             </div>
             <div class="flex items-baseline gap-2">
               <span class="text-4xl font-bold">
-                {{ isAnnual ? plan.annual : plan.monthly }}
+                {{ formatPrice(isAnnual ? plan.annualPrice : plan.monthlyPrice) }}
               </span>
               <span class="text-muted-foreground">/mo</span>
             </div>
+            <p v-if="isAnnual" class="text-sm text-muted-foreground mt-1">
+              Billed annually ({{ formatPrice(plan.annualPrice * 12) }}/year)
+            </p>
           </CardHeader>
           
           <CardContent class="space-y-6">
             <Button class="w-full" :variant="plan.popular ? 'default' : 'outline'" as-child>
-              <NuxtLink to="/register">Get Started</NuxtLink>
+              <NuxtLink
+:to="{
+                path: '/login',
+                query: {
+                  redirect: '/dashboard/subscription',
+                  plan: plan.name.toLowerCase()
+                }
+              }">Get Started</NuxtLink>
             </Button>
 
             <Separator />
@@ -105,8 +115,8 @@ const plans = [
   {
     name: 'Starter',
     description: 'Perfect for small teams just getting started',
-    monthly: '$29',
-    annual: '$23',
+    monthlyPrice: 29,
+    annualPrice: 23,
     features: [
       'Up to 5 team members',
       '5GB storage',
@@ -118,8 +128,8 @@ const plans = [
   {
     name: 'Pro',
     description: 'Ideal for growing businesses',
-    monthly: '$79',
-    annual: '$63',
+    monthlyPrice: 79,
+    annualPrice: 63,
     popular: true,
     features: [
       'Up to 20 team members',
@@ -134,8 +144,8 @@ const plans = [
   {
     name: 'Business',
     description: 'For larger organizations with specific needs',
-    monthly: '$149',
-    annual: '$119',
+    monthlyPrice: 149,
+    annualPrice: 119,
     features: [
       'Unlimited team members',
       '500GB storage',
@@ -148,6 +158,14 @@ const plans = [
     ]
   }
 ]
+
+const formatPrice = (price: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0
+  }).format(price)
+}
 </script>
 
 <style scoped>
