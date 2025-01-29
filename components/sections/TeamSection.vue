@@ -45,8 +45,8 @@ v-for="social in member.social" :key="social.platform"
               <h3 class="font-semibold text-lg">{{ member.name }}</h3>
               <p class="text-sm text-muted-foreground">{{ member.role }}</p>
               <p class="text-sm">{{ member.bio }}</p>
-            </div>
-          </CardContent>
+          </div>
+        </CardContent>
 
           <!-- Decorative corner gradient -->
           <div class="absolute right-0 top-0 -z-10 h-24 w-24 rounded-bl-full bg-primary/5 transition-all group-hover:scale-150" />
@@ -68,9 +68,9 @@ v-for="social in member.social" :key="social.platform"
                 View Open Positions
                 <ArrowRight class="ml-2 h-4 w-4" />
               </NuxtLink>
-            </Button>
+          </Button>
           </CardContent>
-        </Card>
+      </Card>
       </div>
     </div>
   </section>

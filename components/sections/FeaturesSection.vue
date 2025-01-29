@@ -23,7 +23,7 @@ v-for="feature in features" :key="feature.title"
           class="group relative overflow-hidden transition-all hover:shadow-lg"
           :class="{ 'md:col-span-2 lg:col-span-1': feature.highlight }"
         >
-          <CardHeader>
+        <CardHeader>
             <div class="flex items-center gap-4">
               <div class="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
                 <component :is="feature.icon" class="h-6 w-6 text-primary" />
@@ -33,7 +33,7 @@ v-for="feature in features" :key="feature.title"
                 <CardDescription>{{ feature.description }}</CardDescription>
               </div>
             </div>
-          </CardHeader>
+        </CardHeader>
           <CardContent class="space-y-4">
             <ul class="space-y-2">
               <li v-for="item in feature.items" :key="item" class="flex items-start gap-2">
@@ -48,11 +48,11 @@ v-for="feature in features" :key="feature.title"
                 <ArrowRight class="ml-2 h-4 w-4" />
               </Button>
             </div>
-          </CardContent>
+        </CardContent>
 
           <!-- Decorative corner gradient -->
           <div class="absolute right-0 top-0 -z-10 h-24 w-24 rounded-bl-full bg-primary/10 transition-all group-hover:scale-150" />
-        </Card>
+      </Card>
       </div>
 
       <!-- Integration Logos -->
