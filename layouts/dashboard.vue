@@ -39,6 +39,15 @@
                 </SidebarMenuButton>
               </NuxtLink>
             </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <NuxtLink to="/dashboard/shop">
+                <SidebarMenuButton>
+                  <ShoppingCart class="h-4 w-4 mr-2" />
+                  Shop
+                </SidebarMenuButton>
+              </NuxtLink>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
 
@@ -136,7 +145,8 @@ import {
   LogOut,
   CreditCard,
   LineChart,
-  FileText
+  FileText,
+  ShoppingCart
 } from 'lucide-vue-next'
 import { useAuth } from '@/composables/use-auth'
 

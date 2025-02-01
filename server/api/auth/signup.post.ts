@@ -2,6 +2,7 @@ import { defineEventHandler, readBody, createError, setCookie } from 'h3'
 import prisma from '~/server/utils/prisma'
 import bcrypt from 'bcryptjs'
 import * as jose from 'jose'
+import { sendWelcomeEmail } from '~/server/utils/onesignal'
 
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event)
@@ -42,6 +43,14 @@ export default defineEventHandler(async (event) => {
     maxAge: 60 * 60 * 24 * 7, // 7 days
     path: '/',
   })
+
+  // Send welcome email
+  try {
+    await sendWelcomeEmail(email, email.split('@')[0])
+  } catch (error) {
+    console.error('Failed to send welcome email:', error)
+    // Don't throw error here, as the user is already registered
+  }
 
   return {
     user: {

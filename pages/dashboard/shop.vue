@@ -2,6 +2,12 @@
 import { Check, ShoppingCart, Loader2, AlertCircle } from 'lucide-vue-next'
 import { loadStripe } from '@stripe/stripe-js'
 
+definePageMeta({
+  layout: 'dashboard',
+  middleware: ['auth'],
+  breadcrumb: 'Shop'
+})
+
 const config = useRuntimeConfig()
 const stripe = await loadStripe(config.public.STRIPE_PUBLISHABLE_KEY)
 

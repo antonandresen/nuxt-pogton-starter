@@ -18,6 +18,7 @@ model User {
   deletedAt        DateTime?
   role             Role     @default(USER)
   subscriptions    Subscription[]
+  purchases        Purchase[]
 }
 
 
@@ -40,6 +41,25 @@ model Subscription {
   user                User      @relation(fields: [userId], references: [id])
 
   @@map("subscriptions")
+}
+
+model Purchase {
+  id                Int       @id @default(autoincrement())
+  userId            Int
+  stripeSessionId   String    @unique
+  stripePaymentId   String    @unique
+  productId         String
+  productName       String
+  amount            Float
+  currency          String    @db.VarChar(3)
+  status            String    @db.VarChar(50)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime?
+
+  user              User      @relation(fields: [userId], references: [id])
+
+  @@map("purchases")
 }
 
 enum Role {
