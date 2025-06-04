@@ -16,7 +16,8 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/ngrok',
     'nuxt-cron',
-    '@nuxtjs/i18n'
+    '@nuxtjs/i18n',
+    '@vueuse/nuxt'
   ],
   site: {
     url: 'https://nuxt-pogton-starter.netlify.app/',
@@ -90,6 +91,7 @@ export default defineNuxtConfig({
   },
   components: [
     '~/components', // Auto-import components from this directory
+    '~/components/sections',
     { path: '~/components/ui', extensions: ['vue'] }, // Auto-import UI components
   ],
   colorMode: {
