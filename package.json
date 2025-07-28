@@ -37,7 +37,7 @@
     "eslint": "^9.16.0",
     "jose": "^5.9.6",
     "lucide-vue-next": "^0.462.0",
-    "nuxt": "^3.14.1592",
+    "nuxt": "^4.0.1",
     "nuxt-security": "^2.1.5",
     "pinia": "^2.2.8",
     "pinia-plugin-persistedstate": "^4.1.3",
