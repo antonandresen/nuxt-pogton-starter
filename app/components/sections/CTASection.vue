@@ -26,7 +26,7 @@
                     </NuxtLink>
                   </Button>
                   <Button size="lg" variant="outline" as-child>
-                    <NuxtLink to="/contact">
+                    <NuxtLink to="/">
                       Contact Sales
                       <MessageSquare class="ml-2 h-4 w-4" />
                     </NuxtLink>

@@ -85,7 +85,7 @@
                 </p>
               </div>
               <Button variant="outline" size="lg" as-child>
-                <NuxtLink to="/contact">Contact Sales</NuxtLink>
+                <NuxtLink to="/">Contact Sales</NuxtLink>
               </Button>
             </div>
           </CardContent>

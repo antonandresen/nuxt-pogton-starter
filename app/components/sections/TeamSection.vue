@@ -64,7 +64,7 @@ v-for="social in member.social" :key="social.platform"
               </p>
             </div>
             <Button size="lg" as-child>
-              <NuxtLink to="/careers">
+              <NuxtLink to="/">
                 View Open Positions
                 <ArrowRight class="ml-2 h-4 w-4" />
               </NuxtLink>

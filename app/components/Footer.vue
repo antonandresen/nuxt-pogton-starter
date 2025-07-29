@@ -48,8 +48,8 @@
           <ul class="space-y-3 text-sm text-muted-foreground">
             <li><a href="/about" class="hover:text-primary">About</a></li>
             <li><a href="/blog" class="hover:text-primary">Blog</a></li>
-            <li><a href="/careers" class="hover:text-primary">Careers</a></li>
-            <li><a href="/contact" class="hover:text-primary">Contact</a></li>
+            <li><a href="/" class="hover:text-primary">Careers</a></li>
+            <li><a href="/" class="hover:text-primary">Contact</a></li>
           </ul>
         </div>
 

@@ -196,12 +196,12 @@ const mainNavItems = [
       {
         title: 'Careers',
         description: 'Join our team and make an impact',
-        href: '/careers',
+        href: '/',
       },
       {
         title: 'Contact',
         description: 'Get in touch with our team',
-        href: '/contact',
+        href: '/',
       },
     ],
   },

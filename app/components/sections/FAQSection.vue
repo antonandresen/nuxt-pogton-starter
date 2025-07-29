@@ -60,7 +60,7 @@
       <div class="mt-16 text-center">
         <p class="text-muted-foreground mb-4">Still have questions?</p>
         <Button size="lg" as-child>
-          <NuxtLink to="/contact">
+          <NuxtLink to="/">
             Contact Support
             <MessageCircle class="ml-2 h-4 w-4" />
           </NuxtLink>
@@ -104,7 +104,7 @@ const faqs = [
   {
     question: 'What kind of support do you offer?',
     answer: 'We offer email support for all plans, priority support for Pro plans, and 24/7 phone support for Enterprise customers. Our average response time is under 2 hours.',
-    links: [{ text: 'Contact Support', url: '/contact' }]
+    links: [{ text: 'Contact Support', url: '/' }]
   },
   {
     question: 'How secure is my data?',
@@ -118,7 +118,7 @@ const faqs = [
   {
     question: 'Do you offer custom solutions?',
     answer: 'Yes, our Enterprise plan includes custom integration options, dedicated support, and can be tailored to your specific needs. Contact our sales team to learn more.',
-    links: [{ text: 'Contact Sales', url: '/contact' }]
+    links: [{ text: 'Contact Sales', url: '/' }]
   }
 ]
 </script>
