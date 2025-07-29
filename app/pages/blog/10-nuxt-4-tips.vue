@@ -128,7 +128,7 @@ const { initSEO } = useSEO({
   title: '10 Nuxt 4 Tips and Tricks for Better Development',
   description: 'Level up your Nuxt 4 development with these powerful tips and tricks that will improve your workflow and application performance.',
   type: 'article',
-  image: '/img/blog/10-nuxt-3-tips.jpg',
+  image: '/img/blog/10-nuxt-4-tips.jpg',
   publishedTime: '2024-03-12T00:00:00Z',
   modifiedTime: '2024-03-12T00:00:00Z',
   section: 'Web Development',
@@ -147,7 +147,7 @@ useHead({
         "@type": "BlogPosting",
         "headline": "10 Nuxt 4 Tips and Tricks for Better Development",
         "description": "Level up your Nuxt 4 development with these powerful tips and tricks that will improve your workflow and application performance.",
-        "image": "https://nuxt-pogton-starter.netlify.app/img/blog/10-nuxt-3-tips.jpg",
+        "image": "https://nuxt-pogton-starter.netlify.app/img/blog/10-nuxt-4-tips.jpg",
         "author": {
           "@type": "Person",
           "name": "Anton Andresen",
@@ -165,7 +165,7 @@ useHead({
         "dateModified": "2024-03-12T00:00:00Z",
         "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "https://nuxt-pogton-starter.netlify.app/blog/10-nuxt-3-tips"
+          "@id": "https://nuxt-pogton-starter.netlify.app/blog/10-nuxt-4-tips"
         },
         "wordCount": 1200,
         "timeRequired": "PT8M",

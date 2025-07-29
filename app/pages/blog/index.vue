@@ -191,7 +191,7 @@ const featuredPost = {
   excerpt: 'Level up your Nuxt 4 development with these powerful tips and tricks that will improve your workflow and application performance.',
   date: 'March 12, 2024',
   readTime: '8 min',
-  image: 'img/blog/10-nuxt-3-tips.jpg',
+  image: 'img/blog/10-nuxt-4-tips.jpg',
   author: {
     name: 'Anton Andresen',
     avatar: 'https://github.com/antonandresen.png',
@@ -206,7 +206,7 @@ const allPosts = [
     excerpt: 'Level up your Nuxt 4 development with these powerful tips and tricks.',
     date: 'March 12, 2024',
     readTime: '8 min',
-    image: 'img/blog/10-nuxt-3-tips.jpg',
+    image: 'img/blog/10-nuxt-4-tips.jpg',
     category: { name: 'Tips & Tricks', id: 'tips', variant: 'secondary' as const },
     author: {
       name: 'Anton Andresen',
@@ -234,7 +234,7 @@ const allPosts = [
     excerpt: 'Learn how to optimize your Nuxt 4 application for maximum performance.',
     date: 'March 8, 2024',
     readTime: '10 min',
-    image: 'img/blog/nuxt-3-performance.jpg',
+    image: 'img/blog/nuxt-4-performance.jpg',
     category: { name: 'Performance', id: 'performance', variant: 'outline' as const },
     author: {
       name: 'Anton Andresen',

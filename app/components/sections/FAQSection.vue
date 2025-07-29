@@ -1,5 +1,5 @@
 <template>
-  <section class="relative py-24 overflow-hidden">
+  <section id="faq" class="relative py-24 overflow-hidden">
     <!-- Background Elements -->
     <div class="absolute inset-0 bg-grid-pattern opacity-5" />
     <div class="absolute left-1/4 bottom-1/2 translate-y-1/2 w-1/2 aspect-square bg-secondary/5 rounded-full blur-3xl" />
