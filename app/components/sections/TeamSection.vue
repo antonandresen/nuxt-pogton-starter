@@ -86,40 +86,40 @@ const team = [
     name: 'Sarah Johnson',
     role: 'CEO & Co-founder',
     bio: 'Visionary leader with 15+ years of experience in tech. Previously led product at major tech companies.',
-    image: 'https://i.pravatar.cc/400?img=1',
+    image: 'https://i.pravatar.cc/400?img=9',
     social: [
-      { platform: 'twitter', icon: Twitter, url: 'https://twitter.com' },
-      { platform: 'linkedin', icon: Linkedin, url: 'https://linkedin.com' }
+      { platform: 'twitter', icon: Twitter, url: 'https://x.com/anton_andresen' },
+      { platform: 'linkedin', icon: Linkedin, url: 'https://www.linkedin.com/in/anton-andr%C3%A9sen-164703161/' }
     ]
   },
   {
     name: 'Michael Chen',
     role: 'CTO',
     bio: 'Tech innovator with a passion for building scalable solutions. 10+ years of engineering leadership.',
-    image: 'https://i.pravatar.cc/400?img=2',
+    image: 'https://i.pravatar.cc/400?img=11',
     social: [
-      { platform: 'github', icon: Github, url: 'https://github.com' },
-      { platform: 'linkedin', icon: Linkedin, url: 'https://linkedin.com' }
+      { platform: 'github', icon: Github, url: 'https://x.com/anton_andresen' },
+      { platform: 'linkedin', icon: Linkedin, url: 'https://www.linkedin.com/in/anton-andr%C3%A9sen-164703161/' }
     ]
   },
   {
     name: 'Emily Rodriguez',
     role: 'Head of Design',
     bio: 'Award-winning designer focused on creating beautiful and intuitive user experiences.',
-    image: 'https://i.pravatar.cc/400?img=3',
+    image: 'https://i.pravatar.cc/400?img=10',
     social: [
-      { platform: 'twitter', icon: Twitter, url: 'https://twitter.com' },
-      { platform: 'linkedin', icon: Linkedin, url: 'https://linkedin.com' }
+      { platform: 'twitter', icon: Twitter, url: 'https://x.com/anton_andresen' },
+      { platform: 'linkedin', icon: Linkedin, url: 'https://www.linkedin.com/in/anton-andr%C3%A9sen-164703161/' }
     ]
   },
   {
     name: 'David Kim',
     role: 'Head of Product',
     bio: 'Product strategist with a track record of launching successful B2B solutions.',
-    image: 'https://i.pravatar.cc/400?img=4',
+    image: 'https://i.pravatar.cc/400?img=12',
     social: [
-      { platform: 'twitter', icon: Twitter, url: 'https://twitter.com' },
-      { platform: 'linkedin', icon: Linkedin, url: 'https://linkedin.com' }
+      { platform: 'twitter', icon: Twitter, url: 'https://x.com/anton_andresen' },
+      { platform: 'linkedin', icon: Linkedin, url: 'https://www.linkedin.com/in/anton-andr%C3%A9sen-164703161/' }
     ]
   },
   {
@@ -128,18 +128,18 @@ const team = [
     bio: 'Marketing expert specializing in growth strategies and brand development.',
     image: 'https://i.pravatar.cc/400?img=5',
     social: [
-      { platform: 'twitter', icon: Twitter, url: 'https://twitter.com' },
-      { platform: 'linkedin', icon: Linkedin, url: 'https://linkedin.com' }
+      { platform: 'twitter', icon: Twitter, url: 'https://x.com/anton_andresen' },
+      { platform: 'linkedin', icon: Linkedin, url: 'https://www.linkedin.com/in/anton-andr%C3%A9sen-164703161/' }
     ]
   },
   {
     name: 'James Wilson',
     role: 'Head of Sales',
     bio: 'Sales leader with expertise in building high-performing enterprise sales teams.',
-    image: 'https://i.pravatar.cc/400?img=6',
+    image: 'https://i.pravatar.cc/400?img=13',
     social: [
-      { platform: 'twitter', icon: Twitter, url: 'https://twitter.com' },
-      { platform: 'linkedin', icon: Linkedin, url: 'https://linkedin.com' }
+      { platform: 'twitter', icon: Twitter, url: 'https://x.com/anton_andresen' },
+      { platform: 'linkedin', icon: Linkedin, url: 'https://www.linkedin.com/in/anton-andr%C3%A9sen-164703161/' }
     ]
   }
 ]
