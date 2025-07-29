@@ -38,21 +38,20 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       const userId = payload.userId as number
 
       if (import.meta.server) {
-        // Dynamically import prisma only on the server
-        const { default: prisma } = await import('../../server/utils/prisma')
+        // Dynamically import db only on the server
+        const { default: db } = await import('../../server/utils/db')
+        const { users } = await import('../../drizzle/schema')
+        const { eq } = await import('drizzle-orm')
         
         // Fetch user data from the database on the server
-        const dbUser = await prisma.user.findUnique({
-          where: { id: userId },
-          select: {
-            id: true,
-            email: true,
-            createdAt: true,
-            role: true
-          },
-        })
+        const dbUserResult = await db.select({
+          id: users.id,
+          email: users.email,
+          createdAt: users.createdAt,
+          role: users.role
+        }).from(users).where(eq(users.id, userId)).limit(1)
 
-        user.value = dbUser
+        user.value = dbUserResult[0] || null
       }
     } catch (error) {
       // Invalid token, clear the user state

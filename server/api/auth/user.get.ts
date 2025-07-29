@@ -1,19 +1,22 @@
-import { defineEventHandler } from 'h3'
+import { eq } from 'drizzle-orm'
+import { users } from '../../../drizzle/schema'
+import authMiddleware from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)
+  
+  const userId = event.context.user.userId
 
-  const userId = event.context.userId
+  const user = await db.select({
+    id: users.id,
+    email: users.email,
+    createdAt: users.createdAt,
+    role: users.role
+  }).from(users).where(eq(users.id, userId)).limit(1)
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      email: true,
-      createdAt: true,
-      role: true,
-    },
-  })
+  if (!user[0]) {
+    throw createError({ statusCode: 404, statusMessage: 'User not found' })
+  }
 
-  return { user }
+  return { user: user[0] }
 })

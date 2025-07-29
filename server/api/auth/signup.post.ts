@@ -1,34 +1,37 @@
 import { defineEventHandler, readBody, createError, setCookie } from 'h3'
 import bcrypt from 'bcryptjs'
 import * as jose from 'jose'
+import { eq } from 'drizzle-orm'
+import { users } from '../../../drizzle/schema'
 
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event)
   const config = useRuntimeConfig()
 
   // Check if user already exists
-  const existingUser = await prisma.user.findUnique({
-    where: { email },
-  })
-
-  if (existingUser) {
-    throw createError({ statusCode: 400, statusMessage: 'Email already in use' })
+  const existingUser = await db.select().from(users).where(eq(users.email, email)).limit(1)
+  
+  if (existingUser.length > 0) {
+    throw createError({ statusCode: 400, statusMessage: 'User already exists' })
   }
 
-  // Hash the password
+  // Hash password
   const hashedPassword = await bcrypt.hash(password, 10)
 
-  // Create new user
-  const user = await prisma.user.create({
-    data: {
-      email,
-      password: hashedPassword,
-    },
+  // Create user
+  const [newUser] = await db.insert(users).values({
+    email,
+    password: hashedPassword,
+  }).returning({
+    id: users.id,
+    email: users.email,
+    createdAt: users.createdAt,
+    role: users.role,
   })
 
   // Generate JWT using jose
   const secret = new TextEncoder().encode(config.jwtSecret)
-  const token = await new jose.SignJWT({ userId: user.id, role: user.role })
+  const token = await new jose.SignJWT({ userId: newUser.id, role: newUser.role })
     .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime('7d')
     .sign(secret)
@@ -42,20 +45,12 @@ export default defineEventHandler(async (event) => {
     path: '/',
   })
 
-  // Send welcome email
-  try {
-    await onesignal.sendWelcomeEmail(email, email.split('@')[0])
-  } catch (error) {
-    console.error('Failed to send welcome email:', error)
-    // Don't throw error here, as the user is already registered
-  }
-
   return {
     user: {
-      id: user.id,
-      email: user.email,
-      createdAt: user.createdAt,
-      role: user.role,
+      id: newUser.id,
+      email: newUser.email,
+      createdAt: newUser.createdAt,
+      role: newUser.role,
     },
   }
 })

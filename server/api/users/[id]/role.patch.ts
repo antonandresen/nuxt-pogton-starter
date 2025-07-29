@@ -1,29 +1,29 @@
 import { defineEventHandler, readBody, createError } from 'h3'
+import { eq } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)
   await adminMiddleware(event)
-
-  const userId = parseInt(event.context.params.id)
+  
+  const userId = getRouterParam(event, 'id')
   const { role } = await readBody(event)
 
-  if (!['USER', 'ADMIN'].includes(role)) {
-    throw createError({
-      statusCode: 400,
-      message: 'Invalid role'
-    })
+  if (!userId) {
+    throw createError({ statusCode: 400, statusMessage: 'User ID is required' })
   }
 
-  const user = await prisma.user.update({
-    where: { id: userId },
-    data: { role },
-    select: {
-      id: true,
-      email: true,
-      role: true,
-      createdAt: true
-    }
-  })
+  const [updatedUser] = await db.update(db.schemas.users)
+    .set({ role })
+    .where(eq(db.schemas.users.id, parseInt(userId)))
+    .returning({
+      id: db.schemas.users.id,
+      email: db.schemas.users.email,
+      role: db.schemas.users.role
+    })
 
-  return { user }
+  if (!updatedUser) {
+    throw createError({ statusCode: 404, statusMessage: 'User not found' })
+  }
+
+  return { user: updatedUser }
 }) 
