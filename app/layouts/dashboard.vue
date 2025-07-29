@@ -4,7 +4,7 @@
     <Sidebar side="left" class="border-r">
       <SidebarHeader>
         <div class="flex items-center gap-2">
-          <Zap class="h-6 w-6 text-primary" />
+          <img src="/logo.png" alt="Pogton Logo" class="h-8 w-8 object-contain" />
           <h2 class="text-xl font-bold">Pogton</h2>
         </div>
       </SidebarHeader>
@@ -139,7 +139,6 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { 
-  Zap, 
   LayoutDashboard, 
   Users, 
   Settings, 

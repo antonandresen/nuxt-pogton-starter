@@ -6,7 +6,7 @@
         <!-- Brand Section -->
         <div class="space-y-4">
           <div class="flex items-center space-x-2">
-            <Zap class="h-6 w-6 text-primary" />
+            <img src="/logo.png" alt="Pogton Logo" class="h-6 w-6 object-contain" />
             <span class="text-xl font-bold">Pogton</span>
           </div>
           <p class="text-sm text-muted-foreground">
@@ -94,7 +94,6 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { 
-  Zap, 
   ArrowRight, 
   Twitter, 
   Github, 

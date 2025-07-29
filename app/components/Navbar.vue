@@ -4,7 +4,7 @@
       <!-- Mobile Navigation -->
       <div class="flex items-center justify-between py-4 md:hidden">
         <NuxtLink to="/" class="flex items-center space-x-2">
-          <Zap class="h-6 w-6 text-primary" />
+          <img src="/logo.png" alt="Pogton Logo" class="h-6 w-6 object-contain" />
           <span class="text-xl font-bold">Pogton</span>
         </NuxtLink>
         <div class="flex items-center gap-2">
@@ -18,7 +18,7 @@
             </SheetTrigger>
             <SheetContent side="right" class="w-[300px] overflow-y-auto">
               <div class="flex items-center space-x-2 mb-8">
-                <Zap class="h-6 w-6 text-primary" />
+                <img src="/logo.png" alt="Pogton Logo" class="h-6 w-6 object-contain" />
                 <span class="text-xl font-bold">Pogton</span>
               </div>
               <nav class="flex flex-col gap-6">
@@ -52,7 +52,7 @@
       <!-- Desktop Navigation -->
       <div class="hidden md:flex items-center justify-between py-4">
         <NuxtLink to="/" class="flex items-center space-x-2">
-          <Zap class="h-6 w-6 text-primary" />
+          <img src="/logo.png" alt="Pogton Logo" class="h-6 w-6 object-contain" />
           <span class="text-xl font-bold">Pogton</span>
         </NuxtLink>
         
@@ -132,7 +132,7 @@ import {
 } from '@/components/ui/navigation-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
-import { Menu, Zap, LayoutDashboard } from 'lucide-vue-next'
+import { Menu, LayoutDashboard } from 'lucide-vue-next'
 
 const mainNavItems = [
   {
