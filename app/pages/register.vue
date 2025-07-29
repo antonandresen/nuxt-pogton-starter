@@ -62,6 +62,16 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Eye, EyeOff, Loader2 } from 'lucide-vue-next'
 
+// SEO Configuration
+const { initSEO } = useSEO({
+  title: 'Create Account | Pogton Starter',
+  description: 'Create your Pogton account to start building your next SaaS application with our powerful starter kit.',
+  noindex: true,
+  type: 'website'
+})
+
+initSEO()
+
 const { register } = useAuth()
 
 const form = reactive({

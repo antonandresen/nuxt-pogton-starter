@@ -42,6 +42,16 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Loader2 } from 'lucide-vue-next'
 
+// SEO Configuration
+const { initSEO } = useSEO({
+  title: 'Reset Password | Pogton Starter',
+  description: 'Forgot your password? Enter your email address and we\'ll send you a secure link to reset your password.',
+  noindex: true,
+  type: 'website'
+})
+
+initSEO()
+
 const email = ref('')
 const error = ref('')
 const isLoading = ref(false)
