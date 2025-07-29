@@ -19,6 +19,11 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@vueuse/nuxt'
   ],
+  routeRules: {
+    '/blog/**': {
+      prerender: true
+    }
+  },
   site: {
     url: 'https://nuxt-pogton-starter.netlify.app/',
     name: 'Nuxt Pogton Starter',
@@ -26,14 +31,6 @@ export default defineNuxtConfig({
     defaultLocale: 'en', // not needed if you have @nuxtjs/i18n installed
   },
   app: {
-    pageTransition: {
-      name: 'fade',
-      mode: 'out-in'
-    },
-    layoutTransition: {
-      name: 'slide',
-      mode: 'out-in'
-    },
     head: {
       titleTemplate: '%s - Pogton',
       meta: [
@@ -46,7 +43,7 @@ export default defineNuxtConfig({
         { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Pogton - Modern Nuxt.js SaaS Starter' },
         { property: 'og:description', content: 'The Ultimate Nuxt.js Starter for Your Next SaaS Project' },
-        { property: 'og:image', content: 'https://nuxt-pogton-starter.netlify.app/og-image.jpg' },
+        { property: 'og:image', content: 'https://nuxt-pogton-starter.netlify.app/og-image.png' },
         { property: 'og:url', content: 'https://nuxt-pogton-starter.netlify.app/' },
         
         // Twitter
@@ -55,13 +52,17 @@ export default defineNuxtConfig({
         { name: 'twitter:creator', content: '@antonandresen' },
         { name: 'twitter:title', content: 'Pogton - Modern Nuxt.js SaaS Starter' },
         { name: 'twitter:description', content: 'The Ultimate Nuxt.js Starter for Your Next SaaS Project' },
-        { name: 'twitter:image', content: 'https://nuxt-pogton-starter.netlify.app//og-image.jpg' },
+        { name: 'twitter:image', content: 'https://nuxt-pogton-starter.netlify.app/og-image.png' },
       ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
-        { rel: 'canonical', href: 'https://nuxt-pogton-starter.netlify.app' },
-        { rel: 'manifest', href: '/site.webmanifest' }
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon/favicon.ico' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon/apple-touch-icon.png' },
+        { rel: 'android-chrome', sizes: '192x192', href: '/favicon/android-chrome-192x192.png' },
+        { rel: 'android-chrome', sizes: '512x512', href: '/favicon/android-chrome-512x512.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon/favicon-32x32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon/favicon-16x16.png' },
+        { rel: 'manifest', href: '/favicon/site.webmanifest' },
+        { rel: 'canonical', href: 'https://nuxt-pogton-starter.netlify.app' }
       ]
     }
   },
@@ -89,6 +90,9 @@ export default defineNuxtConfig({
      */
     componentDir: './components/ui'
   },
+  css: [
+    './app/assets/css/tailwind.css'
+  ],
   components: [
     '~/components', // Auto-import components from this directory
     '~/components/sections',
@@ -130,6 +134,14 @@ export default defineNuxtConfig({
         code: 'se',
         language: 'sv-SE',
         name: 'Svenska'
+      }
+    ]
+  },
+  fonts: {
+    families: [
+      {
+        name: 'Figtree',
+        provider: 'google'
       }
     ]
   },
