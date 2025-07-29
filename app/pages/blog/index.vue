@@ -186,9 +186,9 @@ const categories = [
 ]
 
 const featuredPost = {
-  title: '10 Nuxt 3 Tips and Tricks for Better Development',
-  slug: '/blog/10-nuxt-3-tips',
-  excerpt: 'Level up your Nuxt 3 development with these powerful tips and tricks that will improve your workflow and application performance.',
+  title: '10 Nuxt 4 Tips and Tricks for Better Development',
+  slug: '/blog/10-nuxt-4-tips',
+  excerpt: 'Level up your Nuxt 4 development with these powerful tips and tricks that will improve your workflow and application performance.',
   date: 'March 12, 2024',
   readTime: '8 min',
   image: 'img/blog/10-nuxt-3-tips.jpg',
@@ -201,9 +201,9 @@ const featuredPost = {
 
 const allPosts = [
   {
-    title: '10 Nuxt 3 Tips and Tricks for Better Development',
-    slug: '/blog/10-nuxt-3-tips',
-    excerpt: 'Level up your Nuxt 3 development with these powerful tips and tricks.',
+    title: '10 Nuxt 4 Tips and Tricks for Better Development',
+    slug: '/blog/10-nuxt-4-tips',
+    excerpt: 'Level up your Nuxt 4 development with these powerful tips and tricks.',
     date: 'March 12, 2024',
     readTime: '8 min',
     image: 'img/blog/10-nuxt-3-tips.jpg',
@@ -215,9 +215,9 @@ const allPosts = [
     }
   },
   {
-    title: 'Building a Modern Blog with Nuxt 3',
-    slug: '/blog/modern-blog-nuxt-3',
-    excerpt: 'Create a beautiful and performant blog using Nuxt 3 and modern tools.',
+    title: 'Building a Modern Blog with Nuxt 4',
+    slug: '/blog/modern-blog-nuxt-4',
+    excerpt: 'Create a beautiful and performant blog using Nuxt 4 and modern tools.',
     date: 'March 10, 2024',
     readTime: '12 min',
     image: 'img/blog/modern-blog-nuxt-3.jpg',
@@ -229,9 +229,9 @@ const allPosts = [
     }
   },
   {
-    title: 'Optimizing Nuxt 3 Performance',
-    slug: '/blog/nuxt-3-performance',
-    excerpt: 'Learn how to optimize your Nuxt 3 application for maximum performance.',
+    title: 'Optimizing Nuxt 4 Performance',
+    slug: '/blog/nuxt-4-performance',
+    excerpt: 'Learn how to optimize your Nuxt 4 application for maximum performance.',
     date: 'March 8, 2024',
     readTime: '10 min',
     image: 'img/blog/nuxt-3-performance.jpg',

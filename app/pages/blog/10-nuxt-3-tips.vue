@@ -7,7 +7,7 @@
     
     <div class="container max-w-4xl mx-auto px-4 sm:px-6 relative">
       <!-- Breadcrumbs -->
-      <BlogBreadcrumbs title="10 Nuxt 3 Tips and Tricks for Better Development" />
+      <BlogBreadcrumbs title="10 Nuxt 4 Tips and Tricks for Better Development" />
 
       <!-- Article Header -->
       <header class="text-center mb-16">
@@ -20,11 +20,11 @@
         </div>
         
         <h1 class="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl mb-6">
-          10 Nuxt 3 Tips and Tricks for Better Development
+          10 Nuxt 4 Tips and Tricks for Better Development
         </h1>
         
         <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Level up your Nuxt 3 development with these powerful tips and tricks that will improve your workflow and application performance.
+          Level up your Nuxt 4 development with these powerful tips and tricks that will improve your workflow and application performance.
         </p>
       </header>
 
@@ -125,14 +125,14 @@ import BlogBreadcrumbs from '@/components/BlogBreadcrumbs.vue'
 
 // 🎯 SEO Configuration for Blog Article
 const { initSEO } = useSEO({
-  title: '10 Nuxt 3 Tips and Tricks for Better Development',
-  description: 'Level up your Nuxt 3 development with these powerful tips and tricks that will improve your workflow and application performance.',
+  title: '10 Nuxt 4 Tips and Tricks for Better Development',
+  description: 'Level up your Nuxt 4 development with these powerful tips and tricks that will improve your workflow and application performance.',
   type: 'article',
   image: '/img/blog/10-nuxt-3-tips.jpg',
   publishedTime: '2024-03-12T00:00:00Z',
   modifiedTime: '2024-03-12T00:00:00Z',
   section: 'Web Development',
-  tags: ['Nuxt 3', 'Vue.js', 'JavaScript', 'Web Development', 'Frontend', 'Tips', 'Performance'],
+  tags: ['Nuxt 4', 'Vue.js', 'JavaScript', 'Web Development', 'Frontend', 'Tips', 'Performance'],
   author: 'Anton Andresen'
 })
 initSEO()
@@ -145,8 +145,8 @@ useHead({
       innerHTML: JSON.stringify({
         "@context": "https://schema.org",
         "@type": "BlogPosting",
-        "headline": "10 Nuxt 3 Tips and Tricks for Better Development",
-        "description": "Level up your Nuxt 3 development with these powerful tips and tricks that will improve your workflow and application performance.",
+        "headline": "10 Nuxt 4 Tips and Tricks for Better Development",
+        "description": "Level up your Nuxt 4 development with these powerful tips and tricks that will improve your workflow and application performance.",
         "image": "https://nuxt-pogton-starter.netlify.app/img/blog/10-nuxt-3-tips.jpg",
         "author": {
           "@type": "Person",
@@ -169,10 +169,10 @@ useHead({
         },
         "wordCount": 1200,
         "timeRequired": "PT8M",
-        "keywords": ["Nuxt 3", "Vue.js", "JavaScript", "Web Development", "Frontend", "Tips", "Performance"],
+        "keywords": ["Nuxt 4", "Vue.js", "JavaScript", "Web Development", "Frontend", "Tips", "Performance"],
         "about": {
           "@type": "Thing",
-          "name": "Nuxt 3 Development"
+          "name": "Nuxt 4 Development"
         }
       })
     }
@@ -182,8 +182,8 @@ useHead({
 const tips = [
   {
     title: 'Auto-imports for Composables',
-    description: 'Leverage Nuxt 3 auto-import feature for cleaner code',
-    content: 'Nuxt 3 automatically imports your composables from the composables/ directory. This means you can use them anywhere in your application without explicit imports.',
+    description: 'Leverage Nuxt 4 auto-import feature for cleaner code',
+    content: 'Nuxt 4 automatically imports your composables from the composables/ directory. This means you can use them anywhere in your application without explicit imports.',
     code: `// composables/useCounter.ts
 export const useCounter = () => {
   const count = ref(0)
@@ -205,7 +205,7 @@ const { count, increment } = useCounter()`,
   {
     title: 'Server Routes with Event Handling',
     description: 'Create powerful server routes with event handling',
-    content: 'Nuxt 3 server routes can handle events and return different response types. You can use them to create powerful APIs directly in your Nuxt application.',
+    content: 'Nuxt 4 server routes can handle events and return different response types. You can use them to create powerful APIs directly in your Nuxt application.',
     code: `// server/api/events/[id].ts
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
@@ -243,7 +243,7 @@ useHead({
   {
     title: 'Middleware Shortcuts',
     description: 'Use middleware shortcuts for quick route guards',
-    content: 'Nuxt 3 provides a convenient shorthand for defining route middleware inline, perfect for simple auth checks.',
+    content: 'Nuxt 4 provides a convenient shorthand for defining route middleware inline, perfect for simple auth checks.',
     code: `// pages/admin.vue
 definePageMeta({
   middleware: auth => {

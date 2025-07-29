@@ -7,7 +7,7 @@
     
     <div class="container max-w-4xl mx-auto px-4 sm:px-6 relative">
       <!-- Breadcrumbs -->
-      <BlogBreadcrumbs title="Building a Modern Blog with Nuxt 3" />
+      <BlogBreadcrumbs title="Building a Modern Blog with Nuxt 4" />
 
       <!-- Article Header -->
       <header class="text-center mb-16">
@@ -20,11 +20,11 @@
         </div>
         
         <h1 class="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl mb-6">
-          Building a Modern Blog with Nuxt 3
+          Building a Modern Blog with Nuxt 4
         </h1>
         
         <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Create a beautiful, performant, and SEO-friendly blog using Nuxt 3, TailwindCSS, and modern web development practices.
+          Create a beautiful, performant, and SEO-friendly blog using Nuxt 4, TailwindCSS, and modern web development practices.
         </p>
       </header>
 
@@ -126,8 +126,8 @@ import BlogBreadcrumbs from '@/components/BlogBreadcrumbs.vue'
 const sections = [
   {
     title: 'Project Setup and Configuration',
-    description: 'Setting up a new Nuxt 3 project with essential dependencies',
-    content: 'Lets start by creating a new Nuxt 3 project and configuring it with the necessary dependencies for building a modern blog.',
+    description: 'Setting up a new Nuxt 4 project with essential dependencies',
+    content: 'Lets start by creating a new Nuxt 4 project and configuring it with the necessary dependencies for building a modern blog.',
     code: `npx nuxi init modern-blog
 cd modern-blog
 
@@ -317,8 +317,8 @@ export default defineNuxtConfig({
   },
   {
     title: 'Performance Optimization',
-    description: 'Optimizing your Nuxt 3 application for maximum performance',
-    content: 'Implement key performance optimizations to ensure your Nuxt 3 blog loads quickly and runs smoothly.',
+    description: 'Optimizing your Nuxt 4 application for maximum performance',
+    content: 'Implement key performance optimizations to ensure your Nuxt 4 blog loads quickly and runs smoothly.',
     code: `// nuxt.config.ts
 export default defineNuxtConfig({
   experimental: {

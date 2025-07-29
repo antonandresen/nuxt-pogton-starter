@@ -2,7 +2,7 @@
 
 <div align="center">
   <h3>The Ultimate Nuxt.js Starter for Your Next SaaS Project</h3>
-  <p>Built with Nuxt 3, Vue 3, TypeScript, and Tailwind CSS</p>
+  <p>Built with Nuxt 4, Vue 3, TypeScript, and Tailwind CSS</p>
 </div>
 
 <div align="center">
@@ -29,7 +29,7 @@
 
 ## ✨ Features
 
-- 🚀 [Nuxt 3](https://nuxt.com/) - The Intuitive Vue Framework
+- 🚀 [Nuxt 4](https://nuxt.com/) - The Intuitive Vue Framework
 - 🎨 [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework
 - 🎯 [TypeScript](https://www.typescriptlang.org/) - Type safety and better DX
 - 🎭 [shadcn-vue](https://www.shadcn-vue.com/) - Beautiful UI components
@@ -104,7 +104,7 @@ The theme can be customized in `tailwind.config.ts`:
 
 ## 📚 Documentation
 
-- [Nuxt 3 Documentation](https://nuxt.com/docs)
+- [Nuxt 4 Documentation](https://nuxt.com/docs)
 - [Vue 3 Documentation](https://vuejs.org/guide/introduction.html)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [shadcn-vue Documentation](https://www.shadcn-vue.com/)

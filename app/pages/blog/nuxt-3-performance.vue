@@ -7,7 +7,7 @@
     
     <div class="container max-w-4xl mx-auto px-4 sm:px-6 relative">
       <!-- Breadcrumbs -->
-      <BlogBreadcrumbs title="Optimizing Nuxt 3 Performance" />
+      <BlogBreadcrumbs title="Optimizing Nuxt 4 Performance" />
 
       <!-- Article Header -->
       <header class="text-center mb-16">
@@ -20,11 +20,11 @@
         </div>
         
         <h1 class="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl mb-6">
-          Optimizing Nuxt 3 Performance
+          Optimizing Nuxt 4 Performance
         </h1>
         
         <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Learn how to optimize your Nuxt 3 application for maximum performance, from initial load time to runtime optimization.
+          Learn how to optimize your Nuxt 4 application for maximum performance, from initial load time to runtime optimization.
         </p>
       </header>
 
