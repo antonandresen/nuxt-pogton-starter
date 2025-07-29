@@ -3,4 +3,3 @@
 
 [build.environment]
   NODE_VERSION = "22"
-  NPM_FLAGS = "--prefix=/dev/null" 
