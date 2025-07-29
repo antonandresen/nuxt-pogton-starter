@@ -26,9 +26,17 @@
       <div class="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent" />
       <div class="relative h-full flex items-center justify-center p-8">
         <div class="space-y-6 max-w-lg">
-          <div class="relative h-40 w-40 mx-auto">
+          <div class="relative h-48 w-48 mx-auto">
             <div class="absolute inset-0 rounded-full bg-primary/20 animate-pulse" />
-            <Zap class="h-full w-full text-primary" />
+            <div class="absolute inset-4 flex items-center justify-center">
+              <NuxtImg 
+                src="/logo.png" 
+                alt="Pogton Starter Logo" 
+                class="h-32 w-32 object-contain"
+                width="128"
+                height="128"
+              />
+            </div>
           </div>
           <p class="text-xl sm:text-2xl font-medium text-foreground italic">
             {{ quote }}
@@ -40,7 +48,6 @@
 </template>
 
 <script setup lang="ts">
-import { Zap } from 'lucide-vue-next'
 
 defineProps<{
   title: string

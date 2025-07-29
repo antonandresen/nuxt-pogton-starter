@@ -33,8 +33,11 @@ export default defineNuxtConfig({
     'nuxt-cron',
     '@nuxtjs/i18n',
     '@nuxtjs/tailwindcss',
-    'nuxt-schema-org', // Enhanced schema.org support
-    '@nuxtjs/fontaine', // Font optimization for performance
+    // Enhanced schema.org support
+    'nuxt-schema-org',
+    // Font optimization for performance
+    '@nuxtjs/fontaine',
+    '@nuxt/image'
   ],
 
   // Enhanced route rules for SEO and performance
