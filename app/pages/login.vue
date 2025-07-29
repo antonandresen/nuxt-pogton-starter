@@ -72,7 +72,7 @@ import { Eye, EyeOff, Loader2 } from 'lucide-vue-next'
 
 // SEO Configuration
 const { initSEO } = useSEO({
-  title: 'Sign In | Pogton Starter',
+  title: 'Sign In',
   description: 'Sign in to your Pogton account to access your dashboard and manage your SaaS application.',
   noindex: true,
   type: 'website'

@@ -64,7 +64,7 @@ import { Eye, EyeOff, Loader2 } from 'lucide-vue-next'
 
 // SEO Configuration
 const { initSEO } = useSEO({
-  title: 'Create Account | Pogton Starter',
+  title: 'Create Account',
   description: 'Create your Pogton account to start building your next SaaS application with our powerful starter kit.',
   noindex: true,
   type: 'website'

@@ -33,30 +33,36 @@ export const useSEO = (config: SEOConfig = {}) => {
 
   // 🚀 ENHANCED META TAGS
   const setMeta = () => {
-    // Basic SEO Meta
+    // Set title using useHead to work with titleTemplate
+    if (seoConfig.title) {
+      useHead({
+        title: seoConfig.title
+      })
+    }
+    
+    // Basic SEO Meta (without title - handled above)
     useSeoMeta({
-      title: seoConfig.title,
       description: seoConfig.description,
       robots: seoConfig.noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
       
-      // Open Graph
-      ogTitle: seoConfig.title,
+      // Open Graph (use full title with siteName for OG)
+      ogTitle: seoConfig.title ? `${seoConfig.title} · ${seoConfig.siteName}` : seoConfig.siteName,
       ogDescription: seoConfig.description,
       ogImage: seoConfig.image,
-      ogImageAlt: seoConfig.title,
+      ogImageAlt: seoConfig.title || seoConfig.siteName,
       ogUrl: seoConfig.url,
       ogType: seoConfig.type,
       ogSiteName: seoConfig.siteName,
       ogLocale: seoConfig.locale,
       
-      // Twitter
+      // Twitter (use full title with siteName for Twitter)
       twitterCard: 'summary_large_image',
       twitterSite: '@anton_andresen',
       twitterCreator: '@anton_andresen',
-      twitterTitle: seoConfig.title,
+      twitterTitle: seoConfig.title ? `${seoConfig.title} · ${seoConfig.siteName}` : seoConfig.siteName,
       twitterDescription: seoConfig.description,
       twitterImage: seoConfig.image,
-      twitterImageAlt: seoConfig.title,
+      twitterImageAlt: seoConfig.title || seoConfig.siteName,
       
       // Article specific
       ...(seoConfig.type === 'article' && {
