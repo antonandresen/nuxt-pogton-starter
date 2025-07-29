@@ -45,6 +45,7 @@
     "nuxt": "^4.0.1",
     "nuxt-og-image": "^5.1.9",
     "nuxt-security": "^2.1.5",
+    "pg": "^8.16.3",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.4.1",
     "radix-vue": "^1.9.10",
