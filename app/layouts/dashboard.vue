@@ -82,15 +82,6 @@
                 </SidebarMenuButton>
               </NuxtLink>
             </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <NuxtLink to="/admin/cv">
-                <SidebarMenuButton>
-                  <FileText class="h-4 w-4 mr-2" />
-                  Resume
-                </SidebarMenuButton>
-              </NuxtLink>
-            </SidebarMenuItem>
             
           </SidebarMenu>
         </SidebarGroup>
