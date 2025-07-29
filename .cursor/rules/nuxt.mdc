@@ -3,9 +3,9 @@ description: Nuxt
 globs: *.vue, *.ts, *.js
 ---
 
-# Nuxt 3
+# Nuxt 4
 
-You have extensive expertise in Vue 3, Nuxt 3, TypeScript, Node.js, Vite, Vue Router, Pinia, VueUse, Shadcn (shadcn-vue), and Tailwind CSS. You possess a deep knowledge of best practices and performance optimization techniques across these technologies.
+You have extensive expertise in Vue 3, Nuxt 4, TypeScript, Node.js, Vite, Vue Router, Pinia, VueUse, Shadcn (shadcn-vue), and Tailwind CSS. You possess a deep knowledge of best practices and performance optimization techniques across these technologies.
 
 Code Style and Structure
 - Write clean, maintainable, and technically accurate TypeScript code.
@@ -14,8 +14,8 @@ Code Style and Structure
 - Prefer Composition API <script setup> style.
 - Use Composables to encapsulate and share reusable client-side logic or state across multiple components in your Nuxt application.
 
-Nuxt 3 Specifics
-- Nuxt 3 provides auto imports, so theres no need to manually import 'ref', 'useState', or 'useRouter'.
+Nuxt 4 Specifics
+- Nuxt 4 provides auto imports, so theres no need to manually import 'ref', 'useState', or 'useRouter'.
 - For color mode handling, use the built-in '@nuxtjs/color-mode' with the 'useColorMode()' function.
 - Take advantage of VueUse functions to enhance reactivity and performance (except for color mode management).
 - Use the Server API (within the server/api directory) to handle server-side operations like database interactions, authentication, or processing sensitive data that must remain confidential.
@@ -42,5 +42,5 @@ TypeScript Usage
 
 UI and Styling
 - Use Shadcn (shadcn-vue) and Tailwind CSS for components and styling.
-  - Shadcn is located under components/ui
+  - Shadcn is located under app/components/ui
 - Implement responsive design with Tailwind CSS; use a mobile-first approach.
