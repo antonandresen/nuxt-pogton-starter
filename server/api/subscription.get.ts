@@ -1,6 +1,6 @@
 import { defineEventHandler } from 'h3'
-import authMiddleware from '~/server/utils/auth'
-import prisma from '~/server/utils/prisma'
+import { eq, and, or, gt, desc, isNull } from 'drizzle-orm'
+import authMiddleware from '../utils/auth'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)
@@ -8,27 +8,26 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Get user's subscription
-    const subscription = await prisma.subscription.findFirst({
-      where: {
-        userId,
-        deletedAt: null,
-        OR: [
-          { status: 'active' },
-          { status: 'trialing' },
-          {
-            AND: [
-              { status: 'canceled' },
-              { currentPeriodEnd: { gt: new Date() } }
-            ]
-          }
-        ]
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    })
+    const subscription = await db.select()
+      .from(db.schemas.subscriptions)
+      .where(
+        and(
+          eq(db.schemas.subscriptions.userId, userId),
+          isNull(db.schemas.subscriptions.deletedAt),
+          or(
+            eq(db.schemas.subscriptions.status, 'active'),
+            eq(db.schemas.subscriptions.status, 'trialing'),
+            and(
+              eq(db.schemas.subscriptions.status, 'canceled'),
+              gt(db.schemas.subscriptions.currentPeriodEnd, new Date())
+            )
+          )
+        )
+      )
+      .orderBy(desc(db.schemas.subscriptions.createdAt))
+      .limit(1)
 
-    return subscription
+    return subscription[0] || null
   } catch (error) {
     console.error('Failed to fetch subscription:', error)
     throw createError({

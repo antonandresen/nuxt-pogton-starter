@@ -1,8 +1,8 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import Stripe from 'stripe'
-import prisma from '~/server/utils/prisma'
-import { syncSubscription } from '~/server/utils/stripe'
-import { sendSubscriptionConfirmation } from '~/server/utils/onesignal'
+import { eq } from 'drizzle-orm'
+import { syncSubscription } from '../../utils/stripe'
+import { sendSubscriptionConfirmation } from '../../utils/onesignal'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET
@@ -41,11 +41,11 @@ export default defineEventHandler(async (event) => {
         const customerId = subscription.customer as string
 
         // Get user's email
-        const user = await prisma.user.findUnique({
-          where: { stripeCustomerId: customerId },
-          select: { email: true }
-        })
+        const userResult = await db.select({
+          email: db.schemas.users.email
+        }).from(db.schemas.users).where(eq(db.schemas.users.stripeCustomerId, customerId)).limit(1)
 
+        const user = userResult[0]
         if (!user?.email) {
           console.error('User not found for customer:', customerId)
           break

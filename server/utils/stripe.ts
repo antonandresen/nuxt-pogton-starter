@@ -1,15 +1,17 @@
 import Stripe from 'stripe'
-import prisma from './prisma'
+import { eq } from 'drizzle-orm'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
 export async function syncSubscription(customerId: string) {
   try {
     // Get user by stripe customer ID
-    const user = await prisma.user.findUnique({
-      where: { stripeCustomerId: customerId }
-    })
+    const userResult = await db.select()
+      .from(db.schemas.users)
+      .where(eq(db.schemas.users.stripeCustomerId, customerId))
+      .limit(1)
 
+    const user = userResult[0]
     if (!user) {
       throw new Error('User not found')
     }
@@ -23,9 +25,8 @@ export async function syncSubscription(customerId: string) {
     })
 
     // Delete existing subscription if exists
-    await prisma.subscription.deleteMany({
-      where: { userId: user.id }
-    })
+    await db.delete(db.schemas.subscriptions)
+      .where(eq(db.schemas.subscriptions.userId, user.id))
 
     if (stripeSubscriptions.data.length === 0) {
       return null
@@ -35,8 +36,8 @@ export async function syncSubscription(customerId: string) {
     const paymentMethod = subscription.default_payment_method as Stripe.PaymentMethod
 
     // Create new subscription record
-    const newSubscription = await prisma.subscription.create({
-      data: {
+    const [newSubscription] = await db.insert(db.schemas.subscriptions)
+      .values({
         userId: user.id,
         stripeSubscriptionId: subscription.id,
         status: subscription.status,
@@ -48,8 +49,8 @@ export async function syncSubscription(customerId: string) {
         paymentMethodLast4: paymentMethod?.card?.last4 || null,
         createdAt: new Date(),
         updatedAt: new Date()
-      }
-    })
+      })
+      .returning()
 
     return newSubscription
   } catch (error) {

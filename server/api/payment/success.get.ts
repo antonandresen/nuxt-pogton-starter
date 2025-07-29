@@ -1,8 +1,8 @@
 import { defineEventHandler, getQuery, createError } from 'h3'
 import Stripe from 'stripe'
-import authMiddleware from '~/server/utils/auth'
-import prisma from '~/server/utils/prisma'
-import { syncSubscription } from '~/server/utils/stripe'
+import { eq } from 'drizzle-orm'
+import authMiddleware from '../../utils/auth'
+import { syncSubscription } from '../../utils/stripe'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)
@@ -31,11 +31,11 @@ export default defineEventHandler(async (event) => {
     }
 
     // Get user
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { stripeCustomerId: true }
-    })
+    const userResult = await db.select({
+      stripeCustomerId: db.schemas.users.stripeCustomerId
+    }).from(db.schemas.users).where(eq(db.schemas.users.id, userId)).limit(1)
 
+    const user = userResult[0]
     if (!user?.stripeCustomerId) {
       throw new Error('User has no Stripe customer ID')
     }

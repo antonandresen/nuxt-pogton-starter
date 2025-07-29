@@ -1,9 +1,24 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { fileURLToPath } from 'node:url'
+
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
+  compatibilityDate: '2025-07-29',
   devtools: { enabled: true },
+  ssr: true,
+  
+  // Vite configuration for shadcn/ui component aliases
+  vite: {
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./app', import.meta.url)),
+        '@/components': fileURLToPath(new URL('./app/components', import.meta.url)),
+        '@/lib': fileURLToPath(new URL('./lib', import.meta.url)),
+      }
+    }
+  },
+  
+  // 🚀 GIGA ULTRA SEO MODULES
   modules: [
-    '@nuxtjs/tailwindcss',
     'shadcn-nuxt',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
@@ -17,54 +32,179 @@ export default defineNuxtConfig({
     '@nuxtjs/ngrok',
     'nuxt-cron',
     '@nuxtjs/i18n',
-    '@vueuse/nuxt'
+    '@nuxtjs/tailwindcss',
+    'nuxt-schema-org', // Enhanced schema.org support
+    '@nuxtjs/fontaine', // Font optimization for performance
   ],
+
+  // Enhanced route rules for SEO and performance
+  routeRules: {
+    '/blog/**': {
+      prerender: true,
+      robots: 'index, follow'
+    },
+    '/': { 
+      prerender: true,
+      robots: 'index, follow'
+    },
+    '/about': { 
+      prerender: true,
+      robots: 'index, follow'
+    },
+    '/pricing': { 
+      prerender: true,
+      robots: 'index, follow'
+    },
+    '/dashboard/**': { 
+      robots: 'noindex, nofollow'
+    },
+    '/admin/**': { 
+      robots: 'noindex, nofollow'
+    }
+  },
+
+  // 🎯 ULTRA SEO SITE CONFIG
   site: {
     url: 'https://nuxt-pogton-starter.netlify.app/',
-    name: 'Nuxt Pogton Starter',
-    description: 'Nuxt Pogton Starter',
-    defaultLocale: 'en', // not needed if you have @nuxtjs/i18n installed
+    name: 'Pogton Starter',
+    description: 'The Ultimate Nuxt.js SaaS Starter Kit with Authentication, Payments, and Modern UI',
+    defaultLocale: 'en',
+    identity: {
+      type: 'Organization'
+    },
+    twitter: '@anton_andresen',
+    trailingSlash: false
   },
-  app: {
-    pageTransition: {
-      name: 'fade',
-      mode: 'out-in'
-    },
-    layoutTransition: {
-      name: 'slide',
-      mode: 'out-in'
-    },
-    head: {
-      titleTemplate: '%s - Pogton',
-      meta: [
-        { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'The Ultimate Nuxt.js Starter for Your Next SaaS Project' },
-        { name: 'theme-color', content: '#ffffff' },
-        
-        // Open Graph
-        { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Pogton - Modern Nuxt.js SaaS Starter' },
-        { property: 'og:description', content: 'The Ultimate Nuxt.js Starter for Your Next SaaS Project' },
-        { property: 'og:image', content: 'https://nuxt-pogton-starter.netlify.app/og-image.jpg' },
-        { property: 'og:url', content: 'https://nuxt-pogton-starter.netlify.app/' },
-        
-        // Twitter
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: '@antonandresen' },
-        { name: 'twitter:creator', content: '@antonandresen' },
-        { name: 'twitter:title', content: 'Pogton - Modern Nuxt.js SaaS Starter' },
-        { name: 'twitter:description', content: 'The Ultimate Nuxt.js Starter for Your Next SaaS Project' },
-        { name: 'twitter:image', content: 'https://nuxt-pogton-starter.netlify.app//og-image.jpg' },
-      ],
-      link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
-        { rel: 'canonical', href: 'https://nuxt-pogton-starter.netlify.app' },
-        { rel: 'manifest', href: '/site.webmanifest' }
+
+  // 🔧 ADVANCED SEO CONFIGURATION
+  seo: {
+    automaticDefaults: true,
+    fallbackTitle: false,
+    redirectToCanonicalSiteUrl: true
+  },
+
+  // 🗺️ COMPREHENSIVE SITEMAP
+  sitemap: {
+    exclude: [
+      '/dashboard/**',
+      '/admin/**',
+      '/forgot-password',
+      '/reset-password'
+    ]
+  },
+
+  // 🤖 ROBOTS.TXT OPTIMIZATION
+  robots: {
+    disallow: ['/dashboard', '/admin', '/api'],
+    allow: ['/api/og-image'],
+    sitemap: 'https://nuxt-pogton-starter.netlify.app/sitemap.xml'
+  },
+
+  // 📊 SCHEMA.ORG STRUCTURED DATA
+  schemaOrg: {
+    identity: {
+      type: 'Organization',
+      name: 'Pogton Starter',
+      url: 'https://nuxt-pogton-starter.netlify.app',
+      logo: 'https://nuxt-pogton-starter.netlify.app/logo.png',
+      sameAs: [
+        'https://x.com/anton_andresen'
       ]
     }
   },
+
+  // 🚀 PERFORMANCE & CORE WEB VITALS OPTIMIZATION
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: 'en'
+      },
+      titleTemplate: '%s %separator %siteName',
+      templateParams: {
+        siteName: 'Pogton Starter',
+        separator: '·'
+      },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'The Ultimate Nuxt.js SaaS Starter Kit with Authentication, Stripe Payments, Modern UI Components, and Production-Ready Features' },
+        { name: 'theme-color', content: '#3b82f6' },
+        { name: 'format-detection', content: 'telephone=no' },
+        { name: 'msapplication-TileColor', content: '#3b82f6' },
+        
+        // Enhanced Open Graph
+        { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: 'Pogton Starter' },
+        { property: 'og:locale', content: 'en_US' },
+        { property: 'og:title', content: 'Pogton Starter · The Ultimate Nuxt.js SaaS Starter Kit' },
+        { property: 'og:description', content: 'Build your next SaaS with Nuxt 4, Drizzle ORM, Tailwind CSS, Stripe Payments, and Authentication. Production-ready starter kit.' },
+        { property: 'og:image', content: 'https://nuxt-pogton-starter.netlify.app/og-image.png' },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
+        { property: 'og:image:alt', content: 'Pogton Starter - Ultimate Nuxt.js SaaS Kit' },
+        { property: 'og:url', content: 'https://nuxt-pogton-starter.netlify.app/' },
+        
+        // Enhanced Twitter Cards
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:site', content: '@anton_andresen' },
+        { name: 'twitter:creator', content: '@anton_andresen' },
+        { name: 'twitter:title', content: 'Pogton Starter · The Ultimate Nuxt.js SaaS Starter Kit' },
+        { name: 'twitter:description', content: 'Build your next SaaS with Nuxt 4, Drizzle ORM, Tailwind CSS, Stripe Payments, and Authentication. Production-ready starter kit.' },
+        { name: 'twitter:image', content: 'https://nuxt-pogton-starter.netlify.app/og-image.png' },
+        { name: 'twitter:image:alt', content: 'Pogton Starter - Ultimate Nuxt.js SaaS Kit' },
+
+        // Additional SEO Meta
+        { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' },
+        { name: 'googlebot', content: 'index, follow' },
+        { name: 'author', content: 'Pogton Technologies' },
+        { name: 'publisher', content: 'Pogton Technologies' },
+        { name: 'keywords', content: 'Nuxt.js, SaaS, Starter Kit, Vue.js, Tailwind CSS, Drizzle ORM, Stripe, Authentication, TypeScript' }
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon/favicon.ico' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon/apple-touch-icon.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon/favicon-32x32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon/favicon-16x16.png' },
+        { rel: 'manifest', href: '/favicon/site.webmanifest' },
+        { rel: 'mask-icon', href: '/favicon/safari-pinned-tab.svg', color: '#3b82f6' },
+        // Canonical and alternate links handled by SEO module
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        // DNS prefetch for performance
+        { rel: 'dns-prefetch', href: 'https://api.stripe.com' },
+        { rel: 'dns-prefetch', href: 'https://checkout.stripe.com' }
+      ]
+    }
+  },
+
+  // 🎨 FONT OPTIMIZATION
+  fonts: {
+    families: [
+      {
+        name: 'Figtree',
+        provider: 'google',
+        weights: [300, 400, 500, 600, 700],
+        display: 'swap',
+        preload: true
+      }
+    ],
+    defaults: {
+      weights: [400, 600],
+      styles: ['normal'],
+      subsets: ['latin']
+    }
+  },
+
+  // ⚡ NITRO OPTIMIZATION FOR PERFORMANCE
+  nitro: {
+    compressPublicAssets: true,
+    prerender: {
+      crawlLinks: true,
+      routes: ['/sitemap.xml']
+    }
+  },
+
+  // 🎯 RUNTIME CONFIG
   runtimeConfig: {
     JWT_SECRET: process.env.JWT_SECRET,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
@@ -78,6 +218,24 @@ export default defineNuxtConfig({
       STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
     }
   },
+
+  // 🔒 SECURITY HEADERS
+  security: {
+    headers: {
+      crossOriginEmbedderPolicy: false,
+      contentSecurityPolicy: {
+        'default-src': ["'self'"],
+        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https://js.stripe.com'],
+        'style-src': ["'self'", "'unsafe-inline'"],
+        'img-src': ["'self'", 'data:', 'https:'],
+        'connect-src': ["'self'", 'https://api.stripe.com'],
+        'frame-src': ["'self'", 'https://js.stripe.com', 'https://hooks.stripe.com'],
+        'font-src': ["'self'", 'data:', 'https://fonts.gstatic.com'],
+      }
+    }
+  },
+
+  // �� MODULES FOR COMPONENTS AND UTILITIES
   shadcn: {
     /**
      * Prefix for all the imported component
@@ -85,10 +243,13 @@ export default defineNuxtConfig({
     prefix: '',
     /**
      * Directory that the component lives in.
-     * @default "./components/ui"
+     * @default "./app/components/ui"
      */
-    componentDir: './components/ui'
+    componentDir: './app/components/ui'
   },
+  css: [
+    './app/assets/css/tailwind.css'
+  ],
   components: [
     '~/components', // Auto-import components from this directory
     '~/components/sections',
@@ -102,11 +263,6 @@ export default defineNuxtConfig({
   ngrok: {
     authtoken: process.env.NGROK_AUTH_TOKEN,
     domain: 'splendid-admittedly-falcon.ngrok-free.app' // Put your ngrok URL here
-  },
-  robots: {
-    enabled: true,  
-    allow: ['*'],
-    groups: []
   },
   cron: {
     jobsDir: 'cron'
@@ -132,19 +288,5 @@ export default defineNuxtConfig({
         name: 'Svenska'
       }
     ]
-  },
-  security: {
-    headers: {
-      crossOriginEmbedderPolicy: false,
-      contentSecurityPolicy: {
-        'default-src': ["'self'"],
-        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https://js.stripe.com'],
-        'style-src': ["'self'", "'unsafe-inline'"],
-        'img-src': ["'self'", 'data:', 'https:'],
-        'connect-src': ["'self'", 'https://api.stripe.com'],
-        'frame-src': ["'self'", 'https://js.stripe.com', 'https://hooks.stripe.com'],
-        'font-src': ["'self'", 'data:', 'https://fonts.gstatic.com'],
-      }
-    }
   }
 })

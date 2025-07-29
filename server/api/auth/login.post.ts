@@ -1,23 +1,22 @@
 import { defineEventHandler, readBody, createError, setCookie } from 'h3'
-import prisma from '~/server/utils/prisma'
 import bcrypt from 'bcryptjs'
 import * as jose from 'jose'
+import { eq } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event)
   const config = useRuntimeConfig()
 
-  const user = await prisma.user.findUnique({
-    where: { email },
-  })
+  const user = await db.select().from(db.schemas.users).where(eq(db.schemas.users.email, email)).limit(1)
+  const foundUser = user[0]
 
-  if (!user || !(await bcrypt.compare(password, user.password))) {
+  if (!foundUser || !(await bcrypt.compare(password, foundUser.password))) {
     throw createError({ statusCode: 401, statusMessage: 'Invalid email or password' })
   }
 
   // Generate JWT using jose
   const secret = new TextEncoder().encode(config.jwtSecret)
-  const token = await new jose.SignJWT({ userId: user.id, role: user.role })
+  const token = await new jose.SignJWT({ userId: foundUser.id, role: foundUser.role })
     .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime('7d')
     .sign(secret)
@@ -33,10 +32,10 @@ export default defineEventHandler(async (event) => {
 
   return {
     user: {
-      id: user.id,
-      email: user.email,
-      createdAt: user.createdAt,
-      role: user.role,
+      id: foundUser.id,
+      email: foundUser.email,
+      createdAt: foundUser.createdAt,
+      role: foundUser.role,
     },
   }
 })
