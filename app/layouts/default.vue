@@ -1,4 +1,5 @@
 <template>
+  <Toaster />
   <div>
     <Navbar />
     <NuxtPage />
