@@ -1,8 +1,5 @@
 import { defineEventHandler, getQuery, createError } from 'h3'
 import Stripe from 'stripe'
-import authMiddleware from '~/server/utils/auth'
-import prisma from '~/server/utils/prisma'
-import { syncSubscription } from '~/server/utils/stripe'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)

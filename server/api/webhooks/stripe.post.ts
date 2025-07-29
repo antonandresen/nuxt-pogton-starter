@@ -1,8 +1,5 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import Stripe from 'stripe'
-import prisma from '~/server/utils/prisma'
-import { syncSubscription } from '~/server/utils/stripe'
-import { sendSubscriptionConfirmation } from '~/server/utils/onesignal'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET

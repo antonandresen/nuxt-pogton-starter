@@ -1,8 +1,5 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import Stripe from 'stripe'
-import authMiddleware from '~/server/utils/auth'
-import prisma from '~/server/utils/prisma'
-import { sendPurchaseConfirmation } from '~/server/utils/onesignal'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)

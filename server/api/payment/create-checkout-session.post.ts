@@ -1,7 +1,5 @@
 import Stripe from 'stripe'
 import { defineEventHandler, readBody } from 'h3'
-import authMiddleware from '~/server/utils/auth'
-import prisma from '~/server/utils/prisma'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)

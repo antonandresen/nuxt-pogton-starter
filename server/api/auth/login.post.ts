@@ -1,5 +1,4 @@
 import { defineEventHandler, readBody, createError, setCookie } from 'h3'
-import prisma from '~/server/utils/prisma'
 import bcrypt from 'bcryptjs'
 import * as jose from 'jose'
 

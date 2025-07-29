@@ -39,7 +39,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
       if (import.meta.server) {
         // Dynamically import prisma only on the server
-        const { default: prisma } = await import('~/server/utils/prisma')
+        const { default: prisma } = await import('../../server/utils/prisma')
         
         // Fetch user data from the database on the server
         const dbUser = await prisma.user.findUnique({

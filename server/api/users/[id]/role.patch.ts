@@ -1,7 +1,4 @@
 import { defineEventHandler, readBody, createError } from 'h3'
-import prisma from '~/server/utils/prisma'
-import authMiddleware from '~/server/utils/auth'
-import adminMiddleware from '~/server/utils/admin'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)
