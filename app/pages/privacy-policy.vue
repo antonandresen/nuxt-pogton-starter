@@ -72,4 +72,34 @@
   definePageMeta({
     layout: 'default'
   })
+
+  // 🎯 SEO Configuration
+  const { initSEO } = useSEO({
+    title: 'Privacy Policy - Pogton Starter',
+    description: 'Learn how we collect, use, and protect your personal information. Our comprehensive privacy policy explains our data practices.',
+    type: 'website'
+  })
+  initSEO()
+
+  // WebPage Schema for legal document
+  useHead({
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Privacy Policy",
+          "description": "Privacy policy for Pogton Starter platform",
+          "url": "https://nuxt-pogton-starter.netlify.app/privacy-policy",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "Pogton Starter",
+            "url": "https://nuxt-pogton-starter.netlify.app"
+          },
+          "dateModified": "2024-01-01T00:00:00Z"
+        })
+      }
+    ]
+  })
   </script>

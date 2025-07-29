@@ -113,6 +113,43 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Heart, Lightbulb, Users, Lock, Rocket, Code } from 'lucide-vue-next'
 import TeamSection from '~/components/sections/TeamSection.vue'
 
+// 🎯 SEO Configuration
+const { initSEO } = useSEO({
+  title: 'About Us - Building the Future of Web Development',
+  description: 'Learn about our mission to make web development more accessible and enjoyable. Meet our team of passionate developers, designers, and creators.',
+  type: 'website',
+  image: '/img/team/team-photo.jpg'
+})
+initSEO()
+
+// Organization Schema
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Pogton",
+        "description": "Building the Future of Web Development",
+        "url": "https://nuxt-pogton-starter.netlify.app/about",
+        "logo": "https://nuxt-pogton-starter.netlify.app/logo.png",
+        "foundingDate": "2024",
+        "founders": [
+          {
+            "@type": "Person",
+            "name": "Anton Andresen",
+            "jobTitle": "Founder & Lead Developer"
+          }
+        ],
+        "sameAs": [
+          "https://x.com/anton_andresen"
+        ]
+      })
+    }
+  ]
+})
+
 const stats = ref([
   { value: '10K+', label: 'Active Users' },
   { value: '50+', label: 'Team Members' },

@@ -138,6 +138,42 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
+// 🎯 SEO Configuration
+const { initSEO } = useSEO({
+  title: 'Blog & Resources - Nuxt Development Tips & Tutorials',
+  description: 'Discover tips, tutorials, and insights about Nuxt development and web technologies. Learn from our expert team and improve your development skills.',
+  type: 'website'
+})
+initSEO()
+
+// Blog Schema
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "Pogton Blog",
+        "description": "Tips, tutorials, and insights about Nuxt development and web technologies",
+        "url": "https://nuxt-pogton-starter.netlify.app/blog",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Pogton",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://nuxt-pogton-starter.netlify.app/logo.png"
+          }
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https://nuxt-pogton-starter.netlify.app/blog"
+        }
+      })
+    }
+  ]
+})
+
 const selectedCategory = ref('all')
 const page = ref(1)
 const postsPerPage = 6

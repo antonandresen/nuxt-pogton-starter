@@ -62,4 +62,34 @@
   definePageMeta({
     layout: 'default'
   })
+
+  // 🎯 SEO Configuration
+  const { initSEO } = useSEO({
+    title: 'Terms of Service - Pogton Starter',
+    description: 'Read our terms of service to understand your rights and responsibilities when using Pogton Starter platform.',
+    type: 'website'
+  })
+  initSEO()
+
+  // WebPage Schema for legal document
+  useHead({
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Terms of Service",
+          "description": "Terms of service for Pogton Starter platform",
+          "url": "https://nuxt-pogton-starter.netlify.app/terms-of-service",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "Pogton Starter",
+            "url": "https://nuxt-pogton-starter.netlify.app"
+          },
+          "dateModified": "2024-01-01T00:00:00Z"
+        })
+      }
+    ]
+  })
   </script>

@@ -110,6 +110,68 @@ import { Switch } from '@/components/ui/switch'
 import { Separator } from '@/components/ui/separator'
 import FAQSection from '@/components/sections/FAQSection.vue'
 
+// 🎯 SEO Configuration
+const { initSEO } = useSEO({
+  title: 'Pricing - Simple, Transparent Plans',
+  description: 'Choose the perfect plan for your needs. Simple and transparent pricing with no hidden fees. Start your free trial today.',
+  type: 'website'
+})
+initSEO()
+
+// Product Schema for pricing plans
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Pogton Starter",
+        "description": "The Ultimate Nuxt.js SaaS Starter Kit",
+        "url": "https://nuxt-pogton-starter.netlify.app/pricing",
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "Starter Plan",
+            "price": "29",
+            "priceCurrency": "USD",
+            "priceValidUntil": "2025-12-31",
+            "availability": "https://schema.org/InStock",
+            "seller": {
+              "@type": "Organization",
+              "name": "Pogton"
+            }
+          },
+          {
+            "@type": "Offer", 
+            "name": "Professional Plan",
+            "price": "79",
+            "priceCurrency": "USD",
+            "priceValidUntil": "2025-12-31",
+            "availability": "https://schema.org/InStock",
+            "seller": {
+              "@type": "Organization",
+              "name": "Pogton"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "Enterprise Plan", 
+            "price": "199",
+            "priceCurrency": "USD",
+            "priceValidUntil": "2025-12-31",
+            "availability": "https://schema.org/InStock",
+            "seller": {
+              "@type": "Organization",
+              "name": "Pogton"
+            }
+          }
+        ]
+      })
+    }
+  ]
+})
+
 const isAnnual = ref(false)
 
 interface Plan {

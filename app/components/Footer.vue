@@ -14,7 +14,7 @@
           </p>
           <div class="flex space-x-4">
             <Button variant="ghost" size="icon">
-              <a href="https://twitter.com/antonandresen" target="_blank" rel="noopener noreferrer">
+              <a href="https://x.com/anton_andresen" target="_blank" rel="noopener noreferrer">
                 <Twitter class="h-5 w-5" />
               </a>
             </Button>
@@ -24,7 +24,7 @@
               </a>
             </Button>
             <Button variant="ghost" size="icon">
-              <a href="https://linkedin.com/in/antonandresen" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.linkedin.com/in/anton-andr%C3%A9sen-164703161/" target="_blank" rel="noopener noreferrer">
                 <Linkedin class="h-5 w-5" />
               </a>
             </Button>

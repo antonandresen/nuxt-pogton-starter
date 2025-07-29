@@ -88,7 +88,7 @@
           <CardContent class="p-6">
             <div class="flex items-center gap-4">
               <Avatar class="h-12 w-12">
-                <AvatarImage src="https://github.com/antonandresen.png" />
+                <AvatarImage src="https://avatars.githubusercontent.com/u/17236766?v=4" />
                 <AvatarFallback>AA</AvatarFallback>
               </Avatar>
               <div>
