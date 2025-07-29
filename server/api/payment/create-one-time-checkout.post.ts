@@ -1,5 +1,7 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import Stripe from 'stripe'
+import { eq } from 'drizzle-orm'
+import authMiddleware from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)
@@ -12,11 +14,12 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Get user's stripe customer ID if it exists
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { stripeCustomerId: true, email: true }
-    })
+    const userResult = await db.select({
+      stripeCustomerId: db.schemas.users.stripeCustomerId,
+      email: db.schemas.users.email
+    }).from(db.schemas.users).where(eq(db.schemas.users.id, userId)).limit(1)
 
+    const user = userResult[0]
     if (!user) {
       throw new Error('User not found')
     }
@@ -33,13 +36,12 @@ export default defineEventHandler(async (event) => {
       })
       
       // Save the customer ID to the user record
-      await prisma.user.update({
-        where: { id: userId },
-        data: { 
+      await db.update(db.schemas.users)
+        .set({ 
           stripeCustomerId: customer.id,
           updatedAt: new Date()
-        }
-      })
+        })
+        .where(eq(db.schemas.users.id, userId))
 
       customerId = customer.id
     }

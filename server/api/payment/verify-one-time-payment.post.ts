@@ -1,5 +1,7 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import Stripe from 'stripe'
+import { eq } from 'drizzle-orm'
+import authMiddleware from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)
@@ -19,11 +21,11 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Get user's email
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { email: true }
-    })
+    const userResult = await db.select({
+      email: db.schemas.users.email
+    }).from(db.schemas.users).where(eq(db.schemas.users.id, userId)).limit(1)
 
+    const user = userResult[0]
     if (!user?.email) {
       throw new Error('User email not found')
     }
@@ -54,8 +56,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // Store the purchase in the database
-    const purchase = await prisma.purchase.create({
-      data: {
+    const [purchase] = await db.insert(db.schemas.purchases)
+      .values({
         userId,
         stripeSessionId: session.id,
         stripePaymentId: paymentIntentId,
@@ -64,8 +66,8 @@ export default defineEventHandler(async (event) => {
         amount: session.amount_total ? session.amount_total / 100 : 0,
         currency: session.currency?.toUpperCase() || 'USD',
         status: session.payment_status,
-      }
-    })
+      })
+      .returning()
 
     // Send purchase confirmation email
     try {

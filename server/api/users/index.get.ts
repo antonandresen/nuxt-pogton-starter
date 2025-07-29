@@ -1,5 +1,4 @@
 import { desc } from 'drizzle-orm'
-import { users } from '../../../drizzle/schema'
 import authMiddleware from '../../utils/auth'
 import adminMiddleware from '../../utils/admin'
 
@@ -9,11 +8,11 @@ export default defineEventHandler(async (event) => {
 
   try {
     const usersList = await db.select({
-      id: users.id,
-      email: users.email,
-      createdAt: users.createdAt,
-      role: users.role
-    }).from(users).orderBy(desc(users.createdAt))
+      id: db.schemas.users.id,
+      email: db.schemas.users.email,
+      createdAt: db.schemas.users.createdAt,
+      role: db.schemas.users.role
+    }).from(db.schemas.users).orderBy(desc(db.schemas.users.createdAt))
 
     return {
       users: usersList

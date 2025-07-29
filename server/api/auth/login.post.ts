@@ -2,13 +2,12 @@ import { defineEventHandler, readBody, createError, setCookie } from 'h3'
 import bcrypt from 'bcryptjs'
 import * as jose from 'jose'
 import { eq } from 'drizzle-orm'
-import { users } from '../../../drizzle/schema'
 
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event)
   const config = useRuntimeConfig()
 
-  const user = await db.select().from(users).where(eq(users.email, email)).limit(1)
+  const user = await db.select().from(db.schemas.users).where(eq(db.schemas.users.email, email)).limit(1)
   const foundUser = user[0]
 
   if (!foundUser || !(await bcrypt.compare(password, foundUser.password))) {

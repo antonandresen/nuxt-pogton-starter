@@ -1,11 +1,10 @@
-import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import * as dotenv from 'dotenv'
+import { eq } from 'drizzle-orm'
+import db from '../utils/db'
 
 // Load environment variables
 dotenv.config()
-
-const prisma = new PrismaClient()
 
 // Password requirements
 const PASSWORD_MIN_LENGTH = 8
@@ -46,21 +45,23 @@ async function createFirstAdmin() {
     const { ADMIN_EMAIL, ADMIN_PASSWORD } = await validateEnvironmentVariables()
 
     // Check if any admin exists
-    const existingAdmin = await prisma.user.findFirst({
-      where: { role: 'ADMIN' }
-    })
+    const existingAdminResult = await db.select()
+      .from(db.schemas.users)
+      .where(eq(db.schemas.users.role, 'ADMIN'))
+      .limit(1)
 
-    if (existingAdmin) {
+    if (existingAdminResult.length > 0) {
       console.log('⚠️  Admin user already exists!')
       return
     }
 
     // Check if email is already in use
-    const existingUser = await prisma.user.findUnique({
-      where: { email: ADMIN_EMAIL }
-    })
+    const existingUserResult = await db.select()
+      .from(db.schemas.users)
+      .where(eq(db.schemas.users.email, ADMIN_EMAIL))
+      .limit(1)
 
-    if (existingUser) {
+    if (existingUserResult.length > 0) {
       throw new Error('Email is already in use')
     }
 
@@ -69,12 +70,10 @@ async function createFirstAdmin() {
     const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10)
     
     console.log('👤 Creating admin user...')
-    await prisma.user.create({
-      data: {
-        email: ADMIN_EMAIL,
-        password: hashedPassword,
-        role: 'ADMIN'
-      }
+    await db.insert(db.schemas.users).values({
+      email: ADMIN_EMAIL,
+      password: hashedPassword,
+      role: 'ADMIN'
     })
 
     console.log('✅ Admin user created successfully!')
@@ -87,7 +86,8 @@ async function createFirstAdmin() {
     }
     process.exit(1)
   } finally {
-    await prisma.$disconnect()
+    // Drizzle connections are automatically managed, no need to disconnect
+    process.exit(0)
   }
 }
 
