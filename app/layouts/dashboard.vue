@@ -1,5 +1,4 @@
 <template>
-  <Toaster />
   <SidebarProvider>
     <Sidebar side="left" class="border-r">
       <SidebarHeader>
