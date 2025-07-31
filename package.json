@@ -44,6 +44,7 @@
     "drizzle-orm": "^0.44.4",
     "embla-carousel-vue": "^8.5.1",
     "eslint": "^9.16.0",
+    "gsap": "^3.13.0",
     "jose": "^5.9.6",
     "lucide-vue-next": "^0.462.0",
     "nuxt": "^4.0.1",

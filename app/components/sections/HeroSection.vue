@@ -11,38 +11,48 @@
       <div class="grid gap-12 lg:grid-cols-2 lg:gap-8 items-center">
         <!-- Left Column -->
         <div class="max-w-2xl">
-          <h1 class="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
-            <span class="block text-primary">Modern Solutions</span>
-            <span class="block">for Modern Teams</span>
-          </h1>
-          <p class="mt-6 text-xl text-muted-foreground max-w-xl">
-            Empower your team with cutting-edge tools designed for today's workplace. 
-            Streamline workflows, boost productivity, and drive success.
-          </p>
-          <div class="mt-10 flex items-center gap-4">
-            <Button size="lg" as-child>
-              <NuxtLink to="/register">Get Started</NuxtLink>
-            </Button>
-            <Button size="lg" variant="outline" as-child>
-              <NuxtLink to="#features">Learn More</NuxtLink>
-            </Button>
-          </div>
+          <FadeContent :duration="800" :delay="200" :threshold="0.1">
+            <h1 class="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+              <span class="block text-primary">Modern Solutions</span>
+              <span class="block">for Modern Teams</span>
+            </h1>
+          </FadeContent>
+          
+          <FadeContent :duration="800" :delay="300" :threshold="0.1">
+            <p class="mt-6 text-xl text-muted-foreground max-w-xl">
+              Empower your team with cutting-edge tools designed for today's workplace. 
+              Streamline workflows, boost productivity, and drive success.
+            </p>
+          </FadeContent>
+          
+          <FadeContent :duration="800" :delay="400" :threshold="0.1">
+            <div class="mt-10 flex items-center gap-4">
+              <Button size="lg" as-child>
+                <NuxtLink to="/register">Get Started</NuxtLink>
+              </Button>
+              <Button size="lg" variant="outline" as-child>
+                <NuxtLink to="#features">Learn More</NuxtLink>
+              </Button>
+            </div>
+          </FadeContent>
           
           <!-- Stats -->
-          <div class="mt-12 grid grid-cols-3 gap-8 border-t pt-8">
-            <div>
-              <p class="text-4xl font-bold">98%</p>
-              <p class="mt-2 text-sm text-muted-foreground">Customer Satisfaction</p>
+          <FadeContent :duration="800" :delay="500" :threshold="0.1">
+            <div class="mt-12 grid grid-cols-3 gap-8 border-t pt-8">
+              <div>
+                <p class="text-4xl font-bold">98%</p>
+                <p class="mt-2 text-sm text-muted-foreground">Customer Satisfaction</p>
+              </div>
+              <div>
+                <p class="text-4xl font-bold">24/7</p>
+                <p class="mt-2 text-sm text-muted-foreground">Expert Support</p>
+              </div>
+              <div>
+                <p class="text-4xl font-bold">10k+</p>
+                <p class="mt-2 text-sm text-muted-foreground">Active Users</p>
+              </div>
             </div>
-            <div>
-              <p class="text-4xl font-bold">24/7</p>
-              <p class="mt-2 text-sm text-muted-foreground">Expert Support</p>
-            </div>
-            <div>
-              <p class="text-4xl font-bold">10k+</p>
-              <p class="mt-2 text-sm text-muted-foreground">Active Users</p>
-            </div>
-          </div>
+          </FadeContent>
         </div>
 
         <!-- Right Column - Feature Preview -->
@@ -52,7 +62,8 @@
           <div class="absolute -right-4 -bottom-4 h-72 w-72 bg-secondary/10 rounded-full blur-3xl" />
           
           <!-- Feature Preview Card -->
-          <div class="relative rounded-2xl border bg-card p-8 shadow-2xl">
+          <FadeContent :duration="1000" :delay="300" :threshold="0.1">
+            <div class="relative rounded-2xl border bg-card p-8 shadow-2xl">
             <div class="flex items-center justify-between mb-8">
               <div class="space-y-1">
                 <h3 class="font-semibold">Dashboard Overview</h3>
@@ -87,35 +98,40 @@
               </div>
             </div>
           </div>
+          </FadeContent>
 
           <!-- Floating Elements -->
-          <div class="absolute -right-4 top-16 md:top-24 lg:right-0 xl:-right-4 w-max">
-            <div class="rounded-xl border bg-card p-4 shadow-lg">
-              <div class="flex items-center gap-3">
-                <div class="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Check class="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <p class="text-sm font-medium">Task Completed</p>
-                  <p class="text-xs text-muted-foreground">Just now</p>
+          <FadeContent :duration="800" :delay="600" :threshold="0.1">
+            <div class="absolute -right-4 top-16 md:top-24 lg:right-0 xl:-right-4 w-max">
+              <div class="rounded-xl border bg-card p-4 shadow-lg">
+                <div class="flex items-center gap-3">
+                  <div class="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Check class="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium">Task Completed</p>
+                    <p class="text-xs text-muted-foreground">Just now</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </FadeContent>
           
-          <div class="absolute -left-4 bottom-16 md:bottom-24 lg:left-0 xl:-left-4 w-max">
-            <div class="rounded-xl border bg-card p-4 shadow-lg">
-              <div class="flex items-center gap-3">
-                <div class="h-8 w-8 rounded-full bg-green-500/20 flex items-center justify-center">
-                  <TrendingUp class="h-4 w-4 text-green-500" />
-                </div>
-                <div>
-                  <p class="text-sm font-medium">Revenue Up</p>
-                  <p class="text-xs text-muted-foreground">+12.3% this week</p>
+          <FadeContent :duration="800" :delay="700" :threshold="0.1">
+            <div class="absolute -left-4 bottom-16 md:bottom-24 lg:left-0 xl:-left-4 w-max">
+              <div class="rounded-xl border bg-card p-4 shadow-lg">
+                <div class="flex items-center gap-3">
+                  <div class="h-8 w-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <TrendingUp class="h-4 w-4 text-green-500" />
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium">Revenue Up</p>
+                    <p class="text-xs text-muted-foreground">+12.3% this week</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </FadeContent>
         </div>
       </div>
     </div>
@@ -126,6 +142,7 @@
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Check, TrendingUp } from 'lucide-vue-next'
+import FadeContent from '@/components/Animations/FadeContent.vue'
 
 
 onMounted(() => {

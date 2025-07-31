@@ -7,22 +7,30 @@
 
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
-      <div class="text-center max-w-3xl mx-auto mb-16">
-        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-          Features that empower your team
-        </h2>
-        <p class="mt-4 text-lg text-muted-foreground">
-          Everything you need to manage your business, boost productivity, and grow faster.
-        </p>
-      </div>
+      <FadeContent :duration="800" :delay="200" :threshold="0.1">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+            Features that empower your team
+          </h2>
+          <p class="mt-4 text-lg text-muted-foreground">
+            Everything you need to manage your business, boost productivity, and grow faster.
+          </p>
+        </div>
+      </FadeContent>
 
       <!-- Feature Grid -->
       <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <Card
-v-for="feature in features" :key="feature.title" 
-          class="group relative overflow-hidden transition-all hover:shadow-lg"
-          :class="{ 'md:col-span-2 lg:col-span-1': feature.highlight }"
+        <FadeContent
+          v-for="(feature, index) in features" 
+          :key="feature.title"
+          :duration="800"
+          :delay="400 + (index * 100)"
+          :threshold="0.1"
         >
+          <Card
+            class="group relative overflow-hidden transition-all hover:shadow-lg"
+            :class="{ 'md:col-span-2 lg:col-span-1': feature.highlight }"
+          >
         <CardHeader>
             <div class="flex items-center gap-4">
               <div class="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -52,20 +60,23 @@ v-for="feature in features" :key="feature.title"
 
           <!-- Decorative corner gradient -->
           <div class="absolute right-0 top-0 -z-10 h-24 w-24 rounded-bl-full bg-primary/10 transition-all group-hover:scale-150" />
-      </Card>
+          </Card>
+        </FadeContent>
       </div>
 
       <!-- Integration Logos -->
-      <div class="mt-24">
-        <p class="text-center text-sm font-medium text-muted-foreground mb-8">
-          Trusted by leading companies worldwide
-        </p>
-        <div class="grid grid-cols-2 gap-8 md:grid-cols-6 lg:grid-cols-5">
-          <div v-for="i in 5" :key="i" class="col-span-1 flex justify-center">
-            <div class="h-8 w-32 rounded bg-muted" />
+      <FadeContent :duration="800" :delay="1000" :threshold="0.1">
+        <div class="mt-24">
+          <p class="text-center text-sm font-medium text-muted-foreground mb-8">
+            Trusted by leading companies worldwide
+          </p>
+          <div class="grid grid-cols-2 gap-8 md:grid-cols-6 lg:grid-cols-5">
+            <div v-for="i in 5" :key="i" class="col-span-1 flex justify-center">
+              <div class="h-8 w-32 rounded bg-muted" />
+            </div>
           </div>
         </div>
-      </div>
+      </FadeContent>
     </div>
   </section>
 </template>
@@ -83,6 +94,7 @@ import {
 } from 'lucide-vue-next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import FadeContent from '@/components/Animations/FadeContent.vue'
 
 const features = [
   {

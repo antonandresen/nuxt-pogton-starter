@@ -6,18 +6,21 @@
     
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative">
       <!-- Section Header -->
-      <div class="text-center max-w-3xl mx-auto mb-16">
-        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-          Loved by teams worldwide
-        </h2>
-        <p class="mt-4 text-lg text-muted-foreground">
-          Don't just take our word for it. Here's what our customers have to say.
-        </p>
-      </div>
+      <FadeContent :duration="800" :delay="200" :threshold="0.1">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+            Loved by teams worldwide
+          </h2>
+          <p class="mt-4 text-lg text-muted-foreground">
+            Don't just take our word for it. Here's what our customers have to say.
+          </p>
+        </div>
+      </FadeContent>
 
       <!-- Featured Testimonial -->
-      <div class="mb-16">
-        <Card class="relative overflow-hidden">
+      <FadeContent :duration="800" :delay="400" :threshold="0.1">
+        <div class="mb-16">
+          <Card class="relative overflow-hidden">
           <CardContent class="p-8">
             <div class="grid gap-8 md:grid-cols-2 items-center">
               <!-- Quote -->
@@ -52,11 +55,19 @@
             </div>
           </CardContent>
         </Card>
-      </div>
+        </div>
+      </FadeContent>
 
       <!-- Testimonial Grid -->
       <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <Card v-for="testimonial in testimonials" :key="testimonial.author" class="relative group">
+        <FadeContent
+          v-for="(testimonial, index) in testimonials" 
+          :key="testimonial.author"
+          :duration="800"
+          :delay="600 + (index * 100)"
+          :threshold="0.1"
+        >
+          <Card class="relative group">
           <CardContent class="p-6 flex flex-col h-full">
             <!-- Rating -->
             <div class="flex gap-1 mb-4">
@@ -87,18 +98,21 @@
             <!-- Decorative corner gradient -->
             <div class="absolute right-0 top-0 -z-10 h-24 w-24 rounded-bl-full bg-primary/5 transition-all group-hover:scale-150" />
           </CardContent>
-        </Card>
+          </Card>
+        </FadeContent>
       </div>
 
       <!-- CTA -->
-      <div class="mt-16 text-center">
-        <Button size="lg" as-child>
-          <NuxtLink to="/register">
-            Join these happy teams
-            <ArrowRight class="ml-2 h-4 w-4" />
-          </NuxtLink>
-        </Button>
-      </div>
+      <FadeContent :duration="800" :delay="1200" :threshold="0.1">
+        <div class="mt-16 text-center">
+          <Button size="lg" as-child>
+            <NuxtLink to="/register">
+              Join these happy teams
+              <ArrowRight class="ml-2 h-4 w-4" />
+            </NuxtLink>
+          </Button>
+        </div>
+      </FadeContent>
     </div>
   </section>
 </template>
@@ -108,6 +122,7 @@ import { Quote, Star, ArrowRight } from 'lucide-vue-next'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import FadeContent from '@/components/Animations/FadeContent.vue'
 
 const featuredStats = [
   { value: '500%', label: 'Productivity Increase' },
