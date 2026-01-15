@@ -16,7 +16,6 @@ export default defineNuxtConfig({
         '@': fileURLToPath(new URL('./app', import.meta.url)),
         '@/components': fileURLToPath(new URL('./app/components', import.meta.url)),
         '@/lib': fileURLToPath(new URL('./lib', import.meta.url)),
-        '~/convex': fileURLToPath(new URL('./convex', import.meta.url)),
       }
     }
   },
