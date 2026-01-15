@@ -15,7 +15,12 @@
       </div>
     </div>
 
-    <div class="rounded-md border">
+    <!-- Loading state -->
+    <div v-if="isLoading" class="flex justify-center py-8">
+      <div class="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
+    </div>
+
+    <div v-else class="rounded-md border">
       <Table>
         <TableHeader>
           <TableRow>
@@ -26,13 +31,13 @@
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-for="user in filteredUsers" :key="user.id">
+          <TableRow v-for="user in filteredUsers" :key="user._id">
             <TableCell>{{ user.email }}</TableCell>
             <TableCell>
               <Select 
                 v-if="currentUser?.role === 'ADMIN'"
                 :model-value="user.role"
-                @update:model-value="(role) => updateUserRole(user.id, role)"
+                @update:model-value="(role) => updateUserRole(user._id, role as 'USER' | 'ADMIN')"
               >
                 <SelectTrigger class="w-[120px]">
                   <SelectValue />
@@ -58,76 +63,52 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Search, MoreHorizontal } from 'lucide-vue-next'
 import { useToast } from '@/components/ui/toast/use-toast'
+import { useConvexQuery, useConvexMutation, api, type Id } from '~/composables/useConvex'
 
-interface User {
-  id: number
-  email: string
-  role: 'USER' | 'ADMIN'
-  createdAt: string
-}
-
-const users = ref<User[]>([])
 const searchQuery = ref('')
 const { toast } = useToast()
 const { user: currentUser } = useAuth()
 
-const fetchUsers = async () => {
-  try {
-    const response = await $fetch('/api/users')
-    users.value = response.users
-  } catch (error: any) {
-    toast({
-      title: 'Failed to fetch users',
-      description: error.data?.message || 'Please try again later',
-      variant: 'destructive'
-    })
-  }
-}
+// Real-time users list from Convex - auto-updates when data changes!
+const { data: users, isLoading } = useConvexQuery(api.users.list, {})
 
-const updateUserRole = async (userId: number, role: 'USER' | 'ADMIN') => {
+// Mutation for updating user role
+const updateRoleMutation = useConvexMutation(api.users.updateRole)
+
+const updateUserRole = async (userId: Id<"users">, role: 'USER' | 'ADMIN') => {
   try {
-    await $fetch(`/api/users/${userId}/role`, {
-      method: 'PATCH',
-      body: { role }
-    })
+    await updateRoleMutation.mutate({ id: userId, role })
     toast({
       title: 'User role updated successfully',
-      variant: 'success'
+      variant: 'default'
     })
-    await fetchUsers() // Refresh the list
+    // No need to refetch - Convex updates in real-time!
   } catch (error: any) {
     toast({
       title: 'Failed to update user role',
-      description: error.data?.message || 'Please try again later',
+      description: error.message || 'Please try again later',
       variant: 'destructive'
     })
   }
 }
 
 const filteredUsers = computed(() => {
+  if (!users.value) return []
   if (!searchQuery.value) return users.value
   
-  return users.value.filter(user => 
+  return users.value.filter((user: { email: string; _id: Id<"users">; role: string; createdAt: number }) => 
     user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
   )
 })
 
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString()
+const formatDate = (timestamp: number) => {
+  return new Date(timestamp).toLocaleDateString()
 }
-
-onMounted(() => {
-  fetchUsers()
-})
 </script>
-
-<style>
-
-</style>

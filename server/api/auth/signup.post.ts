@@ -1,16 +1,16 @@
 import { defineEventHandler, readBody, createError, setCookie } from 'h3'
 import bcrypt from 'bcryptjs'
 import * as jose from 'jose'
-import { eq } from 'drizzle-orm'
+import { convex, api } from '../../utils/convex'
 
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event)
   const config = useRuntimeConfig()
 
   // Check if user already exists
-  const existingUser = await db.select().from(db.schemas.users).where(eq(db.schemas.users.email, email)).limit(1)
+  const existingUser = await convex.query(api.users.getByEmail, { email })
   
-  if (existingUser.length > 0) {
+  if (existingUser) {
     throw createError({ statusCode: 400, statusMessage: 'User already exists' })
   }
 
@@ -18,19 +18,21 @@ export default defineEventHandler(async (event) => {
   const hashedPassword = await bcrypt.hash(password, 10)
 
   // Create user
-  const [newUser] = await db.insert(db.schemas.users).values({
+  const userId = await convex.mutation(api.users.create, {
     email,
     password: hashedPassword,
-  }).returning({
-    id: db.schemas.users.id,
-    email: db.schemas.users.email,
-    createdAt: db.schemas.users.createdAt,
-    role: db.schemas.users.role,
   })
 
+  // Get the created user
+  const newUser = await convex.query(api.users.getById, { id: userId })
+
+  if (!newUser) {
+    throw createError({ statusCode: 500, statusMessage: 'Failed to create user' })
+  }
+
   // Generate JWT using jose
-  const secret = new TextEncoder().encode(config.jwtSecret)
-  const token = await new jose.SignJWT({ userId: newUser.id, role: newUser.role })
+  const secret = new TextEncoder().encode(config.JWT_SECRET)
+  const token = await new jose.SignJWT({ userId: newUser._id, role: newUser.role })
     .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime('7d')
     .sign(secret)
@@ -46,9 +48,9 @@ export default defineEventHandler(async (event) => {
 
   return {
     user: {
-      id: newUser.id,
+      id: newUser._id,
       email: newUser.email,
-      createdAt: newUser.createdAt,
+      createdAt: new Date(newUser.createdAt),
       role: newUser.role,
     },
   }

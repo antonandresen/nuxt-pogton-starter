@@ -1,8 +1,9 @@
-import { eq } from 'drizzle-orm'
 import type { H3Event } from 'h3'
+import { convex, api } from './convex'
+import type { Id } from '../../convex/_generated/dataModel'
 
 export default async function adminMiddleware(event: H3Event) {
-  const userId = event.context.userId
+  const userId = event.context.userId as Id<"users"> | undefined
   
   if (!userId) {
     throw createError({
@@ -11,15 +12,12 @@ export default async function adminMiddleware(event: H3Event) {
     })
   }
 
-  const userResult = await db.select({
-    role: db.schemas.users.role
-  }).from(db.schemas.users).where(eq(db.schemas.users.id, userId)).limit(1)
+  const user = await convex.query(api.users.getById, { id: userId })
 
-  const user = userResult[0]
   if (!user || user.role !== 'ADMIN') {
     throw createError({
       statusCode: 403,
       message: 'Forbidden: Admin access required'
     })
   }
-} 
+}

@@ -1,10 +1,10 @@
 import { computed } from 'vue'
 
 interface User {
-  id: number
+  id: string
   email: string
   role: 'USER' | 'ADMIN'
-  createdAt: string
+  createdAt: Date
 }
 
 export function useAuth() {
@@ -18,7 +18,7 @@ export function useAuth() {
         body: { email, password },
         credentials: 'include',
       })
-      user.value = response.user
+      user.value = response.user as User
       return response
     } catch (error: any) {
       throw new Error(error.data?.message || error.message)
@@ -32,7 +32,7 @@ export function useAuth() {
         body: { email, password },
         credentials: 'include',
       })
-      user.value = response.user
+      user.value = response.user as User
       return response
     } catch (error: any) {
       throw new Error(error.data?.message || error.message)

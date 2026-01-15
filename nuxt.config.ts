@@ -6,6 +6,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: true,
   
+  // Ignore Convex generated files from triggering restarts
+  watch: ['!convex/_generated/**'],
+  
   // Vite configuration for shadcn/ui component aliases
   vite: {
     resolve: {
@@ -13,6 +16,7 @@ export default defineNuxtConfig({
         '@': fileURLToPath(new URL('./app', import.meta.url)),
         '@/components': fileURLToPath(new URL('./app/components', import.meta.url)),
         '@/lib': fileURLToPath(new URL('./lib', import.meta.url)),
+        '~/convex': fileURLToPath(new URL('./convex', import.meta.url)),
       }
     }
   },
@@ -204,6 +208,14 @@ export default defineNuxtConfig({
     prerender: {
       crawlLinks: true,
       routes: ['/sitemap.xml']
+    },
+    alias: {
+      '~/convex': fileURLToPath(new URL('./convex', import.meta.url)),
+      'convex/_generated/api': fileURLToPath(new URL('./convex/_generated/api', import.meta.url)),
+      'convex/_generated/dataModel': fileURLToPath(new URL('./convex/_generated/dataModel', import.meta.url))
+    },
+    externals: {
+      inline: [/^convex/]
     }
   },
 
@@ -216,9 +228,11 @@ export default defineNuxtConfig({
     ONESIGNAL_API_KEY: process.env.ONESIGNAL_API_KEY,
     ONESIGNAL_EMAIL_FROM_NAME: process.env.ONESIGNAL_EMAIL_FROM_NAME,
     ONESIGNAL_EMAIL_FROM_ADDRESS: process.env.ONESIGNAL_EMAIL_FROM_ADDRESS,
+    CONVEX_URL: process.env.CONVEX_URL,
 
     public: {
       STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
+      CONVEX_URL: process.env.CONVEX_URL,
     }
   },
 
@@ -238,7 +252,7 @@ export default defineNuxtConfig({
     }
   },
 
-  // �� MODULES FOR COMPONENTS AND UTILITIES
+  // MODULES FOR COMPONENTS AND UTILITIES
   shadcn: {
     /**
      * Prefix for all the imported component

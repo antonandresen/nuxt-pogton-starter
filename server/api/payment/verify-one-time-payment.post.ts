@@ -1,11 +1,12 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import Stripe from 'stripe'
-import { eq } from 'drizzle-orm'
 import authMiddleware from '../../utils/auth'
+import { convex, api } from '../../utils/convex'
+import type { Id } from '../../../convex/_generated/dataModel'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)
-  const userId = event.context.userId
+  const userId = event.context.userId as Id<"users">
 
   const body = await readBody(event)
   const { sessionId } = body
@@ -20,12 +21,9 @@ export default defineEventHandler(async (event) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
   try {
-    // Get user's email
-    const userResult = await db.select({
-      email: db.schemas.users.email
-    }).from(db.schemas.users).where(eq(db.schemas.users.id, userId)).limit(1)
+    // Get user
+    const user = await convex.query(api.users.getById, { id: userId })
 
-    const user = userResult[0]
     if (!user?.email) {
       throw new Error('User email not found')
     }
@@ -56,27 +54,25 @@ export default defineEventHandler(async (event) => {
     }
 
     // Store the purchase in the database
-    const [purchase] = await db.insert(db.schemas.purchases)
-      .values({
-        userId,
-        stripeSessionId: session.id,
-        stripePaymentId: paymentIntentId,
-        productId: lineItem.price?.id || 'unknown',
-        productName: lineItem.description || 'Unknown Product',
-        amount: session.amount_total ? session.amount_total / 100 : 0,
-        currency: session.currency?.toUpperCase() || 'USD',
-        status: session.payment_status,
-      })
-      .returning()
+    const purchaseId = await convex.mutation(api.purchases.create, {
+      userId,
+      stripeSessionId: session.id,
+      stripePaymentId: paymentIntentId,
+      productId: lineItem.price?.id || 'unknown',
+      productName: lineItem.description || 'Unknown Product',
+      amount: session.amount_total ? session.amount_total / 100 : 0,
+      currency: session.currency?.toUpperCase() || 'USD',
+      status: session.payment_status,
+    })
 
     // Send purchase confirmation email
     try {
       await sendPurchaseConfirmation(user.email, {
-        productName: purchase.productName,
-        amount: purchase.amount,
-        currency: purchase.currency,
-        date: purchase.createdAt,
-        paymentId: purchase.stripePaymentId
+        productName: lineItem.description || 'Unknown Product',
+        amount: session.amount_total ? session.amount_total / 100 : 0,
+        currency: session.currency?.toUpperCase() || 'USD',
+        date: new Date(),
+        paymentId: paymentIntentId
       })
     } catch (error) {
       console.error('Failed to send purchase confirmation email:', error)
@@ -86,12 +82,12 @@ export default defineEventHandler(async (event) => {
     return {
       success: true,
       purchase: {
-        id: purchase.id,
-        productName: purchase.productName,
-        amount: purchase.amount,
-        currency: purchase.currency,
-        date: purchase.createdAt,
-        paymentId: purchase.stripePaymentId
+        id: purchaseId,
+        productName: lineItem.description || 'Unknown Product',
+        amount: session.amount_total ? session.amount_total / 100 : 0,
+        currency: session.currency?.toUpperCase() || 'USD',
+        date: new Date(),
+        paymentId: paymentIntentId
       }
     }
   } catch (error) {
@@ -101,4 +97,4 @@ export default defineEventHandler(async (event) => {
       message: 'Failed to verify payment'
     })
   }
-}) 
+})

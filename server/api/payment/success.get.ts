@@ -1,12 +1,13 @@
 import { defineEventHandler, getQuery, createError } from 'h3'
 import Stripe from 'stripe'
-import { eq } from 'drizzle-orm'
 import authMiddleware from '../../utils/auth'
 import { syncSubscription } from '../../utils/stripe'
+import { convex, api } from '../../utils/convex'
+import type { Id } from '../../../convex/_generated/dataModel'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)
-  const userId = event.context.userId
+  const userId = event.context.userId as Id<"users">
 
   const query = getQuery(event)
   const sessionId = query.session_id as string
@@ -31,11 +32,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // Get user
-    const userResult = await db.select({
-      stripeCustomerId: db.schemas.users.stripeCustomerId
-    }).from(db.schemas.users).where(eq(db.schemas.users.id, userId)).limit(1)
+    const user = await convex.query(api.users.getById, { id: userId })
 
-    const user = userResult[0]
     if (!user?.stripeCustomerId) {
       throw new Error('User has no Stripe customer ID')
     }
@@ -43,7 +41,7 @@ export default defineEventHandler(async (event) => {
     // Sync subscription data
     const subscription = await syncSubscription(user.stripeCustomerId)
 
-    if (subscription?.status === 'active') {
+    if (subscription) {
       return {
         success: true,
         message: 'Subscription activated successfully'
@@ -61,4 +59,4 @@ export default defineEventHandler(async (event) => {
       message: 'Failed to process subscription'
     })
   }
-}) 
+})

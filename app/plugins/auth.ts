@@ -1,10 +1,14 @@
 import { defineNuxtPlugin, useState, useRuntimeConfig } from '#app'
 import * as jose from 'jose'
+import { ConvexHttpClient } from 'convex/browser'
+import { api } from '../../convex/_generated/api'
+import type { Id } from '../../convex/_generated/dataModel'
 
 interface User {
-  id: number
+  id: string
   email: string
-  createdAt: string
+  createdAt: Date
+  role: string
 }
 
 export default defineNuxtPlugin(async (nuxtApp) => {
@@ -32,26 +36,21 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   if (token) {
     try {
-      const secret = new TextEncoder().encode(config.jwtSecret)
+      const secret = new TextEncoder().encode(config.JWT_SECRET as string)
       const { payload } = await jose.jwtVerify(token, secret)
 
-      const userId = payload.userId as number
+      const userId = payload.userId as Id<"users">
 
+      // Note: Skipping server-side user fetch for now
+      // The client will fetch user data after hydration
       if (import.meta.server) {
-        // Dynamically import db only on the server
-        const { default: db } = await import('../../server/utils/db')
-        const { users } = await import('../../drizzle/schema')
-        const { eq } = await import('drizzle-orm')
-        
-        // Fetch user data from the database on the server
-        const dbUserResult = await db.select({
-          id: users.id,
-          email: users.email,
-          createdAt: users.createdAt,
-          role: users.role
-        }).from(users).where(eq(users.id, userId)).limit(1)
-
-        user.value = dbUserResult[0] || null
+        // Just set a minimal user object from JWT
+        user.value = {
+          id: userId,
+          email: '', // Will be fetched client-side
+          createdAt: new Date(),
+          role: (payload.role as string) || 'USER'
+        }
       }
     } catch (error) {
       // Invalid token, clear the user state

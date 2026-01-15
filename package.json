@@ -6,18 +6,18 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "build": "nuxt build",
+    "build": "npx convex deploy --cmd 'nuxt build'",
     "dev": "nuxt dev",
     "start:prod": "node ./server/index.mjs",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "create-admin": "npx tsx server/commands/create-admin.ts",
-    "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push",
-    "db:migrate": "drizzle-kit migrate"
+    "convex:dev": "npx convex dev",
+    "convex:deploy": "npx convex deploy"
   },
   "dependencies": {
+    "@convex-vue/core": "^0.0.4",
     "@nuxt/eslint": "^0.7.2",
     "@nuxt/fonts": "^0.10.2",
     "@nuxt/image": "^1.10.0",
@@ -39,9 +39,8 @@
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "convex": "^1.31.4",
     "dotenv": "^16.4.7",
-    "drizzle-kit": "^0.31.4",
-    "drizzle-orm": "^0.44.4",
     "embla-carousel-vue": "^8.5.1",
     "eslint": "^9.16.0",
     "gsap": "^3.13.0",
@@ -52,7 +51,6 @@
     "nuxt-schema-org": "^5.0.6",
     "nuxt-security": "^2.1.5",
     "ogl": "^1.0.11",
-    "pg": "^8.16.3",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.4.1",
     "radix-vue": "^1.9.10",

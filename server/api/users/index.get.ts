@@ -1,27 +1,27 @@
-import { desc } from 'drizzle-orm'
 import authMiddleware from '../../utils/auth'
 import adminMiddleware from '../../utils/admin'
+import { convex, api } from '../../utils/convex'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)
   await adminMiddleware(event)
 
   try {
-    const usersList = await db.select({
-      id: db.schemas.users.id,
-      email: db.schemas.users.email,
-      createdAt: db.schemas.users.createdAt,
-      role: db.schemas.users.role
-    }).from(db.schemas.users).orderBy(desc(db.schemas.users.createdAt))
+    const usersList = await convex.query(api.users.list, {})
 
     return {
-      users: usersList
+      users: usersList.map(user => ({
+        id: user._id,
+        email: user.email,
+        createdAt: new Date(user.createdAt),
+        role: user.role,
+      }))
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     throw createError({
-      statusCode: error.statusCode || 500,
-      message: error.message || 'Failed to fetch users'
+      statusCode: 500,
+      message: error instanceof Error ? error.message : 'Failed to fetch users'
     })
   }
 })

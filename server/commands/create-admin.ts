@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 import * as dotenv from 'dotenv'
-import { eq } from 'drizzle-orm'
-import db from '../utils/db'
+import { ConvexHttpClient } from 'convex/browser'
+import { api } from '../../convex/_generated/api'
 
 // Load environment variables
 dotenv.config()
@@ -11,7 +11,11 @@ const PASSWORD_MIN_LENGTH = 8
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
 
 async function validateEnvironmentVariables() {
-  const { ADMIN_EMAIL, ADMIN_PASSWORD } = process.env
+  const { ADMIN_EMAIL, ADMIN_PASSWORD, CONVEX_URL } = process.env
+
+  if (!CONVEX_URL) {
+    throw new Error('CONVEX_URL environment variable is required')
+  }
 
   if (!ADMIN_EMAIL) {
     throw new Error('ADMIN_EMAIL environment variable is required')
@@ -36,32 +40,28 @@ async function validateEnvironmentVariables() {
     throw new Error('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character')
   }
 
-  return { ADMIN_EMAIL, ADMIN_PASSWORD }
+  return { ADMIN_EMAIL, ADMIN_PASSWORD, CONVEX_URL }
 }
 
 async function createFirstAdmin() {
   try {
     // Validate environment variables
-    const { ADMIN_EMAIL, ADMIN_PASSWORD } = await validateEnvironmentVariables()
+    const { ADMIN_EMAIL, ADMIN_PASSWORD, CONVEX_URL } = await validateEnvironmentVariables()
+
+    const convex = new ConvexHttpClient(CONVEX_URL)
 
     // Check if any admin exists
-    const existingAdminResult = await db.select()
-      .from(db.schemas.users)
-      .where(eq(db.schemas.users.role, 'ADMIN'))
-      .limit(1)
+    const existingAdmins = await convex.query(api.users.getAdmins, {})
 
-    if (existingAdminResult.length > 0) {
+    if (existingAdmins.length > 0) {
       console.log('⚠️  Admin user already exists!')
       return
     }
 
     // Check if email is already in use
-    const existingUserResult = await db.select()
-      .from(db.schemas.users)
-      .where(eq(db.schemas.users.email, ADMIN_EMAIL))
-      .limit(1)
+    const existingUser = await convex.query(api.users.getByEmail, { email: ADMIN_EMAIL })
 
-    if (existingUserResult.length > 0) {
+    if (existingUser) {
       throw new Error('Email is already in use')
     }
 
@@ -70,7 +70,7 @@ async function createFirstAdmin() {
     const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10)
     
     console.log('👤 Creating admin user...')
-    await db.insert(db.schemas.users).values({
+    await convex.mutation(api.users.create, {
       email: ADMIN_EMAIL,
       password: hashedPassword,
       role: 'ADMIN'
@@ -86,7 +86,6 @@ async function createFirstAdmin() {
     }
     process.exit(1)
   } finally {
-    // Drizzle connections are automatically managed, no need to disconnect
     process.exit(0)
   }
 }

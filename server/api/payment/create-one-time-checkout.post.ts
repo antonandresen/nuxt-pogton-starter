@@ -1,11 +1,12 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import Stripe from 'stripe'
-import { eq } from 'drizzle-orm'
 import authMiddleware from '../../utils/auth'
+import { convex, api } from '../../utils/convex'
+import type { Id } from '../../../convex/_generated/dataModel'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)
-  const userId = event.context.userId
+  const userId = event.context.userId as Id<"users">
 
   const body = await readBody(event)
   const { priceId } = body
@@ -13,13 +14,9 @@ export default defineEventHandler(async (event) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
   try {
-    // Get user's stripe customer ID if it exists
-    const userResult = await db.select({
-      stripeCustomerId: db.schemas.users.stripeCustomerId,
-      email: db.schemas.users.email
-    }).from(db.schemas.users).where(eq(db.schemas.users.id, userId)).limit(1)
+    // Get user
+    const user = await convex.query(api.users.getById, { id: userId })
 
-    const user = userResult[0]
     if (!user) {
       throw new Error('User not found')
     }
@@ -31,17 +28,15 @@ export default defineEventHandler(async (event) => {
       const customer = await stripe.customers.create({
         email: user.email,
         metadata: {
-          userId: userId.toString()
+          userId: userId
         }
       })
       
       // Save the customer ID to the user record
-      await db.update(db.schemas.users)
-        .set({ 
-          stripeCustomerId: customer.id,
-          updatedAt: new Date()
-        })
-        .where(eq(db.schemas.users.id, userId))
+      await convex.mutation(api.users.updateStripeCustomerId, {
+        id: userId,
+        stripeCustomerId: customer.id,
+      })
 
       customerId = customer.id
     }
@@ -65,7 +60,7 @@ export default defineEventHandler(async (event) => {
       },
       billing_address_collection: 'required',
       metadata: {
-        userId: userId.toString()
+        userId: userId
       }
     })
 
@@ -77,4 +72,4 @@ export default defineEventHandler(async (event) => {
       message: 'Failed to create checkout session'
     })
   }
-}) 
+})

@@ -1,14 +1,14 @@
 <template>
   <div class="container max-w-6xl py-8 space-y-8">
     <!-- Loading State -->
-    <div v-if="pending" class="flex justify-center py-12">
+    <div v-if="isLoading" class="flex justify-center py-12">
       <IconLoader2 class="w-8 h-8 animate-spin text-muted-foreground" />
     </div>
 
     <!-- Error State -->
     <div v-else-if="error" class="text-center py-12">
       <p class="text-red-500 mb-4">Failed to load subscription details</p>
-      <Button @click="$fetch">Try Again</Button>
+      <Button @click="refresh">Try Again</Button>
     </div>
 
     <!-- Subscription Details -->
@@ -89,22 +89,27 @@
 </template>
 
 <script setup lang="ts">
+import { useConvexQuery, api, type Id } from '~/composables/useConvex'
+
 definePageMeta({
   middleware: ['auth']
 })
 
-const { data: subscription, pending, error } = await useFetch<{
-  id: number
-  status: string
-  priceId: string | null
-  currentPeriodEnd: string | null
-  cancelAtPeriodEnd: boolean
-  paymentMethodBrand: string | null
-  paymentMethodLast4: string | null
-}>('/api/subscription')
+const { user } = useAuth()
 
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString('en-US', {
+// Real-time subscription data from Convex
+const { data: subscription, isLoading, error } = useConvexQuery(
+  api.subscriptions.getByUserId,
+  () => user.value?.id ? { userId: user.value.id as Id<"users"> } : 'skip'
+)
+
+const refresh = () => {
+  // Convex auto-refreshes, but we can trigger a re-render
+  window.location.reload()
+}
+
+const formatDate = (timestamp: number) => {
+  return new Date(timestamp).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
@@ -114,4 +119,4 @@ const formatDate = (date: string) => {
 const capitalize = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
-</script> 
+</script>
