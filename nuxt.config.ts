@@ -214,8 +214,9 @@ export default defineNuxtConfig({
       'convex/_generated/api': fileURLToPath(new URL('./convex/_generated/api', import.meta.url)),
       'convex/_generated/dataModel': fileURLToPath(new URL('./convex/_generated/dataModel', import.meta.url))
     },
+    // Don't bundle convex - use from node_modules
     externals: {
-      inline: [/^convex/]
+      traceInclude: ['convex']
     }
   },
 
