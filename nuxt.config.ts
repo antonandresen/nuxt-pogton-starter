@@ -209,11 +209,6 @@ export default defineNuxtConfig({
       crawlLinks: true,
       routes: ['/sitemap.xml']
     },
-    alias: {
-      '~/convex': fileURLToPath(new URL('./convex', import.meta.url)),
-      'convex/_generated/api': fileURLToPath(new URL('./convex/_generated/api', import.meta.url)),
-      'convex/_generated/dataModel': fileURLToPath(new URL('./convex/_generated/dataModel', import.meta.url))
-    },
     // Don't bundle convex - use from node_modules
     externals: {
       traceInclude: ['convex']
