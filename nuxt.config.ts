@@ -207,10 +207,7 @@ export default defineNuxtConfig({
     prerender: {
       crawlLinks: true,
       routes: ['/sitemap.xml']
-    },
-    // Exclude convex package from tracing
-    moduleSideEffects: false,
-    externals: ['convex']
+    }
   },
 
   // 🎯 RUNTIME CONFIG
