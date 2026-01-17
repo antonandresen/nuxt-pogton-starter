@@ -7,6 +7,7 @@ export default defineSchema({
     password: v.string(),
     stripeCustomerId: v.optional(v.string()),
     role: v.union(v.literal("USER"), v.literal("ADMIN")),
+    avatar: v.optional(v.string()), // Custom avatar URL or null to use Gravatar
     createdAt: v.number(),
     updatedAt: v.number(),
     deletedAt: v.optional(v.number()),

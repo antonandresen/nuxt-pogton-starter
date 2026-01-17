@@ -19,6 +19,7 @@ export default defineEventHandler(async (event) => {
       email: user.email,
       createdAt: new Date(user.createdAt),
       role: user.role,
+      avatar: user.avatar,
     },
   }
 })

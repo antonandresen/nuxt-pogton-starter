@@ -5,6 +5,7 @@ interface User {
   email: string
   role: 'USER' | 'ADMIN'
   createdAt: Date
+  avatar?: string
 }
 
 export function useAuth() {
@@ -52,11 +53,23 @@ export function useAuth() {
     }
   }
 
+  const refreshUser = async () => {
+    try {
+      const response = await $fetch<{ user: User }>('/api/auth/user', {
+        credentials: 'include',
+      })
+      user.value = response.user
+    } catch (error: any) {
+      console.error('Failed to refresh user:', error)
+    }
+  }
+
   return {
     user,
     isAuthenticated,
     login,
     register,
     logout,
+    refreshUser,
   }
 }

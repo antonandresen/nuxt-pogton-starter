@@ -97,3 +97,21 @@ export const updateRole = mutation({
   },
 })
 
+export const updateAvatar = mutation({
+  args: {
+    id: v.id("users"),
+    avatar: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.id)
+    if (!user) {
+      throw new Error("User not found")
+    }
+    await ctx.db.patch(args.id, {
+      avatar: args.avatar,
+      updatedAt: Date.now(),
+    })
+    return await ctx.db.get(args.id)
+  },
+})
+
