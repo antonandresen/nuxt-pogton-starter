@@ -29,7 +29,7 @@ const products: Product[] = [
     description: 'A comprehensive toolkit for modern web development.',
     price: 9.99,
     priceId: 'price_1QmM1vJrjUgmfuESeLauGCMR',
-    image: 'img/products/premium-development-kit.jpg',
+    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=300&fit=crop',
     features: [
       'Ready-to-use component library',
       'Best practices documentation',
@@ -43,7 +43,7 @@ const products: Product[] = [
     description: 'Professional-grade UI components for modern applications.',
     price: 14.99,
     priceId: 'price_1QmM1vJrjUgmfuESeLauGCMR',
-    image: 'img/products/advanced-ui-components.jpg',
+    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop',
     features: [
       'Accessible components',
       'Dark mode support',
@@ -57,7 +57,7 @@ const products: Product[] = [
     description: 'Optimize your application for maximum performance.',
     price: 19.99,
     priceId: 'price_1QmM1vJrjUgmfuESeLauGCMR',
-    image: 'img/products/performance-toolkit.jpg',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
     features: [
       'Performance monitoring',
       'Optimization tools',
