@@ -20,7 +20,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   let token: string | undefined
 
-  if (import.meta.server) {
+  if (process.server) {
     // On server, get token from the event context
     const event = nuxtApp.ssrContext?.event
     token = event?.req.headers.cookie?.split(';')
@@ -36,23 +36,27 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   if (token) {
     try {
-      const secret = new TextEncoder().encode(config.JWT_SECRET as string)
-      const { payload } = await jose.jwtVerify(token, secret)
+      if (process.server) {
+        // Server-side: Verify token and set minimal user data
+        const secret = new TextEncoder().encode(config.JWT_SECRET as string)
+        const { payload } = await jose.jwtVerify(token, secret)
 
-      const userId = payload.userId as Id<"users">
+        const userId = payload.userId as Id<"users">
 
-      // Note: Skipping server-side user fetch for now
-      // The client will fetch user data after hydration
-      if (import.meta.server) {
-        // Just set a minimal user object from JWT
+        // Set minimal user object from JWT for SSR
         user.value = {
           id: userId,
           email: '', // Will be fetched client-side
           createdAt: new Date(),
           role: (payload.role as string) || 'USER'
         }
+      } else {
+        // Client-side: Fetch full user data from API
+        const response = await $fetch<{ user: User }>('/api/auth/user')
+        user.value = response.user
       }
     } catch (error) {
+      console.error('Failed to load user:', error)
       // Invalid token, clear the user state
       user.value = null
     }
