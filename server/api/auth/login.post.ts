@@ -36,6 +36,8 @@ export default defineEventHandler(async (event) => {
       createdAt: new Date(foundUser.createdAt),
       role: foundUser.role,
       avatar: foundUser.avatar,
+      name: foundUser.name,
+      currentOrgId: foundUser.currentOrgId ?? null,
     },
   }
 })

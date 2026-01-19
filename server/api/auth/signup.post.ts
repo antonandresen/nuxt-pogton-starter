@@ -2,6 +2,8 @@ import { defineEventHandler, readBody, createError, setCookie } from 'h3'
 import bcrypt from 'bcryptjs'
 import * as jose from 'jose'
 import { convex, api } from '../../utils/convex'
+import { toSlug } from '../../utils/slug'
+import crypto from 'node:crypto'
 
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event)
@@ -21,6 +23,42 @@ export default defineEventHandler(async (event) => {
   const userId = await convex.mutation(api.users.create, {
     email,
     password: hashedPassword,
+  })
+
+  const baseSlug = toSlug(email.split('@')[0] || 'workspace')
+  const slug = `${baseSlug}-${crypto.randomBytes(3).toString('hex')}`
+
+  const orgId = await convex.mutation(api.orgs.create, {
+    name: 'My Workspace',
+    slug,
+    createdBy: userId,
+  })
+
+  await convex.mutation(api.memberships.create, {
+    orgId,
+    userId,
+    role: 'OWNER',
+    status: 'ACTIVE',
+  })
+
+  await convex.mutation(api.users.updateCurrentOrg, {
+    id: userId,
+    currentOrgId: orgId,
+  })
+
+  await convex.mutation(api.onboarding.upsert, {
+    userId,
+    completedSteps: [],
+    completed: false,
+  })
+
+  await convex.mutation(api.auditLogs.create, {
+    orgId,
+    actorId: userId,
+    action: 'org.created',
+    targetType: 'organization',
+    targetId: orgId,
+    meta: { source: 'signup' },
   })
 
   // Get the created user
@@ -53,6 +91,8 @@ export default defineEventHandler(async (event) => {
       createdAt: new Date(newUser.createdAt),
       role: newUser.role,
       avatar: newUser.avatar,
+      name: newUser.name,
+      currentOrgId: newUser.currentOrgId ?? null,
     },
   }
 })

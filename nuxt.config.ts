@@ -220,10 +220,17 @@ export default defineNuxtConfig({
     ONESIGNAL_EMAIL_FROM_NAME: process.env.ONESIGNAL_EMAIL_FROM_NAME,
     ONESIGNAL_EMAIL_FROM_ADDRESS: process.env.ONESIGNAL_EMAIL_FROM_ADDRESS,
     CONVEX_URL: process.env.CONVEX_URL,
+    convexAuthIssuer: process.env.CONVEX_AUTH_ISSUER,
+    convexAuthAudience: process.env.CONVEX_AUTH_AUDIENCE,
+    convexAuthPrivateKey: process.env.CONVEX_AUTH_PRIVATE_KEY,
+    convexAuthPublicKey: process.env.CONVEX_AUTH_PUBLIC_KEY,
+    convexAuthKeyId: process.env.CONVEX_AUTH_KEY_ID,
 
     public: {
       STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
       CONVEX_URL: process.env.CONVEX_URL,
+      convexAuthIssuer: process.env.CONVEX_AUTH_ISSUER,
+      convexAuthAudience: process.env.CONVEX_AUTH_AUDIENCE,
     }
   },
 

@@ -114,7 +114,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
 import { useToast } from '@/components/ui/toast/use-toast'
 import {
   Card,
@@ -128,6 +127,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Loader2 } from 'lucide-vue-next'
+import { api, useConvexMutation, useConvexQuery } from '../../composables/useConvex'
 
 definePageMeta({
   layout: 'dashboard',
@@ -138,9 +138,12 @@ definePageMeta({
 const { toast } = useToast()
 const isLoading = ref(false)
 const isPasswordLoading = ref(false)
+const { data: currentUser } = useConvexQuery(api.users.getCurrent, {})
+const updateNameMutation = useConvexMutation(api.users.updateNameForCurrentUser)
+const updatePasswordMutation = useConvexMutation(api.users.updatePasswordForCurrentUser)
 
 const form = reactive({
-  email: 'user@example.com', // Replace with actual user email
+  email: '',
   name: ''
 })
 
@@ -154,11 +157,16 @@ const preferences = reactive({
   emailNotifications: true
 })
 
+watchEffect(() => {
+  if (!currentUser.value) return
+  form.email = currentUser.value.email
+  form.name = currentUser.value.name || ''
+})
+
 const updateProfile = async () => {
   isLoading.value = true
   try {
-    // Implement profile update logic here
-    await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
+    await updateNameMutation.mutate({ name: form.name })
     toast({
       title: 'Profile updated',
       description: 'Your profile has been updated successfully.'
@@ -186,8 +194,10 @@ const updatePassword = async () => {
 
   isPasswordLoading.value = true
   try {
-    // Implement password update logic here
-    await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
+    await updatePasswordMutation.mutate({
+      currentPassword: passwordForm.currentPassword,
+      newPassword: passwordForm.newPassword,
+    })
     toast({
       title: 'Password updated',
       description: 'Your password has been updated successfully.'

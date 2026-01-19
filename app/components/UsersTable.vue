@@ -74,7 +74,7 @@ import { useConvexQuery, useConvexMutation, api, type Id } from '~/composables/u
 
 const searchQuery = ref('')
 const { toast } = useToast()
-const { user: currentUser } = useAuth()
+const { data: currentUser } = useConvexQuery(api.users.getCurrent, {})
 
 // Real-time users list from Convex - auto-updates when data changes!
 const { data: users, isLoading } = useConvexQuery(api.users.list, {})

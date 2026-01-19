@@ -19,6 +19,11 @@ Nuxt 4 Specifics
 - For color mode handling, use the built-in '@nuxtjs/color-mode' with the 'useColorMode()' function.
 - Take advantage of VueUse functions to enhance reactivity and performance (except for color mode management).
 - Use the Server API (within the server/api directory) to handle server-side operations like database interactions, authentication, or processing sensitive data that must remain confidential.
+- Prefer direct Convex queries/mutations from the client (use `useConvexQuery` / `useConvexMutation`) for app data that benefits from live sync.
+- Only keep Nuxt server API routes when secrets or non-Convex side effects are required (Stripe, email, webhooks, file uploads).
+- All client data access should flow through Convex functions that enforce `ctx.auth` and org permissions.
+- Do not add CRUD-style data endpoints under `server/api`. If it can be a Convex query/mutation, it must be.
+- Allowed `server/api` routes: auth session issuance, Convex auth token/JWKS, Stripe/webhooks, and non-Convex side effects.
 - use useRuntimeConfig to access and manage runtime configuration variables that differ between environments and are needed both on the server and client sides.
 - For SEO use useHead and useSeoMeta.
 - For images use <NuxtImage> or <NuxtPicture> component and for Icons use lucide-vue-next.

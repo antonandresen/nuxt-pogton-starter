@@ -12,9 +12,9 @@
         <!-- Current Avatar Preview -->
         <div class="flex justify-center">
           <Avatar class="h-24 w-24">
-            <AvatarImage :src="previewUrl" :alt="user?.email" />
+            <AvatarImage :src="previewUrl" :alt="currentUser?.email" />
             <AvatarFallback class="text-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
-              {{ user?.email?.charAt(0).toUpperCase() }}
+              {{ currentUser?.email?.charAt(0).toUpperCase() }}
             </AvatarFallback>
           </Avatar>
         </div>
@@ -43,7 +43,7 @@
             <div class="flex-1 space-y-1">
               <p class="text-sm font-medium">Using Gravatar</p>
               <p class="text-xs text-muted-foreground">
-                Leave empty to use your Gravatar associated with <strong>{{ user?.email }}</strong>.
+                Leave empty to use your Gravatar associated with <strong>{{ currentUser?.email }}</strong>.
                 <a href="https://gravatar.com" target="_blank" rel="noopener" class="text-primary hover:underline">
                   Create one here
                 </a>
@@ -81,10 +81,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Loader2 } from 'lucide-vue-next'
-import { useAuth } from '@/composables/use-auth'
-import { api } from '../../convex/_generated/api'
-import type { Id } from '../../convex/_generated/dataModel'
-import { useConvexMutation } from '@convex-vue/core'
+import { api, useConvexMutation, useConvexQuery } from '~/composables/useConvex'
 import { getAvatarUrl } from '@/utils/gravatar'
 import { toast } from 'vue-sonner'
 
@@ -97,8 +94,8 @@ const emit = defineEmits<{
   'update:open': [value: boolean]
 }>()
 
-const { user, refreshUser } = useAuth()
-const updateAvatarMutation = useConvexMutation(api.users.updateAvatar)
+const { data: currentUser } = useConvexQuery(api.users.getCurrent, {})
+const updateAvatarMutation = useConvexMutation(api.users.updateAvatarForCurrentUser)
 
 const isOpen = computed({
   get: () => props.open,
@@ -110,8 +107,8 @@ const isLoading = ref(false)
 
 // Initialize with current avatar
 watch(() => props.open, (open) => {
-  if (open && user.value) {
-    avatarUrl.value = (user.value as any).avatar || ''
+  if (open && currentUser.value) {
+    avatarUrl.value = currentUser.value.avatar || ''
   }
 })
 
@@ -119,7 +116,7 @@ const previewUrl = computed(() => {
   if (avatarUrl.value) {
     return avatarUrl.value
   }
-  return user.value ? getAvatarUrl(user.value.email, undefined, 200) : ''
+  return currentUser.value ? getAvatarUrl(currentUser.value.email, undefined, 200) : ''
 })
 
 const updatePreview = () => {
@@ -127,16 +124,13 @@ const updatePreview = () => {
 }
 
 const saveAvatar = async () => {
-  if (!user.value) return
+  if (!currentUser.value) return
   
   isLoading.value = true
   try {
-    await updateAvatarMutation({
-      id: user.value.id as Id<"users">,
+    await updateAvatarMutation.mutate({
       avatar: avatarUrl.value || undefined
     })
-    
-    await refreshUser()
     toast.success('Avatar updated successfully!')
     isOpen.value = false
   } catch (error) {

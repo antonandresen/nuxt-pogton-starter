@@ -1,5 +1,6 @@
 import { ConvexHttpClient } from "convex/browser"
 import type { Id } from "../../convex/_generated/dataModel"
+import { api as generatedApi } from "../../convex/_generated/api"
 
 const convexUrl = process.env.CONVEX_URL || ""
 
@@ -8,27 +9,6 @@ if (!convexUrl) {
 }
 
 export const convex = new ConvexHttpClient(convexUrl)
-
-// Manually typed API object to avoid import issues
-export const api = {
-  users: {
-    getByEmail: "users:getByEmail",
-    getById: "users:getById",
-    getByStripeCustomerId: "users:getByStripeCustomerId",
-    list: "users:list",
-    create: "users:create",
-    updateStripeCustomerId: "users:updateStripeCustomerId",
-    updateRole: "users:updateRole"
-  },
-  subscriptions: {
-    getByUserId: "subscriptions:getByUserId",
-    deleteByUserId: "subscriptions:deleteByUserId",
-    create: "subscriptions:create"
-  },
-  purchases: {
-    getByUserId: "purchases:getByUserId",
-    create: "purchases:create"
-  }
-} as const
+export const api = generatedApi
 
 export type { Id }

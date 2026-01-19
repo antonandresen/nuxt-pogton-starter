@@ -9,6 +9,7 @@
 
 import type { QueryCtx, MutationCtx } from "./_generated/server"
 import type { Id } from "./_generated/dataModel"
+import { hasPermission, type OrgRole, type Permission } from "./permissions"
 
 /**
  * Get a user by their ID with null safety
@@ -68,5 +69,60 @@ export async function hasActiveSubscription(ctx: QueryCtx | MutationCtx, userId:
  */
 export function now() {
   return Date.now()
+}
+
+export function toSlug(input: string) {
+  return input
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "")
+}
+
+export async function requireUser(ctx: QueryCtx | MutationCtx) {
+  const identity = await ctx.auth.getUserIdentity()
+  if (!identity) {
+    throw new Error("Unauthorized")
+  }
+  const userId = identity.subject as Id<"users">
+  const user = await ctx.db.get(userId)
+  if (!user) {
+    throw new Error("User not found")
+  }
+  return { identity, userId, user }
+}
+
+export async function requireCurrentOrg(ctx: QueryCtx | MutationCtx) {
+  const { userId, user } = await requireUser(ctx)
+  if (!user.currentOrgId) {
+    throw new Error("No org selected")
+  }
+  const membership = await ctx.db
+    .query("memberships")
+    .withIndex("by_orgId_userId", (q) =>
+      q.eq("orgId", user.currentOrgId).eq("userId", userId)
+    )
+    .filter((q) => q.eq(q.field("deletedAt"), undefined))
+    .first()
+
+  if (!membership || membership.status !== "ACTIVE") {
+    throw new Error("Org access denied")
+  }
+
+  return {
+    userId,
+    user,
+    orgId: user.currentOrgId,
+    membership,
+  }
+}
+
+export async function requireOrgPermission(ctx: QueryCtx | MutationCtx, permission: Permission) {
+  const context = await requireCurrentOrg(ctx)
+  const role = context.membership.role as OrgRole
+  if (!hasPermission(role, permission)) {
+    throw new Error("Forbidden")
+  }
+  return context
 }
 

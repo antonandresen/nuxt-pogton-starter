@@ -35,6 +35,15 @@
                 </SidebarMenuButton>
               </NuxtLink>
             </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <NuxtLink to="/dashboard/orgs">
+                <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/orgs')">
+                  <Building2 class="h-4 w-4" />
+                  <span>Workspaces</span>
+                </SidebarMenuButton>
+              </NuxtLink>
+            </SidebarMenuItem>
             
             <SidebarMenuItem>
               <NuxtLink to="/dashboard/settings">
@@ -184,6 +193,7 @@ import {
   Settings, 
   LogOut,
   CreditCard,
+  Building2,
   LineChart,
   ShoppingCart,
   ChevronDown,

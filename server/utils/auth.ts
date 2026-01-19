@@ -10,9 +10,14 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const secret = new TextEncoder().encode(config.jwtSecret)
+    const secretValue = (config.JWT_SECRET || config.jwtSecret) as string | undefined
+    if (!secretValue) {
+      throw new Error('Missing JWT secret')
+    }
+    const secret = new TextEncoder().encode(secretValue)
     const { payload } = await jose.jwtVerify(token, secret)
-    event.context.userId = payload.userId as number
+    event.context.userId = payload.userId as string
+    event.context.role = payload.role as string | undefined
   } catch (error) {
     console.error(error)
     throw createError({ statusCode: 401, statusMessage: 'Invalid token' })

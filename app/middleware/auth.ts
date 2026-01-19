@@ -1,7 +1,20 @@
-export default defineNuxtRouteMiddleware((to) => {
-  const user = useState('auth-user')
+export default defineNuxtRouteMiddleware(async (to) => {
+  const tokenState = useState<string | null>('convex-auth-token', () => null)
+  const isAuthenticated = useState<boolean>('convex-authenticated', () => true)
 
-  if (!user.value) {
+  if (!tokenState.value) {
+    try {
+      const response = await $fetch<{ token: string }>('/api/convex/token', {
+        credentials: 'include',
+      })
+      tokenState.value = response.token
+      isAuthenticated.value = true
+    } catch (error) {
+      isAuthenticated.value = false
+    }
+  }
+
+  if (!isAuthenticated.value) {
     return navigateTo({
       path: '/login',
       query: {
