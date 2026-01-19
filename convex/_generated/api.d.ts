@@ -17,6 +17,7 @@ import type * as memberships from "../memberships.js";
 import type * as notifications from "../notifications.js";
 import type * as onboarding from "../onboarding.js";
 import type * as orgs from "../orgs.js";
+import type * as permissions from "../permissions.js";
 import type * as purchases from "../purchases.js";
 import type * as stripe from "../stripe.js";
 import type * as subscriptions from "../subscriptions.js";
@@ -40,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   notifications: typeof notifications;
   onboarding: typeof onboarding;
   orgs: typeof orgs;
+  permissions: typeof permissions;
   purchases: typeof purchases;
   stripe: typeof stripe;
   subscriptions: typeof subscriptions;

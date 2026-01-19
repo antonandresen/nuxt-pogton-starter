@@ -97,10 +97,11 @@ export async function requireCurrentOrg(ctx: QueryCtx | MutationCtx) {
   if (!user.currentOrgId) {
     throw new Error("No org selected")
   }
+  const orgId = user.currentOrgId
   const membership = await ctx.db
     .query("memberships")
     .withIndex("by_orgId_userId", (q) =>
-      q.eq("orgId", user.currentOrgId).eq("userId", userId)
+      q.eq("orgId", orgId).eq("userId", userId)
     )
     .filter((q) => q.eq(q.field("deletedAt"), undefined))
     .first()
