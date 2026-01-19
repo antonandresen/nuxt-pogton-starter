@@ -10,7 +10,9 @@ export default defineEventHandler(async () => {
     throw createError({ statusCode: 500, statusMessage: 'Convex public key not configured' })
   }
 
-  const key = await importSPKI(publicKey, 'RS256')
+  // Replace literal \n with actual newlines
+  const formattedPublicKey = publicKey.replace(/\\n/g, '\n')
+  const key = await importSPKI(formattedPublicKey, 'RS256')
   const jwk = await exportJWK(key)
 
   return {

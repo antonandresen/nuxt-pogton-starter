@@ -1,8 +1,7 @@
 import { createError } from "h3"
 import type { H3Event } from "h3"
-import { convex, api } from "./convex"
+import { convex, api, type Id } from "./convex"
 import { hasPermission, type Permission, type OrgRole } from "./permissions"
-import type { Id } from "../../convex/_generated/dataModel"
 
 export async function requireOrgContext(event: H3Event) {
   const userId = event.context.userId as Id<"users"> | undefined

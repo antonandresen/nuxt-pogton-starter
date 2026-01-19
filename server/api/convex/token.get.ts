@@ -1,6 +1,5 @@
 import authMiddleware from '../../utils/auth'
-import { convex, api } from '../../utils/convex'
-import type { Id } from '../../../convex/_generated/dataModel'
+import { convex, api, type Id } from '../../utils/convex'
 import { SignJWT, importPKCS8 } from 'jose'
 import { createError } from 'h3'
 
@@ -24,7 +23,9 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'Convex auth not configured' })
   }
 
-  const signingKey = await importPKCS8(privateKey, 'RS256')
+  // Replace literal \n with actual newlines
+  const formattedPrivateKey = privateKey.replace(/\\n/g, '\n')
+  const signingKey = await importPKCS8(formattedPrivateKey, 'RS256')
 
   const token = await new SignJWT({
     email: user.email,

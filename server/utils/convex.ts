@@ -1,6 +1,7 @@
 import { ConvexHttpClient } from "convex/browser"
-import type { Id } from "../../convex/_generated/dataModel"
-import { api as generatedApi } from "../../convex/_generated/api"
+
+// Manual type to avoid import resolution issues
+export type Id<T extends string> = string & { __tableName: T }
 
 const convexUrl = process.env.CONVEX_URL || ""
 
@@ -9,6 +10,32 @@ if (!convexUrl) {
 }
 
 export const convex = new ConvexHttpClient(convexUrl)
-export const api = generatedApi
 
-export type { Id }
+// Manual API object - mirrors convex/_generated/api
+export const api = {
+  users: {
+    getByEmail: 'users:getByEmail' as any,
+    getById: 'users:getById' as any,
+    getByStripeCustomerId: 'users:getByStripeCustomerId' as any,
+    list: 'users:list' as any,
+    create: 'users:create' as any,
+    updateStripeCustomerId: 'users:updateStripeCustomerId' as any,
+    updateRole: 'users:updateRole' as any,
+    updateAvatar: 'users:updateAvatar' as any,
+    getCurrent: 'users:getCurrent' as any,
+  },
+  subscriptions: {
+    getByUserId: 'subscriptions:getByUserId' as any,
+    deleteByUserId: 'subscriptions:deleteByUserId' as any,
+    create: 'subscriptions:create' as any,
+  },
+  purchases: {
+    getByUserId: 'purchases:getByUserId' as any,
+    create: 'purchases:create' as any,
+  },
+  orgs: {
+    listMine: 'orgs:listMine' as any,
+    createForCurrentUser: 'orgs:createForCurrentUser' as any,
+    switchCurrentOrg: 'orgs:switchCurrentOrg' as any,
+  },
+} as const

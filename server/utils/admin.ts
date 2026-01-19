@@ -1,6 +1,5 @@
 import type { H3Event } from 'h3'
-import { convex, api } from './convex'
-import type { Id } from '../../convex/_generated/dataModel'
+import { convex, api, type Id } from './convex'
 
 export default async function adminMiddleware(event: H3Event) {
   const userId = event.context.userId as Id<"users"> | undefined

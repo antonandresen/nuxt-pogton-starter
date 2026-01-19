@@ -1,8 +1,7 @@
 import Stripe from 'stripe'
 import { defineEventHandler, readBody } from 'h3'
 import authMiddleware from '../../utils/auth'
-import { convex, api } from '../../utils/convex'
-import type { Id } from '../../../convex/_generated/dataModel'
+import { convex, api, type Id } from '../../utils/convex'
 
 export default defineEventHandler(async (event) => {
   await authMiddleware(event)

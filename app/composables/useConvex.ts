@@ -8,12 +8,91 @@
  */
 
 import { useConvexQuery, useConvexMutation, useConvexAction } from '@convex-vue/core'
-import { api } from '../../convex/_generated/api'
-import type { Id } from '../../convex/_generated/dataModel'
 
-// Re-export for convenience
-export { api, useConvexQuery, useConvexMutation, useConvexAction }
-export type { Id }
+// Manual type definitions to avoid import issues
+export type Id<T extends string> = string & { __tableName: T }
+
+// Manual API type - update this when adding new Convex functions
+export const api = {
+  users: {
+    getByEmail: 'users:getByEmail',
+    getById: 'users:getById',
+    getByStripeCustomerId: 'users:getByStripeCustomerId',
+    getAdmins: 'users:getAdmins',
+    list: 'users:list',
+    create: 'users:create',
+    updateStripeCustomerId: 'users:updateStripeCustomerId',
+    updateRole: 'users:updateRole',
+    updateAvatar: 'users:updateAvatar',
+    updatePassword: 'users:updatePassword',
+    updateCurrentOrg: 'users:updateCurrentOrg',
+    updateName: 'users:updateName',
+    getCurrent: 'users:getCurrent',
+    updateNameForCurrentUser: 'users:updateNameForCurrentUser',
+    updatePasswordForCurrentUser: 'users:updatePasswordForCurrentUser',
+    updateAvatarForCurrentUser: 'users:updateAvatarForCurrentUser',
+  },
+  subscriptions: {
+    getByUserId: 'subscriptions:getByUserId',
+    deleteByUserId: 'subscriptions:deleteByUserId',
+    create: 'subscriptions:create',
+  },
+  purchases: {
+    getByUserId: 'purchases:getByUserId',
+    create: 'purchases:create',
+  },
+  orgs: {
+    getById: 'orgs:getById',
+    getBySlug: 'orgs:getBySlug',
+    listMine: 'orgs:listMine',
+    createForCurrentUser: 'orgs:createForCurrentUser',
+    switchCurrentOrg: 'orgs:switchCurrentOrg',
+  },
+  memberships: {
+    getByOrgAndUser: 'memberships:getByOrgAndUser',
+    listByOrg: 'memberships:listByOrg',
+    listByUser: 'memberships:listByUser',
+  },
+  invites: {
+    listByOrg: 'invites:listByOrg',
+    createForCurrentOrg: 'invites:createForCurrentOrg',
+    acceptForCurrentUser: 'invites:acceptForCurrentUser',
+  },
+  auditLogs: {
+    listForCurrentOrg: 'auditLogs:listForCurrentOrg',
+  },
+  featureFlags: {
+    listForCurrentOrg: 'featureFlags:listForCurrentOrg',
+    upsertForCurrentOrg: 'featureFlags:upsertForCurrentOrg',
+  },
+  usage: {
+    listForCurrentOrg: 'usage:listForCurrentOrg',
+  },
+  notifications: {
+    listForCurrentUser: 'notifications:listForCurrentUser',
+    markReadForCurrentUser: 'notifications:markReadForCurrentUser',
+    markAllReadForCurrentUser: 'notifications:markAllReadForCurrentUser',
+  },
+  apiKeys: {
+    listForCurrentOrg: 'apiKeys:listForCurrentOrg',
+    createForCurrentOrg: 'apiKeys:createForCurrentOrg',
+    revokeForCurrentOrg: 'apiKeys:revokeForCurrentOrg',
+  },
+  webhooks: {
+    listEndpointsForCurrentOrg: 'webhooks:listEndpointsForCurrentOrg',
+    createEndpointForCurrentOrg: 'webhooks:createEndpointForCurrentOrg',
+    updateEndpointForCurrentOrg: 'webhooks:updateEndpointForCurrentOrg',
+    deleteEndpointForCurrentOrg: 'webhooks:deleteEndpointForCurrentOrg',
+    listDeliveriesForCurrentOrg: 'webhooks:listDeliveriesForCurrentOrg',
+  },
+  onboarding: {
+    getForCurrentUser: 'onboarding:getForCurrentUser',
+    upsertForCurrentUser: 'onboarding:upsertForCurrentUser',
+  },
+} as const
+
+// Re-export composables
+export { useConvexQuery, useConvexMutation, useConvexAction }
 
 /**
  * Get current user's subscription with real-time updates

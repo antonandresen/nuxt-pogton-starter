@@ -24,20 +24,24 @@ interface User {
 export function useAuth() {
   const user = useState<User | null>('auth-user', () => null)
   const convexAuthState = useState<boolean>('convex-authenticated', () => true)
-  const { data: currentUser } = useConvexQuery(api.users.getCurrent, {})
+  
+  // Only query on client-side (Convex client plugin is .client.ts)
+  const { data: currentUser } = process.client 
+    ? useConvexQuery(api.users.getCurrent, {})
+    : { data: ref(null) }
 
   watchEffect(() => {
-    user.value = currentUser.value
-      ? {
-          id: currentUser.value._id,
-          email: currentUser.value.email,
-          role: currentUser.value.role,
-          createdAt: new Date(currentUser.value.createdAt),
-          avatar: currentUser.value.avatar,
-          name: currentUser.value.name,
-          currentOrgId: currentUser.value.currentOrgId ?? null,
-        }
-      : null
+    if (process.client && currentUser.value) {
+      user.value = {
+        id: currentUser.value._id,
+        email: currentUser.value.email,
+        role: currentUser.value.role,
+        createdAt: new Date(currentUser.value.createdAt),
+        avatar: currentUser.value.avatar,
+        name: currentUser.value.name,
+        currentOrgId: currentUser.value.currentOrgId ?? null,
+      }
+    }
   })
 
   const isAuthenticated = computed(() => !!user.value)

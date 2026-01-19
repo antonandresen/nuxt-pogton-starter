@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 import * as dotenv from 'dotenv'
 import { ConvexHttpClient } from 'convex/browser'
-import { api } from '../../convex/_generated/api'
+import { api } from '../utils/convex'
 
 // Load environment variables
 dotenv.config()
