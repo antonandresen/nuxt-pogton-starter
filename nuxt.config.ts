@@ -62,10 +62,12 @@ export default defineNuxtConfig({
       robots: 'index, follow'
     },
     '/dashboard/**': { 
-      robots: 'noindex, nofollow'
+      robots: 'noindex, nofollow',
+      ssr: true
     },
     '/admin/**': { 
-      robots: 'noindex, nofollow'
+      robots: 'noindex, nofollow',
+      ssr: true
     }
   },
 
@@ -203,10 +205,12 @@ export default defineNuxtConfig({
 
   // ⚡ NITRO OPTIMIZATION FOR PERFORMANCE
   nitro: {
+    preset: 'netlify',
     compressPublicAssets: true,
     prerender: {
       crawlLinks: true,
-      routes: ['/sitemap.xml']
+      routes: ['/sitemap.xml'],
+      ignore: ['/dashboard/**', '/admin/**', '/login', '/register'],
     }
   },
 
