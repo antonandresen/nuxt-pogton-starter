@@ -3,6 +3,7 @@
     <Navbar />
     <NuxtPage />
     <Footer />
+    <CookieBanner />
   </div>
 </template>
 

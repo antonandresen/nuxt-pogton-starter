@@ -162,6 +162,7 @@
     <ClientOnly>
       <AvatarUploadDialog v-model:open="showAvatarDialog" />
     </ClientOnly>
+    <CookieBanner />
   </SidebarProvider>
 </template>
 
