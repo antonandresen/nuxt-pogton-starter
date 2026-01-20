@@ -17,7 +17,10 @@ export default defineNuxtConfig({
         '@/components': fileURLToPath(new URL('./app/components', import.meta.url)),
         '@/lib': fileURLToPath(new URL('./lib', import.meta.url)),
       }
-    }
+    },
+    server: {
+      allowedHosts: ['splendid-admittedly-falcon.ngrok-free.app'],
+    },
   },
   
   // 🚀 GIGA ULTRA SEO MODULES
@@ -63,11 +66,13 @@ export default defineNuxtConfig({
     },
     '/dashboard/**': { 
       robots: 'noindex, nofollow',
-      ssr: true
+      ssr: true,
+      prerender: false
     },
     '/admin/**': { 
       robots: 'noindex, nofollow',
-      ssr: true
+      ssr: true,
+      prerender: false
     }
   },
 
