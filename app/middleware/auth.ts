@@ -1,8 +1,15 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  // On SSR, check if auth cookie exists
+  // On SSR, validate the auth cookie so server render matches client state
   if (process.server) {
-    const cookie = useCookie('auth_token')
-    if (!cookie.value) {
+    const event = useRequestEvent()
+    if (!event) {
+      return
+    }
+
+    const { getCookie } = await import('h3')
+    const token = getCookie(event, 'auth_token')
+
+    if (!token) {
       return navigateTo({
         path: '/login',
         query: {
@@ -10,7 +17,25 @@ export default defineNuxtRouteMiddleware(async (to) => {
         },
       })
     }
-    // Cookie exists, allow SSR to proceed
+
+    try {
+      const config = useRuntimeConfig()
+      const secretValue = (config.JWT_SECRET || config.jwtSecret) as string | undefined
+      if (!secretValue) {
+        throw new Error('Missing JWT secret')
+      }
+      const { jwtVerify } = await import('jose')
+      const secret = new TextEncoder().encode(secretValue)
+      await jwtVerify(token, secret)
+    } catch (error) {
+      return navigateTo({
+        path: '/login',
+        query: {
+          redirect: to.fullPath,
+        },
+      })
+    }
+
     return
   }
 
