@@ -192,8 +192,12 @@ export const updateName = mutation({
 export const getCurrent = query({
   args: {},
   handler: async (ctx) => {
-    const { user } = await requireUser(ctx)
-    return user
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity?.subject) {
+      return null
+    }
+    const userId = identity.subject as any
+    return await ctx.db.get(userId)
   },
 })
 

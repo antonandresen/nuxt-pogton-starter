@@ -7,7 +7,7 @@
  * @see https://docs.convex.dev/client/vue
  */
 
-import { useConvexQuery, useConvexMutation, useConvexAction } from '@convex-vue/core'
+import { useConvexQuery as _useConvexQuery, useConvexMutation as _useConvexMutation, useConvexAction as _useConvexAction } from '@convex-vue/core'
 
 // Manual type definitions to avoid import issues
 export type Id<T extends string> = string & { __tableName: T }
@@ -92,7 +92,24 @@ export const api = {
 } as const
 
 // Re-export composables
-export { useConvexQuery, useConvexMutation, useConvexAction }
+export function useConvexQuery(...args: any[]) {
+  if (process.server) {
+    return {
+      data: ref(null),
+      isLoading: ref(false),
+      error: ref(null),
+    }
+  }
+  return (_useConvexQuery as any)(...args)
+}
+
+export function useConvexMutation(mutation: any) {
+  return (_useConvexMutation as any)(mutation)
+}
+
+export function useConvexAction(action: any) {
+  return (_useConvexAction as any)(action)
+}
 
 /**
  * Get current user's subscription with real-time updates
