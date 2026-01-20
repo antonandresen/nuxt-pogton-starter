@@ -104,10 +104,28 @@ export function useConvexQuery(...args: any[]) {
 }
 
 export function useConvexMutation(mutation: any) {
+  if (process.server) {
+    return {
+      mutate: async () => {
+        throw new Error('Convex mutations are client-only')
+      },
+      isLoading: ref(false),
+      error: ref(null),
+    }
+  }
   return (_useConvexMutation as any)(mutation)
 }
 
 export function useConvexAction(action: any) {
+  if (process.server) {
+    return {
+      run: async () => {
+        throw new Error('Convex actions are client-only')
+      },
+      isLoading: ref(false),
+      error: ref(null),
+    }
+  }
   return (_useConvexAction as any)(action)
 }
 
