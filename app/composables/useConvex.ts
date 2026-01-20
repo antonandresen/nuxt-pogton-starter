@@ -52,11 +52,14 @@ export const api = {
     getByOrgAndUser: 'memberships:getByOrgAndUser',
     listByOrg: 'memberships:listByOrg',
     listByUser: 'memberships:listByUser',
+    listMine: 'memberships:listMine',
+    listForCurrentOrg: 'memberships:listForCurrentOrg',
   },
   invites: {
     listByOrg: 'invites:listByOrg',
+    listForCurrentOrg: 'invites:listForCurrentOrg',
     createForCurrentOrg: 'invites:createForCurrentOrg',
-    acceptForCurrentUser: 'invites:acceptForCurrentUser',
+    acceptByToken: 'invites:acceptByToken',
   },
   auditLogs: {
     listForCurrentOrg: 'auditLogs:listForCurrentOrg',

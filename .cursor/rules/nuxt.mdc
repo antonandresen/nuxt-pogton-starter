@@ -24,6 +24,7 @@ Nuxt 4 Specifics
 - All client data access should flow through Convex functions that enforce `ctx.auth` and org permissions.
 - Do not add CRUD-style data endpoints under `server/api`. If it can be a Convex query/mutation, it must be.
 - Allowed `server/api` routes: auth session issuance, Convex auth token/JWKS, Stripe/webhooks, and non-Convex side effects.
+- When adding or renaming Convex functions, update the manual Convex API map in `app/composables/useConvex.ts` so client imports stay in sync.
 - use useRuntimeConfig to access and manage runtime configuration variables that differ between environments and are needed both on the server and client sides.
 - For SEO use useHead and useSeoMeta.
 - For images use <NuxtImage> or <NuxtPicture> component and for Icons use lucide-vue-next.
