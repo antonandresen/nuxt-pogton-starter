@@ -132,11 +132,7 @@ export default defineNuxtConfig({
       htmlAttrs: {
         lang: 'en'
       },
-      titleTemplate: '%s %separator %siteName',
-      templateParams: {
-        siteName: 'Pogton Starter',
-        separator: '·'
-      },
+      titleTemplate: '%s · Pogton Starter',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
