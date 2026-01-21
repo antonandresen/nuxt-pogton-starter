@@ -39,7 +39,7 @@
                   </div>
                   <div class="flex items-center justify-between">
                     <Label>Enabled</Label>
-                    <Switch v-model="flagForm.enabled" />
+                    <Switch v-model:checked="flagForm.enabled" />
                   </div>
                 </div>
                 <DialogFooter class="gap-2">
@@ -70,8 +70,8 @@
                     <TableCell class="font-medium">{{ flag.key }}</TableCell>
                     <TableCell>
                       <Switch
-                        :model-value="flag.enabled"
-                        @update:model-value="(value) => toggleFlag(flag, value)"
+                        :checked="flag.enabled"
+                        @update:checked="(value: boolean) => toggleFlag(flag, value)"
                       />
                     </TableCell>
                     <TableCell>{{ formatDate(flag.updatedAt) }}</TableCell>

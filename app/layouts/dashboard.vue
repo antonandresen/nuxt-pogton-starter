@@ -63,6 +63,13 @@
               </NuxtLink>
             </SidebarMenuItem>
 
+          </SidebarMenu>
+        </SidebarGroup>
+
+        <!-- Staff Navigation -->
+        <SidebarGroup v-if="canAccessCms || canAccessCrm" class="mt-4">
+          <SidebarGroupLabel class="text-xs uppercase tracking-wider px-3">Staff</SidebarGroupLabel>
+          <SidebarMenu class="space-y-1 px-2">
             <SidebarMenuItem v-if="canAccessCms">
               <NuxtLink to="/dashboard/cms">
                 <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/cms')">
@@ -265,7 +272,9 @@ const breadcrumbs = computed(() => {
 })
 
 const currentOrgRole = computed(() => {
-  const org = orgs.value.find((item) => item.id === currentOrgId.value)
+  const org = orgs.value.find(
+    (item: { id: string; role?: string | null }) => item.id === currentOrgId.value
+  )
   return (org?.role as any) ?? null
 })
 

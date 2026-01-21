@@ -12,6 +12,7 @@ import type * as aiChat from "../aiChat.js";
 import type * as apiKeys from "../apiKeys.js";
 import type * as auditLogs from "../auditLogs.js";
 import type * as cms from "../cms.js";
+import type * as crm from "../crm.js";
 import type * as featureFlags from "../featureFlags.js";
 import type * as helpers from "../helpers.js";
 import type * as invites from "../invites.js";
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   apiKeys: typeof apiKeys;
   auditLogs: typeof auditLogs;
   cms: typeof cms;
+  crm: typeof crm;
   featureFlags: typeof featureFlags;
   helpers: typeof helpers;
   invites: typeof invites;

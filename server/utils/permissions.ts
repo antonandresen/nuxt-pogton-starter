@@ -64,7 +64,7 @@ export type OrgRole = keyof typeof rolePermissions
 export type Permission = (typeof rolePermissions)[OrgRole][number]
 
 export function hasPermission(role: OrgRole, permission: Permission) {
-  return rolePermissions[role]?.includes(permission) ?? false
+  return (rolePermissions[role] as readonly Permission[] | undefined)?.includes(permission) ?? false
 }
 
 export function getRolePermissions(role: OrgRole) {
