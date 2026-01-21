@@ -8,6 +8,7 @@
     <Tabs default-value="feature-flags" class="space-y-6">
       <TabsList class="flex flex-wrap gap-2">
         <TabsTrigger value="feature-flags">Feature Flags</TabsTrigger>
+        <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
       </TabsList>
 
       <TabsContent value="feature-flags">
@@ -82,6 +83,64 @@
         </Card>
       </TabsContent>
 
+      <TabsContent value="ai-chat">
+        <Card>
+          <CardHeader>
+            <CardTitle>AI Chat</CardTitle>
+            <CardDescription>Configure the floating AI assistant for all users.</CardDescription>
+          </CardHeader>
+          <CardContent class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <Label>Enabled</Label>
+                <p class="text-xs text-muted-foreground">Turn the assistant on or off globally.</p>
+              </div>
+              <Switch v-model="aiForm.enabled" />
+            </div>
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="space-y-2">
+                <Label for="ai-model">Model</Label>
+                <Input id="ai-model" v-model="aiForm.model" placeholder="gpt-4o-mini" />
+              </div>
+              <div class="space-y-2">
+                <Label for="ai-temperature">Temperature</Label>
+                <Input id="ai-temperature" v-model.number="aiForm.temperature" type="number" step="0.1" min="0" max="2" />
+              </div>
+            </div>
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="space-y-2">
+                <Label for="ai-max-tokens">Max tokens</Label>
+                <Input id="ai-max-tokens" v-model.number="aiForm.maxTokens" type="number" min="64" />
+              </div>
+              <div class="space-y-2">
+                <Label for="ai-greeting">Greeting</Label>
+                <Input id="ai-greeting" v-model="aiForm.greeting" placeholder="Hi! How can I help?" />
+              </div>
+            </div>
+            <div class="space-y-2">
+              <Label for="ai-prompt">System prompt</Label>
+              <Textarea id="ai-prompt" v-model="aiForm.systemPrompt" rows="6" placeholder="Give the assistant context and rules" />
+            </div>
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="space-y-2">
+                <Label for="ai-cta-label">CTA label</Label>
+                <Input id="ai-cta-label" v-model="aiForm.ctaLabel" placeholder="Book a demo" />
+              </div>
+              <div class="space-y-2">
+                <Label for="ai-cta-url">CTA URL</Label>
+                <Input id="ai-cta-url" v-model="aiForm.ctaUrl" placeholder="https://cal.com/your-team" />
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <Button :disabled="isSavingAi" @click="saveAiConfig">
+                <Loader2 v-if="isSavingAi" class="mr-2 h-4 w-4 animate-spin" />
+                Save AI settings
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
     </Tabs>
   </div>
 </template>
@@ -105,6 +164,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Loader2 } from 'lucide-vue-next'
 import { useFeatureFlags } from '@/composables/useFeatureFlags'
+import { api, useConvexMutation, useConvexQuery } from '../../composables/useConvex'
 
 definePageMeta({
   layout: 'dashboard',
@@ -123,6 +183,8 @@ initSEO()
 const { toast } = useToast()
 
 const { flags, upsert } = useFeatureFlags()
+const { data: aiConfig } = useConvexQuery(api.aiChat.getAdminConfig, {})
+const saveAiMutation = useConvexMutation(api.aiChat.upsertAdminConfig)
 
 const isCreateFlagOpen = ref(false)
 const isCreatingFlag = ref(false)
@@ -130,6 +192,18 @@ const flagForm = reactive({
   key: '',
   enabled: true,
   rules: ''
+})
+
+const isSavingAi = ref(false)
+const aiForm = reactive({
+  enabled: true,
+  model: 'gpt-4o-mini',
+  systemPrompt: '',
+  greeting: 'Hi! Ask me anything about the product.',
+  ctaLabel: '',
+  ctaUrl: '',
+  maxTokens: 512,
+  temperature: 0.4,
 })
 
 
@@ -193,6 +267,46 @@ const toggleFlag = async (flag: { key: string; rules?: unknown }, enabled: boole
       description: 'Failed to update feature flag.',
       variant: 'destructive'
     })
+  }
+}
+
+watchEffect(() => {
+  if (!aiConfig.value) return
+  aiForm.enabled = aiConfig.value.enabled ?? aiForm.enabled
+  aiForm.model = aiConfig.value.model ?? aiForm.model
+  aiForm.systemPrompt = aiConfig.value.systemPrompt ?? aiForm.systemPrompt
+  aiForm.greeting = aiConfig.value.greeting ?? aiForm.greeting
+  aiForm.ctaLabel = aiConfig.value.ctaLabel ?? aiForm.ctaLabel
+  aiForm.ctaUrl = aiConfig.value.ctaUrl ?? aiForm.ctaUrl
+  aiForm.maxTokens = aiConfig.value.maxTokens ?? aiForm.maxTokens
+  aiForm.temperature = aiConfig.value.temperature ?? aiForm.temperature
+})
+
+const saveAiConfig = async () => {
+  isSavingAi.value = true
+  try {
+    await saveAiMutation.mutate({
+      enabled: aiForm.enabled,
+      model: aiForm.model.trim(),
+      systemPrompt: aiForm.systemPrompt.trim() || undefined,
+      greeting: aiForm.greeting.trim() || undefined,
+      ctaLabel: aiForm.ctaLabel.trim() || undefined,
+      ctaUrl: aiForm.ctaUrl.trim() || undefined,
+      maxTokens: aiForm.maxTokens || undefined,
+      temperature: aiForm.temperature || undefined,
+    })
+    toast({
+      title: 'AI chat updated',
+      description: 'Settings saved successfully.',
+    })
+  } catch (error) {
+    toast({
+      title: 'Error',
+      description: 'Failed to save AI settings.',
+      variant: 'destructive'
+    })
+  } finally {
+    isSavingAi.value = false
   }
 }
 

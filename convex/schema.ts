@@ -187,9 +187,75 @@ export default defineSchema({
     userId: v.id("users"),
     completedSteps: v.array(v.string()),
     completed: v.boolean(),
+    data: v.optional(v.any()),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_userId", ["userId"]),
+
+  cmsPages: defineTable({
+    orgId: v.id("organizations"),
+    title: v.string(),
+    slug: v.string(),
+    status: v.string(),
+    content: v.string(),
+    excerpt: v.optional(v.string()),
+    seoTitle: v.optional(v.string()),
+    seoDescription: v.optional(v.string()),
+    publishedAt: v.optional(v.number()),
+    createdBy: v.id("users"),
+    updatedBy: v.id("users"),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    deletedAt: v.optional(v.number()),
+  })
+    .index("by_orgId", ["orgId"])
+    .index("by_orgId_slug", ["orgId", "slug"])
+    .index("by_status", ["status"]),
+
+  aiChatConfig: defineTable({
+    key: v.string(),
+    enabled: v.boolean(),
+    model: v.string(),
+    systemPrompt: v.optional(v.string()),
+    greeting: v.optional(v.string()),
+    ctaLabel: v.optional(v.string()),
+    ctaUrl: v.optional(v.string()),
+    maxTokens: v.optional(v.number()),
+    temperature: v.optional(v.number()),
+    updatedBy: v.optional(v.id("users")),
+    updatedAt: v.number(),
+  })
+    .index("by_key", ["key"]),
+
+  crmCustomers: defineTable({
+    orgId: v.id("organizations"),
+    userId: v.id("users"),
+    status: v.string(),
+    onboardingStatus: v.string(),
+    ownerId: v.optional(v.id("users")),
+    lastContactedAt: v.optional(v.number()),
+    nextFollowUpAt: v.optional(v.number()),
+    source: v.optional(v.string()),
+    createdBy: v.id("users"),
+    updatedBy: v.id("users"),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    deletedAt: v.optional(v.number()),
+  })
+    .index("by_orgId", ["orgId"])
+    .index("by_orgId_userId", ["orgId", "userId"])
+    .index("by_orgId_status", ["orgId", "status"]),
+
+  crmNotes: defineTable({
+    orgId: v.id("organizations"),
+    customerId: v.id("crmCustomers"),
+    body: v.string(),
+    createdBy: v.id("users"),
+    createdAt: v.number(),
+    deletedAt: v.optional(v.number()),
+  })
+    .index("by_orgId", ["orgId"])
+    .index("by_orgId_customerId", ["orgId", "customerId"]),
 })
 

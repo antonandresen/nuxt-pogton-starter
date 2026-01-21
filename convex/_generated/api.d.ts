@@ -8,8 +8,10 @@
  * @module
  */
 
+import type * as aiChat from "../aiChat.js";
 import type * as apiKeys from "../apiKeys.js";
 import type * as auditLogs from "../auditLogs.js";
+import type * as cms from "../cms.js";
 import type * as featureFlags from "../featureFlags.js";
 import type * as helpers from "../helpers.js";
 import type * as invites from "../invites.js";
@@ -32,8 +34,10 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  aiChat: typeof aiChat;
   apiKeys: typeof apiKeys;
   auditLogs: typeof auditLogs;
+  cms: typeof cms;
   featureFlags: typeof featureFlags;
   helpers: typeof helpers;
   invites: typeof invites;

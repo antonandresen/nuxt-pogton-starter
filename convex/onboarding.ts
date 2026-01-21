@@ -17,6 +17,7 @@ export const upsert = mutation({
     userId: v.id("users"),
     completedSteps: v.array(v.string()),
     completed: v.boolean(),
+    data: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
     const existing = await ctx.db
@@ -30,6 +31,7 @@ export const upsert = mutation({
       await ctx.db.patch(existing._id, {
         completedSteps: args.completedSteps,
         completed: args.completed,
+        data: args.data,
         updatedAt: now,
       })
       return existing._id
@@ -39,6 +41,7 @@ export const upsert = mutation({
       userId: args.userId,
       completedSteps: args.completedSteps,
       completed: args.completed,
+      data: args.data,
       createdAt: now,
       updatedAt: now,
     })
@@ -60,6 +63,7 @@ export const upsertForCurrentUser = mutation({
   args: {
     completedSteps: v.array(v.string()),
     completed: v.boolean(),
+    data: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
     const { userId } = await requireUser(ctx)
@@ -73,6 +77,7 @@ export const upsertForCurrentUser = mutation({
       await ctx.db.patch(existing._id, {
         completedSteps: args.completedSteps,
         completed: args.completed,
+        data: args.data,
         updatedAt: now,
       })
       return existing._id
@@ -82,6 +87,7 @@ export const upsertForCurrentUser = mutation({
       userId,
       completedSteps: args.completedSteps,
       completed: args.completed,
+      data: args.data,
       createdAt: now,
       updatedAt: now,
     })

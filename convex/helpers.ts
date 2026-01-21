@@ -127,3 +127,11 @@ export async function requireOrgPermission(ctx: QueryCtx | MutationCtx, permissi
   return context
 }
 
+export async function requireAdmin(ctx: QueryCtx | MutationCtx) {
+  const { user } = await requireUser(ctx)
+  if (user.role !== "ADMIN") {
+    throw new Error("Forbidden")
+  }
+  return { user }
+}
+

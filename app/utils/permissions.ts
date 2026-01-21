@@ -63,8 +63,8 @@ const rolePermissions = {
 export type OrgRole = keyof typeof rolePermissions
 export type Permission = (typeof rolePermissions)[OrgRole][number]
 
-export function hasPermission(role: OrgRole, permission: Permission): boolean {
-  const permissions = rolePermissions[role]
-  return permissions ? permissions.includes(permission as any) : false
+export function hasPermission(role: OrgRole | null | undefined, permission: Permission) {
+  if (!role) return false
+  return rolePermissions[role]?.includes(permission) ?? false
 }
 

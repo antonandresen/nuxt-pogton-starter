@@ -20,6 +20,7 @@ export const api = {
     getByStripeCustomerId: 'users:getByStripeCustomerId',
     getAdmins: 'users:getAdmins',
     list: 'users:list',
+    listStripeCustomersForAdmin: 'users:listStripeCustomersForAdmin',
     create: 'users:create',
     updateStripeCustomerId: 'users:updateStripeCustomerId',
     updateRole: 'users:updateRole',
@@ -36,10 +37,12 @@ export const api = {
     getByUserId: 'subscriptions:getByUserId',
     deleteByUserId: 'subscriptions:deleteByUserId',
     create: 'subscriptions:create',
+    listAllForAdmin: 'subscriptions:listAllForAdmin',
   },
   purchases: {
     getByUserId: 'purchases:getByUserId',
     create: 'purchases:create',
+    listAllForAdmin: 'purchases:listAllForAdmin',
   },
   orgs: {
     getById: 'orgs:getById',
@@ -91,6 +94,27 @@ export const api = {
   onboarding: {
     getForCurrentUser: 'onboarding:getForCurrentUser',
     upsertForCurrentUser: 'onboarding:upsertForCurrentUser',
+  },
+  cms: {
+    listForCurrentOrg: 'cms:listForCurrentOrg',
+    getByIdForCurrentOrg: 'cms:getByIdForCurrentOrg',
+    getBySlugForCurrentOrg: 'cms:getBySlugForCurrentOrg',
+    getPublishedByOrgSlugAndSlug: 'cms:getPublishedByOrgSlugAndSlug',
+    listPublishedSummaries: 'cms:listPublishedSummaries',
+    upsertForCurrentOrg: 'cms:upsertForCurrentOrg',
+    deleteForCurrentOrg: 'cms:deleteForCurrentOrg',
+  },
+  aiChat: {
+    getPublicConfig: 'aiChat:getPublicConfig',
+    getAdminConfig: 'aiChat:getAdminConfig',
+    upsertAdminConfig: 'aiChat:upsertAdminConfig',
+    ask: 'aiChat:ask',
+  },
+  crm: {
+    listForCurrentOrg: 'crm:listForCurrentOrg',
+    upsertForCurrentOrg: 'crm:upsertForCurrentOrg',
+    addNoteForCurrentOrg: 'crm:addNoteForCurrentOrg',
+    listNotesForCurrentOrg: 'crm:listNotesForCurrentOrg',
   },
 } as const
 

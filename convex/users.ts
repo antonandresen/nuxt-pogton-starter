@@ -1,6 +1,6 @@
 import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
-import { requireUser } from "./helpers"
+import { requireAdmin, requireUser } from "./helpers"
 import bcrypt from "bcryptjs"
 
 export const getByEmail = query({
@@ -47,6 +47,23 @@ export const list = query({
       .query("users")
       .order("desc")
       .collect()
+  },
+})
+
+export const listStripeCustomersForAdmin = query({
+  args: {},
+  handler: async (ctx) => {
+    await requireAdmin(ctx)
+    const users = await ctx.db.query("users").order("desc").collect()
+    return users
+      .filter((user) => !!user.stripeCustomerId)
+      .map((user) => ({
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        stripeCustomerId: user.stripeCustomerId,
+        createdAt: user.createdAt,
+      }))
   },
 })
 

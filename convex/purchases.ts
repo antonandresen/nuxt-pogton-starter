@@ -1,5 +1,6 @@
 import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
+import { requireAdmin } from "./helpers"
 
 export const getByUserId = query({
   args: { userId: v.id("users") },
@@ -41,6 +42,31 @@ export const create = mutation({
       createdAt: now,
       updatedAt: now,
     })
+  },
+})
+
+export const listAllForAdmin = query({
+  args: {},
+  handler: async (ctx) => {
+    await requireAdmin(ctx)
+    const purchases = await ctx.db
+      .query("purchases")
+      .order("desc")
+      .collect()
+
+    const users = await Promise.all(purchases.map((purchase) => ctx.db.get(purchase.userId)))
+
+    return purchases.map((purchase, index) => ({
+      ...purchase,
+      user: users[index]
+        ? {
+            _id: users[index]!._id,
+            email: users[index]!.email,
+            name: users[index]!.name,
+            stripeCustomerId: users[index]!.stripeCustomerId,
+          }
+        : null,
+    }))
   },
 })
 

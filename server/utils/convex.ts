@@ -38,4 +38,12 @@ export const api = {
     createForCurrentUser: 'orgs:createForCurrentUser' as any,
     switchCurrentOrg: 'orgs:switchCurrentOrg' as any,
   },
+  cms: {
+    listPublishedSummaries: 'cms:listPublishedSummaries' as any,
+  },
+  aiChat: {
+    getPublicConfig: 'aiChat:getPublicConfig' as any,
+    getAdminConfig: 'aiChat:getAdminConfig' as any,
+    getRuntimeConfig: 'aiChat:getRuntimeConfig' as any,
+  },
 } as const

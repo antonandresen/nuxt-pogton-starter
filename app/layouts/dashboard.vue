@@ -62,6 +62,24 @@
                 </SidebarMenuButton>
               </NuxtLink>
             </SidebarMenuItem>
+
+            <SidebarMenuItem v-if="canAccessCms">
+              <NuxtLink to="/dashboard/cms">
+                <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/cms')">
+                  <FileText class="h-4 w-4" />
+                  <span>CMS</span>
+                </SidebarMenuButton>
+              </NuxtLink>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem v-if="canAccessCrm">
+              <NuxtLink to="/dashboard/crm">
+                <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/crm')">
+                  <UsersRound class="h-4 w-4" />
+                  <span>CRM</span>
+                </SidebarMenuButton>
+              </NuxtLink>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
 
@@ -172,6 +190,9 @@
       <AvatarUploadDialog v-model:open="showAvatarDialog" />
     </ClientOnly>
     <CookieBanner />
+    <ClientOnly>
+      <FloatingAiChat />
+    </ClientOnly>
   </SidebarProvider>
 </template>
 
@@ -206,14 +227,19 @@ import {
   Building2,
   LineChart,
   ShoppingCart,
+  FileText,
+  UsersRound,
   ChevronDown,
   Moon,
   User
 } from 'lucide-vue-next'
 import { useAuth } from '@/composables/use-auth'
+import { useOrg } from '@/composables/useOrg'
 import { getAvatarUrl } from '@/utils/gravatar'
+import { hasPermission } from '@/utils/permissions'
 
 const { user, logout } = useAuth()
+const { orgs, currentOrgId } = useOrg()
 const route = useRoute()
 const colorMode = useColorMode()
 const showAvatarDialog = ref(false)
@@ -237,6 +263,14 @@ const breadcrumbs = computed(() => {
     }] : [])
   ]
 })
+
+const currentOrgRole = computed(() => {
+  const org = orgs.value.find((item) => item.id === currentOrgId.value)
+  return (org?.role as any) ?? null
+})
+
+const canAccessCms = computed(() => hasPermission(currentOrgRole.value, "cms:read"))
+const canAccessCrm = computed(() => hasPermission(currentOrgRole.value, "crm:read"))
 
 const handleLogout = async () => {
   await logout()

@@ -9,13 +9,14 @@ export function useOnboarding() {
       onboardingData.value || {
         completedSteps: [],
         completed: false,
+        data: {},
         updatedAt: null,
       }
     )
   })
 
-  const update = async (completedSteps: string[], completed: boolean) => {
-    await upsertMutation.mutate({ completedSteps, completed })
+  const update = async (completedSteps: string[], completed: boolean, data?: Record<string, unknown>) => {
+    await upsertMutation.mutate({ completedSteps, completed, data })
   }
 
   return {

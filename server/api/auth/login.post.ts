@@ -1,9 +1,18 @@
-import { defineEventHandler, readBody, createError, setCookie } from 'h3'
+import { defineEventHandler, readBody, createError, setCookie, setHeader } from 'h3'
 import bcrypt from 'bcryptjs'
 import * as jose from 'jose'
 import { convex, api } from '../../utils/convex'
+import { getClientIdentifier, rateLimit } from '../../utils/rate-limit'
 
 export default defineEventHandler(async (event) => {
+  const identifier = getClientIdentifier(event)
+  const limit = rateLimit(`auth:login:${identifier}`, 10, 60_000)
+  setHeader(event, 'x-rate-limit-remaining', String(limit.remaining))
+  setHeader(event, 'x-rate-limit-reset', String(limit.resetAt))
+  if (!limit.ok) {
+    throw createError({ statusCode: 429, statusMessage: 'Too many requests' })
+  }
+
   const { email, password } = await readBody(event)
   const config = useRuntimeConfig()
 
