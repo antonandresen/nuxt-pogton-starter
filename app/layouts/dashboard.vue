@@ -95,6 +95,15 @@
                 </SidebarMenuButton>
               </NuxtLink>
             </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <NuxtLink to="/admin/settings">
+                <SidebarMenuButton :is-active="route.path.startsWith('/admin/settings')">
+                  <Settings class="h-4 w-4" />
+                  <span>Settings</span>
+                </SidebarMenuButton>
+              </NuxtLink>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
