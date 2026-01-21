@@ -1,5 +1,6 @@
 import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
+import type { Doc, Id } from "./_generated/dataModel"
 import { requireOrgPermission } from "./helpers"
 
 const STATUS_VALUES = ["lead", "active", "trial", "churned"] as const
@@ -24,9 +25,13 @@ export const listForCurrentOrg = query({
       .collect()
 
     const crmByUserId = new Map(crmRows.map((row) => [row.userId, row]))
-    const ownerIds = Array.from(new Set(crmRows.map((row) => row.ownerId).filter(Boolean))) as any[]
+    const ownerIds = Array.from(
+      new Set(crmRows.map((row) => row.ownerId).filter(Boolean))
+    ) as Id<"users">[]
     const owners = await Promise.all(ownerIds.map((id) => ctx.db.get(id)))
-    const ownerById = new Map(owners.filter(Boolean).map((owner) => [owner!._id, owner]))
+    const ownerById = new Map<Id<"users">, Doc<"users">>(
+      owners.filter(Boolean).map((owner) => [owner!._id, owner!])
+    )
 
     return memberships.map((membership, index) => {
       const user = users[index]

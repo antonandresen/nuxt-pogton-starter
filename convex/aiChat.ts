@@ -7,6 +7,22 @@ import { requireAdmin } from "./helpers"
 
 const CONFIG_KEY = "default"
 
+type ChatMessage = {
+  role: "user" | "assistant"
+  content: string
+}
+
+type RuntimeConfig = {
+  enabled: boolean
+  model: string
+  systemPrompt?: string
+  greeting?: string
+  ctaLabel?: string
+  ctaUrl?: string
+  maxTokens?: number
+  temperature?: number
+}
+
 export const getPublicConfig = query({
   args: {},
   handler: async (ctx) => {
@@ -69,12 +85,12 @@ export const ask = action({
       })
     ),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<{ message: string }> => {
     if (!args.messages.length) {
       throw new Error("Messages are required")
     }
 
-    const config = await ctx.runQuery(api.aiChat.getRuntimeConfig, {})
+    const config = (await ctx.runQuery(api.aiChat.getRuntimeConfig, {})) as RuntimeConfig
     if (!config?.enabled) {
       throw new Error("AI chat disabled")
     }
@@ -87,12 +103,17 @@ export const ask = action({
       .filter(Boolean)
       .join("\n")
 
-    const summaries = await ctx.runQuery(api.cms.listPublishedSummaries, {})
-    const contentContext = summaries
-      .map((page: any) => `- ${page.title} (${page.slug}): ${page.excerpt || page.content}`)
+    const summaries = (await ctx.runQuery(api.cms.listPublishedSummaries, {})) as Array<{
+      title: string
+      slug: string
+      excerpt?: string
+      content: string
+    }>
+    const contentContext: string = summaries
+      .map((page) => `- ${page.title} (${page.slug}): ${page.excerpt || page.content}`)
       .join("\n")
 
-    const systemPrompt = [
+    const systemPrompt: string = [
       config.systemPrompt || "You are a helpful product assistant.",
       pageContext ? `\nCurrent page context:\n${pageContext}` : "",
       contentContext ? `\nPublished CMS content:\n${contentContext}` : "",
@@ -100,11 +121,11 @@ export const ask = action({
       .filter(Boolean)
       .join("\n")
 
-    const { text } = await generateText({
+    const { text }: { text: string } = await generateText({
       model: openai(config.model || "gpt-4o-mini"),
       system: systemPrompt,
       messages: args.messages.map((message) => ({
-        role: message.role as "user" | "assistant",
+        role: message.role as ChatMessage["role"],
         content: message.content,
       })),
       temperature: config.temperature ?? 0.4,
