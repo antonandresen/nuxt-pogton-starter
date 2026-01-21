@@ -12,6 +12,7 @@
         <TabsTrigger value="preferences">Preferences</TabsTrigger>
         <TabsTrigger value="usage">Usage</TabsTrigger>
         <TabsTrigger value="api-keys">API Keys</TabsTrigger>
+        <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
       </TabsList>
 
       <TabsContent value="account">
@@ -261,31 +262,170 @@
         </Card>
       </TabsContent>
 
+      <TabsContent value="webhooks">
+        <div class="space-y-6">
+          <Card>
+            <CardHeader class="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Webhook Endpoints</CardTitle>
+                <CardDescription>Send events to your systems</CardDescription>
+              </div>
+              <Dialog v-model:open="isCreateWebhookOpen">
+                <DialogTrigger as-child>
+                  <Button variant="outline">New Endpoint</Button>
+                </DialogTrigger>
+                <DialogContent class="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Create Webhook Endpoint</DialogTitle>
+                    <DialogDescription>Provide a target URL and events.</DialogDescription>
+                  </DialogHeader>
+                  <div class="space-y-4 py-2">
+                    <div class="space-y-2">
+                      <Label for="webhook-name">Name</Label>
+                      <Input id="webhook-name" v-model="webhookForm.name" placeholder="Production" />
+                    </div>
+                    <div class="space-y-2">
+                      <Label for="webhook-url">URL</Label>
+                      <Input id="webhook-url" v-model="webhookForm.url" placeholder="https://example.com/webhooks" />
+                    </div>
+                    <div class="space-y-2">
+                      <Label for="webhook-events">Events (comma separated)</Label>
+                      <Input id="webhook-events" v-model="webhookForm.events" placeholder="user.created, invoice.paid" />
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <Label>Enabled</Label>
+                      <Switch v-model="webhookForm.enabled" />
+                    </div>
+                  </div>
+                  <DialogFooter class="gap-2">
+                    <Button variant="outline" @click="isCreateWebhookOpen = false">Cancel</Button>
+                    <Button :disabled="isCreatingWebhook" @click="createWebhook">
+                      <Loader2 v-if="isCreatingWebhook" class="mr-2 h-4 w-4 animate-spin" />
+                      Create Endpoint
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </CardHeader>
+            <CardContent>
+              <div v-if="!endpoints?.length" class="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
+                No endpoints yet. Create one to start receiving events.
+              </div>
+              <div v-else class="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>URL</TableHead>
+                      <TableHead>Events</TableHead>
+                      <TableHead>Enabled</TableHead>
+                      <TableHead class="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow v-for="endpoint in endpoints" :key="endpoint._id">
+                      <TableCell class="font-medium">{{ endpoint.name }}</TableCell>
+                      <TableCell class="truncate max-w-[200px]">{{ endpoint.url }}</TableCell>
+                      <TableCell>{{ endpoint.events?.join(', ') }}</TableCell>
+                      <TableCell>
+                        <Switch
+                          :model-value="endpoint.enabled"
+                          @update:model-value="(value: boolean) => toggleWebhook(endpoint._id, value)"
+                        />
+                      </TableCell>
+                      <TableCell class="text-right">
+                        <Button variant="destructive" size="sm" @click="deleteWebhook(endpoint._id)">
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader class="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle class="flex items-center gap-2">
+                  Recent Attempts
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger as-child>
+                        <button type="button" class="text-muted-foreground hover:text-foreground">
+                          <Info class="h-4 w-4" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        One row per webhook delivery attempt (success or failure).
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </CardTitle>
+                <CardDescription>Latest webhook attempts</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div v-if="!deliveries.length" class="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
+                No deliveries yet.
+              </div>
+              <div v-else class="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Event</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Code</TableHead>
+                      <TableHead>Created</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow v-for="delivery in deliveries" :key="delivery._id">
+                      <TableCell class="font-medium">{{ delivery.event }}</TableCell>
+                      <TableCell>
+                        <Badge :variant="delivery.status === 'success' ? 'outline' : 'secondary'">
+                          {{ delivery.status }}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{{ delivery.statusCode ?? '-' }}</TableCell>
+                      <TableCell>{{ formatDate(delivery.createdAt) }}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </TabsContent>
+
     </Tabs>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useToast } from '@/components/ui/toast/use-toast'
+import { useToast } from '../../components/ui/toast/use-toast'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
-import { Badge } from '@/components/ui/badge'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Loader2 } from 'lucide-vue-next'
+} from '../../components/ui/card'
+import { Button } from '../../components/ui/button'
+import { Input } from '../../components/ui/input'
+import { Label } from '../../components/ui/label'
+import { Switch } from '../../components/ui/switch'
+import { Badge } from '../../components/ui/badge'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../components/ui/tooltip'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
+import { Info, Loader2 } from 'lucide-vue-next'
 import { api, useConvexMutation, useConvexQuery } from '../../composables/useConvex'
-import { useApiKeys } from '~/composables/useApiKeys'
-import { useUsage } from '~/composables/useUsage'
+import { useApiKeys } from '../../composables/useApiKeys'
+import { useUsage } from '../../composables/useUsage'
+import { useWebhooks } from '../../composables/useWebhooks'
 
 definePageMeta({
   layout: 'dashboard',
@@ -325,6 +465,7 @@ const preferences = reactive({
 
 const { keys, create: createApiKey, revoke: revokeApiKey } = useApiKeys()
 const { metrics } = useUsage()
+const { endpoints, createEndpoint, updateEndpoint, deleteEndpoint, listDeliveries } = useWebhooks()
 
 const isCreateKeyOpen = ref(false)
 const isCreatingKey = ref(false)
@@ -336,6 +477,17 @@ const isTokenDialogOpen = computed({
     if (!value) newKey.value = null
   }
 })
+
+const isCreateWebhookOpen = ref(false)
+const isCreatingWebhook = ref(false)
+const webhookForm = reactive({
+  name: '',
+  url: '',
+  events: '',
+  enabled: true
+})
+
+const deliveries = computed(() => listDeliveries())
 
 
 watchEffect(() => {
@@ -456,6 +608,74 @@ const copyToken = async () => {
     toast({
       title: 'Copy failed',
       description: 'Could not copy token to clipboard.',
+      variant: 'destructive'
+    })
+  }
+}
+
+const createWebhook = async () => {
+  const name = webhookForm.name.trim()
+  const url = webhookForm.url.trim()
+  const events = webhookForm.events
+    .split(',')
+    .map((event) => event.trim())
+    .filter(Boolean)
+
+  if (!name || !url || events.length === 0) {
+    toast({
+      title: 'Missing details',
+      description: 'Name, URL, and at least one event are required.',
+      variant: 'destructive'
+    })
+    return
+  }
+
+  isCreatingWebhook.value = true
+  try {
+    await createEndpoint({ name, url, events, enabled: webhookForm.enabled })
+    webhookForm.name = ''
+    webhookForm.url = ''
+    webhookForm.events = ''
+    webhookForm.enabled = true
+    isCreateWebhookOpen.value = false
+    toast({
+      title: 'Webhook created',
+      description: 'Endpoint is ready to receive events.'
+    })
+  } catch (error) {
+    toast({
+      title: 'Error',
+      description: 'Failed to create webhook endpoint.',
+      variant: 'destructive'
+    })
+  } finally {
+    isCreatingWebhook.value = false
+  }
+}
+
+const toggleWebhook = async (id: string, enabled: boolean) => {
+  try {
+    await updateEndpoint(id, { enabled })
+  } catch (error) {
+    toast({
+      title: 'Error',
+      description: 'Failed to update webhook endpoint.',
+      variant: 'destructive'
+    })
+  }
+}
+
+const deleteWebhook = async (id: string) => {
+  try {
+    await deleteEndpoint(id)
+    toast({
+      title: 'Webhook deleted',
+      description: 'Endpoint removed.'
+    })
+  } catch (error) {
+    toast({
+      title: 'Error',
+      description: 'Failed to delete webhook endpoint.',
       variant: 'destructive'
     })
   }
