@@ -38,6 +38,14 @@ definePageMeta({
   middleware: ['auth']
 })
 
+const { initSEO } = useSEO({
+  title: 'Subscription Success',
+  description: 'Subscription verification status.',
+  noindex: true
+})
+
+initSEO()
+
 const route = useRoute()
 
 const { data, error } = await useFetch<{ success: boolean; message: string }>('/api/payment/success', {

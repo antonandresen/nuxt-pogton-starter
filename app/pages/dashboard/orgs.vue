@@ -81,6 +81,14 @@ definePageMeta({
   breadcrumb: 'Workspaces',
 })
 
+const { initSEO } = useSEO({
+  title: 'Workspaces',
+  description: 'Create and manage your workspaces.',
+  noindex: true
+})
+
+initSEO()
+
 const { toast } = useToast()
 const { orgs, currentOrgId, create, switchOrg: switchOrgAction } = useOrg()
 const isLoading = ref(false)

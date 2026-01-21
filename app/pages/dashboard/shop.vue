@@ -8,6 +8,14 @@ definePageMeta({
   breadcrumb: 'Shop'
 })
 
+const { initSEO } = useSEO({
+  title: 'Shop',
+  description: 'Browse premium tools and resources.',
+  noindex: true
+})
+
+initSEO()
+
 const config = useRuntimeConfig()
 const stripe = await loadStripe(config.public.STRIPE_PUBLISHABLE_KEY)
 

@@ -182,6 +182,14 @@ definePageMeta({
   breadcrumb: undefined
 })
 
+const { initSEO } = useSEO({
+  title: 'Dashboard',
+  description: 'Overview of your account activity and stats.',
+  noindex: true
+})
+
+initSEO()
+
 // Example stats data - replace with real data fetching
 const stats = ref({
   projects: 5,

@@ -15,4 +15,12 @@ definePageMeta({
   middleware: ['auth', 'admin'],
   breadcrumb: 'Users'
 })
+
+const { initSEO } = useSEO({
+  title: 'User Management',
+  description: 'Manage and monitor user accounts.',
+  noindex: true
+})
+
+initSEO()
 </script> 

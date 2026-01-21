@@ -13,6 +13,14 @@ definePageMeta({
   layout: 'dashboard',
   middleware: ['auth']
 })
+
+const { initSEO } = useSEO({
+  title: 'Payment Cancelled',
+  description: 'Your subscription payment was cancelled.',
+  noindex: true
+})
+
+initSEO()
   </script>
   
   <style scoped>

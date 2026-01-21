@@ -135,6 +135,14 @@ definePageMeta({
   breadcrumb: 'Settings'
 })
 
+const { initSEO } = useSEO({
+  title: 'Settings',
+  description: 'Manage your account settings and preferences.',
+  noindex: true
+})
+
+initSEO()
+
 const { toast } = useToast()
 const isLoading = ref(false)
 const isPasswordLoading = ref(false)

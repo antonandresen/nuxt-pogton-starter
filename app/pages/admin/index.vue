@@ -105,6 +105,14 @@ definePageMeta({
   breadcrumb: 'Admin'
 })
 
+const { initSEO } = useSEO({
+  title: 'Admin Overview',
+  description: 'Monitor key platform metrics and activity.',
+  noindex: true
+})
+
+initSEO()
+
 // Example stats data - replace with real data fetching
 const stats = ref({
   totalUsers: 1234,

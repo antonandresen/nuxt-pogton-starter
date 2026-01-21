@@ -95,6 +95,14 @@ definePageMeta({
   middleware: ['auth']
 })
 
+const { initSEO } = useSEO({
+  title: 'Subscription',
+  description: 'Manage your subscription and billing.',
+  noindex: true
+})
+
+initSEO()
+
 const { user } = useAuth()
 
 // Real-time subscription data from Convex

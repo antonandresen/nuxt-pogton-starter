@@ -109,6 +109,14 @@ definePageMeta({
   breadcrumb: 'Success'
 })
 
+const { initSEO } = useSEO({
+  title: 'Purchase Success',
+  description: 'Your purchase has been verified.',
+  noindex: true
+})
+
+initSEO()
+
 const route = useRoute()
 const router = useRouter()
 

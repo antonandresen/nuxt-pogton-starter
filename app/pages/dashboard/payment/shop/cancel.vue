@@ -7,6 +7,14 @@ definePageMeta({
   breadcrumb: 'Cancelled'
 })
 
+const { initSEO } = useSEO({
+  title: 'Purchase Cancelled',
+  description: 'Your purchase was cancelled.',
+  noindex: true
+})
+
+initSEO()
+
 const router = useRouter()
 
 const backToShop = () => {

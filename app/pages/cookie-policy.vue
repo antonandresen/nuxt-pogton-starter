@@ -75,4 +75,12 @@
   definePageMeta({
     layout: 'default'
   })
+
+const { initSEO } = useSEO({
+  title: 'Cookie Policy',
+  description: 'Learn how and why we use cookies.',
+  type: 'article'
+})
+
+initSEO()
   </script>
