@@ -89,10 +89,12 @@
 </template>
 
 <script setup lang="ts">
-import { useConvexQuery, api, type Id } from '~/composables/useConvex'
+import { useConvexQuery, api, type Id } from '../../composables/useConvex'
 
 definePageMeta({
-  middleware: ['auth']
+  layout: 'dashboard',
+  middleware: ['auth'],
+  breadcrumb: 'Subscription',
 })
 
 const { initSEO } = useSEO({
