@@ -56,19 +56,19 @@
 
 <script setup lang="ts">
 import { Loader2 } from 'lucide-vue-next'
-import { useToast } from '../../components/ui/toast/use-toast'
+import { useToast } from '../../../components/ui/toast/use-toast'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../components/ui/card'
-import { Button } from '../../components/ui/button'
-import { Input } from '../../components/ui/input'
-import { Label } from '../../components/ui/label'
-import { api, useConvexMutation } from '../../composables/useConvex'
-import { useOrg } from '../../composables/useOrg'
+} from '../../../components/ui/card'
+import { Button } from '../../../components/ui/button'
+import { Input } from '../../../components/ui/input'
+import { Label } from '../../../components/ui/label'
+import { api, useConvexMutation } from '../../../composables/useConvex'
+import { useOrg } from '../../../composables/useOrg'
 
 definePageMeta({
   layout: 'dashboard',
