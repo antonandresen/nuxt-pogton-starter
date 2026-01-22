@@ -6,9 +6,50 @@
           <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg">
             <img src="/logo.png" alt="Pogton Logo" class="h-6 w-6 object-contain brightness-0 invert" />
           </div>
-          <div>
+          <div class="min-w-0">
             <h2 class="text-lg font-bold tracking-tight">Pogton</h2>
-            <p class="text-xs text-muted-foreground">Starter Template</p>
+            <DropdownMenu>
+              <DropdownMenuTrigger class="group flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+                <span class="max-w-[140px] truncate">{{ currentOrg?.name ?? 'Select workspace' }}</span>
+                <ChevronDown class="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" class="w-60">
+                <div class="px-2 py-1.5 text-xs text-muted-foreground">Workspaces</div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  v-for="org in orgs"
+                  :key="org.id"
+                  class="flex items-center justify-between gap-2"
+                >
+                  <div class="min-w-0">
+                    <div class="text-sm font-medium truncate">{{ org.name }}</div>
+                    <div class="text-xs text-muted-foreground truncate">{{ org.slug }}</div>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <button
+                      class="inline-flex h-7 items-center rounded-md border px-2 text-xs font-medium transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
+                      :disabled="org.id === currentOrgId"
+                      @click.stop.prevent="handleSwitchOrg(org.id)"
+                    >
+                      {{ org.id === currentOrgId ? 'Current' : 'Switch' }}
+                    </button>
+                    <NuxtLink
+                      :to="`/dashboard/orgs/${org.id}`"
+                      class="inline-flex h-7 items-center rounded-md border px-2 text-xs font-medium transition hover:bg-muted"
+                    >
+                      Configure
+                    </NuxtLink>
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem as-child>
+                  <NuxtLink to="/dashboard/orgs" class="flex items-center gap-2">
+                    <Building2 class="h-4 w-4" />
+                    <span>Manage workspaces</span>
+                  </NuxtLink>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </SidebarHeader>
@@ -36,15 +77,6 @@
               </NuxtLink>
             </SidebarMenuItem>
 
-            <SidebarMenuItem>
-              <NuxtLink to="/dashboard/orgs">
-                <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/orgs')">
-                  <Building2 class="h-4 w-4" />
-                  <span>Workspaces</span>
-                </SidebarMenuButton>
-              </NuxtLink>
-            </SidebarMenuItem>
-            
             <SidebarMenuItem>
               <NuxtLink to="/dashboard/settings">
                 <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/settings')">
@@ -238,15 +270,18 @@ import {
   UsersRound,
   ChevronDown,
   Moon,
-  User
+  User,
+  Check
 } from 'lucide-vue-next'
 import { useAuth } from '@/composables/use-auth'
 import { useOrg } from '@/composables/useOrg'
 import { getAvatarUrl } from '@/utils/gravatar'
 import { hasPermission } from '@/utils/permissions'
+import { useToast } from '@/components/ui/toast/use-toast'
 
 const { user, logout } = useAuth()
-const { orgs, currentOrgId } = useOrg()
+const { orgs, currentOrgId, switchOrg: switchOrgAction } = useOrg()
+const { toast } = useToast()
 const route = useRoute()
 const colorMode = useColorMode()
 const showAvatarDialog = ref(false)
@@ -271,6 +306,10 @@ const breadcrumbs = computed(() => {
   ]
 })
 
+const currentOrg = computed(() => {
+  return orgs.value.find((org: { id: string }) => org.id === currentOrgId.value) ?? null
+})
+
 const currentOrgRole = computed(() => {
   const org = orgs.value.find(
     (item: { id: string; role?: string | null }) => item.id === currentOrgId.value
@@ -283,6 +322,16 @@ const canAccessCrm = computed(() => hasPermission(currentOrgRole.value, "crm:rea
 
 const handleLogout = async () => {
   await logout()
+}
+
+const handleSwitchOrg = async (orgId: string) => {
+  if (orgId === currentOrgId.value) return
+  try {
+    await switchOrgAction(orgId)
+    toast({ title: 'Workspace switched' })
+  } catch (error) {
+    toast({ title: 'Error', description: 'Failed to switch workspace.', variant: 'destructive' })
+  }
 }
 
 const toggleTheme = () => {

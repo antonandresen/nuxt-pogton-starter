@@ -50,6 +50,8 @@ export const api = {
     listMine: 'orgs:listMine',
     createForCurrentUser: 'orgs:createForCurrentUser',
     switchCurrentOrg: 'orgs:switchCurrentOrg',
+    updateNameForCurrentOrg: 'orgs:updateNameForCurrentOrg',
+    updateSlugForCurrentOrg: 'orgs:updateSlugForCurrentOrg',
   },
   memberships: {
     getByOrgAndUser: 'memberships:getByOrgAndUser',
