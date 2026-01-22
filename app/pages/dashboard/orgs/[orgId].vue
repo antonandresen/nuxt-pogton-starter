@@ -32,18 +32,24 @@
             Switch
           </Button>
         </div>
+        <div
+          v-else-if="!canEditOrg"
+          class="rounded-md border border-dashed bg-muted/40 p-4 text-sm text-muted-foreground"
+        >
+          You don’t have permission to edit this workspace.
+        </div>
 
         <form class="space-y-4" @submit.prevent="handleSave">
           <div class="space-y-2">
             <Label for="org-name">Workspace name</Label>
-            <Input id="org-name" v-model="form.name" :disabled="!isCurrentOrg || isSaving" />
+            <Input id="org-name" v-model="form.name" :disabled="!canEditOrg || isSaving" />
           </div>
           <div class="space-y-2">
             <Label for="org-slug">Slug</Label>
-            <Input id="org-slug" v-model="form.slug" :disabled="!isCurrentOrg || isSaving" />
+            <Input id="org-slug" v-model="form.slug" :disabled="!canEditOrg || isSaving" />
           </div>
           <div>
-            <Button type="submit" :disabled="!isCurrentOrg || isSaving">
+            <Button type="submit" :disabled="!canEditOrg || isSaving">
               <Loader2 v-if="isSaving" class="mr-2 h-4 w-4 animate-spin" />
               Save changes
             </Button>
@@ -69,6 +75,7 @@ import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
 import { api, useConvexMutation } from '../../../composables/useConvex'
 import { useOrg } from '../../../composables/useOrg'
+import { hasPermission } from '../../../utils/permissions'
 
 definePageMeta({
   layout: 'dashboard',
@@ -98,6 +105,11 @@ const selectedOrg = computed(() => {
 })
 
 const isCurrentOrg = computed(() => selectedOrg.value?.id === currentOrgId.value)
+const canEditOrg = computed(() => {
+  if (!selectedOrg.value) return false
+  if (selectedOrg.value.id !== currentOrgId.value) return false
+  return hasPermission(selectedOrg.value.role, 'org:write')
+})
 
 const form = reactive({
   name: '',
@@ -136,6 +148,10 @@ const handleSave = async () => {
     toast({ title: 'Switch required', description: 'Switch to edit this workspace.', variant: 'destructive' })
     return
   }
+  if (!canEditOrg.value) {
+    toast({ title: 'Permission required', description: 'You need org:write to edit this workspace.', variant: 'destructive' })
+    return
+  }
 
   const name = form.name.trim()
   const slug = form.slug.trim()
@@ -168,7 +184,8 @@ const handleSave = async () => {
     await Promise.all(updates)
     toast({ title: 'Workspace updated' })
   } catch (error) {
-    toast({ title: 'Error', description: 'Failed to update workspace.', variant: 'destructive' })
+    const message = error instanceof Error ? error.message : 'Failed to update workspace.'
+    toast({ title: 'Error', description: message, variant: 'destructive' })
   } finally {
     isSaving.value = false
   }
