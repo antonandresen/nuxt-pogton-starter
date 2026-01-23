@@ -46,4 +46,8 @@ export const api = {
     getAdminConfig: 'aiChat:getAdminConfig' as any,
     getRuntimeConfig: 'aiChat:getRuntimeConfig' as any,
   },
+  stripe: {
+    upsertProduct: 'stripe:upsertProduct' as any,
+    upsertPrice: 'stripe:upsertPrice' as any,
+  },
 } as const

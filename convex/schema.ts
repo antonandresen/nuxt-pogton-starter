@@ -257,5 +257,47 @@ export default defineSchema({
   })
     .index("by_orgId", ["orgId"])
     .index("by_orgId_customerId", ["orgId", "customerId"]),
+
+  pricingPlans: defineTable({
+    name: v.string(),
+    description: v.string(),
+    monthlyPrice: v.number(),
+    annualPrice: v.number(),
+    stripePriceIdMonthly: v.optional(v.string()),
+    stripePriceIdAnnual: v.optional(v.string()),
+    stripeProductId: v.optional(v.string()),
+    features: v.array(v.string()),
+    isPopular: v.boolean(),
+    isActive: v.boolean(),
+    displayOrder: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_isActive", ["isActive"])
+    .index("by_displayOrder", ["displayOrder"]),
+
+  stripeProducts: defineTable({
+    stripeId: v.string(),
+    name: v.string(),
+    description: v.optional(v.string()),
+    active: v.boolean(),
+    syncedAt: v.number(),
+  })
+    .index("by_stripeId", ["stripeId"]),
+
+  stripePrices: defineTable({
+    stripeId: v.string(),
+    stripeProductId: v.string(),
+    nickname: v.optional(v.string()),
+    unitAmount: v.optional(v.number()),
+    currency: v.string(),
+    interval: v.optional(v.string()),
+    intervalCount: v.optional(v.number()),
+    type: v.string(),
+    active: v.boolean(),
+    syncedAt: v.number(),
+  })
+    .index("by_stripeId", ["stripeId"])
+    .index("by_stripeProductId", ["stripeProductId"]),
 })
 

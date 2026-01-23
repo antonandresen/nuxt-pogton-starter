@@ -118,6 +118,19 @@ export const api = {
     addNoteForCurrentOrg: 'crm:addNoteForCurrentOrg',
     listNotesForCurrentOrg: 'crm:listNotesForCurrentOrg',
   },
+  pricingPlans: {
+    listActive: 'pricingPlans:listActive',
+    listAll: 'pricingPlans:listAll',
+    getById: 'pricingPlans:getById',
+    create: 'pricingPlans:create',
+    update: 'pricingPlans:update',
+    remove: 'pricingPlans:remove',
+  },
+  stripe: {
+    listProducts: 'stripe:listProducts',
+    listPrices: 'stripe:listPrices',
+    listPricesByProduct: 'stripe:listPricesByProduct',
+  },
 } as const
 
 // Re-export composables

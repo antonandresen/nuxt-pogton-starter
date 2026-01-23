@@ -1,138 +1,123 @@
 import { v } from "convex/values"
-import { action, internalMutation } from "./_generated/server"
-import { internal } from "./_generated/api"
+import { mutation, query } from "./_generated/server"
+import { requireAdmin } from "./helpers"
 
-// Actions can call external APIs (like Stripe) - mutations cannot!
-// This is the proper Convex pattern for external service calls.
-
-export const syncSubscriptionFromStripe = action({
-  args: {
-    stripeCustomerId: v.string(),
+// List synced products
+export const listProducts = query({
+  args: {},
+  handler: async (ctx) => {
+    await requireAdmin(ctx)
+    return await ctx.db
+      .query("stripeProducts")
+      .filter((q) => q.eq(q.field("active"), true))
+      .collect()
   },
-  handler: async (ctx, args): Promise<{ subscriptionId: any; currentPeriodEnd: Date } | null> => {
-    // Get Stripe secret from environment
-    const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-    if (!stripeSecretKey) {
-      throw new Error("STRIPE_SECRET_KEY not configured")
-    }
+})
 
-    // Dynamic import to avoid bundling issues
-    const Stripe = (await import("stripe")).default
-    const stripe = new Stripe(stripeSecretKey)
+// List synced prices
+export const listPrices = query({
+  args: {},
+  handler: async (ctx) => {
+    await requireAdmin(ctx)
+    return await ctx.db
+      .query("stripePrices")
+      .filter((q) => q.eq(q.field("active"), true))
+      .collect()
+  },
+})
 
-    // Fetch subscription from Stripe
-    const stripeSubscriptions = await stripe.subscriptions.list({
-      customer: args.stripeCustomerId,
-      limit: 1,
-      status: "all",
-      expand: ["data.default_payment_method"],
-    })
+// List prices for a specific product
+export const listPricesByProduct = query({
+  args: { stripeProductId: v.string() },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx)
+    return await ctx.db
+      .query("stripePrices")
+      .withIndex("by_stripeProductId", (q) => q.eq("stripeProductId", args.stripeProductId))
+      .filter((q) => q.eq(q.field("active"), true))
+      .collect()
+  },
+})
 
-    if (stripeSubscriptions.data.length === 0) {
-      // No subscription found - delete any existing
-      await ctx.runMutation(internal.stripe.deleteSubscriptionByCustomerId, {
-        stripeCustomerId: args.stripeCustomerId,
+// Upsert product (called from server sync)
+export const upsertProduct = mutation({
+  args: {
+    stripeId: v.string(),
+    name: v.string(),
+    description: v.optional(v.string()),
+    active: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query("stripeProducts")
+      .withIndex("by_stripeId", (q) => q.eq("stripeId", args.stripeId))
+      .first()
+
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        name: args.name,
+        description: args.description,
+        active: args.active,
+        syncedAt: Date.now(),
       })
-      return null
+      return existing._id
+    } else {
+      return await ctx.db.insert("stripeProducts", {
+        stripeId: args.stripeId,
+        name: args.name,
+        description: args.description,
+        active: args.active,
+        syncedAt: Date.now(),
+      })
     }
-
-    const subscription = stripeSubscriptions.data[0]
-    const paymentMethod = subscription.default_payment_method as any
-
-    // Update database via internal mutation
-    const result: { subscriptionId: any; currentPeriodEnd: Date } = await ctx.runMutation(internal.stripe.upsertSubscription, {
-      stripeCustomerId: args.stripeCustomerId,
-      stripeSubscriptionId: subscription.id,
-      status: subscription.status,
-      priceId: subscription.items.data[0].price.id,
-      currentPeriodStart: subscription.current_period_start * 1000,
-      currentPeriodEnd: subscription.current_period_end * 1000,
-      cancelAtPeriodEnd: subscription.cancel_at_period_end,
-      paymentMethodBrand: paymentMethod?.card?.brand,
-      paymentMethodLast4: paymentMethod?.card?.last4,
-    })
-
-    return result
   },
 })
 
-// Internal mutations - only callable from actions, not from client
-export const upsertSubscription = internalMutation({
+// Upsert price (called from server sync)
+export const upsertPrice = mutation({
   args: {
-    stripeCustomerId: v.string(),
-    stripeSubscriptionId: v.string(),
-    status: v.string(),
-    priceId: v.string(),
-    currentPeriodStart: v.number(),
-    currentPeriodEnd: v.number(),
-    cancelAtPeriodEnd: v.boolean(),
-    paymentMethodBrand: v.optional(v.string()),
-    paymentMethodLast4: v.optional(v.string()),
+    stripeId: v.string(),
+    stripeProductId: v.string(),
+    nickname: v.optional(v.string()),
+    unitAmount: v.optional(v.number()),
+    currency: v.string(),
+    interval: v.optional(v.string()),
+    intervalCount: v.optional(v.number()),
+    type: v.string(),
+    active: v.boolean(),
   },
   handler: async (ctx, args) => {
-    // Find user by stripe customer ID
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_stripeCustomerId", (q) => q.eq("stripeCustomerId", args.stripeCustomerId))
+    const existing = await ctx.db
+      .query("stripePrices")
+      .withIndex("by_stripeId", (q) => q.eq("stripeId", args.stripeId))
       .first()
 
-    if (!user) {
-      throw new Error("User not found for stripe customer: " + args.stripeCustomerId)
-    }
-
-    // Delete existing subscriptions for this user
-    const existingSubs = await ctx.db
-      .query("subscriptions")
-      .withIndex("by_userId", (q) => q.eq("userId", user._id))
-      .collect()
-
-    for (const sub of existingSubs) {
-      await ctx.db.delete(sub._id)
-    }
-
-    // Create new subscription
-    const now = Date.now()
-    const subscriptionId = await ctx.db.insert("subscriptions", {
-      userId: user._id,
-      stripeSubscriptionId: args.stripeSubscriptionId,
-      status: args.status,
-      priceId: args.priceId,
-      currentPeriodStart: args.currentPeriodStart,
-      currentPeriodEnd: args.currentPeriodEnd,
-      cancelAtPeriodEnd: args.cancelAtPeriodEnd,
-      paymentMethodBrand: args.paymentMethodBrand,
-      paymentMethodLast4: args.paymentMethodLast4,
-      createdAt: now,
-      updatedAt: now,
-    })
-
-    return {
-      subscriptionId,
-      currentPeriodEnd: new Date(args.currentPeriodEnd),
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        stripeProductId: args.stripeProductId,
+        nickname: args.nickname,
+        unitAmount: args.unitAmount,
+        currency: args.currency,
+        interval: args.interval,
+        intervalCount: args.intervalCount,
+        type: args.type,
+        active: args.active,
+        syncedAt: Date.now(),
+      })
+      return existing._id
+    } else {
+      return await ctx.db.insert("stripePrices", {
+        stripeId: args.stripeId,
+        stripeProductId: args.stripeProductId,
+        nickname: args.nickname,
+        unitAmount: args.unitAmount,
+        currency: args.currency,
+        interval: args.interval,
+        intervalCount: args.intervalCount,
+        type: args.type,
+        active: args.active,
+        syncedAt: Date.now(),
+      })
     }
   },
 })
-
-export const deleteSubscriptionByCustomerId = internalMutation({
-  args: {
-    stripeCustomerId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_stripeCustomerId", (q) => q.eq("stripeCustomerId", args.stripeCustomerId))
-      .first()
-
-    if (!user) return
-
-    const subs = await ctx.db
-      .query("subscriptions")
-      .withIndex("by_userId", (q) => q.eq("userId", user._id))
-      .collect()
-
-    for (const sub of subs) {
-      await ctx.db.delete(sub._id)
-    }
-  },
-})
-

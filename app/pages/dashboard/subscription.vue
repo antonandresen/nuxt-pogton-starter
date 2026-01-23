@@ -83,7 +83,11 @@
 
     <!-- Show pricing plans if no active subscription -->
     <div v-else>
-      <PricingSection />
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold tracking-tight">Choose a Plan</h2>
+        <p class="text-muted-foreground">Select a subscription that works for you</p>
+      </div>
+      <PricingPlans mode="dashboard" />
     </div>
   </div>
 </template>

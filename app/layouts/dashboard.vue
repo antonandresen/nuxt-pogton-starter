@@ -154,6 +154,15 @@
             </SidebarMenuItem>
 
             <SidebarMenuItem>
+              <NuxtLink to="/admin/pricing">
+                <SidebarMenuButton :is-active="route.path.startsWith('/admin/pricing')">
+                  <DollarSign class="h-4 w-4" />
+                  <span>Pricing</span>
+                </SidebarMenuButton>
+              </NuxtLink>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
               <NuxtLink to="/admin/settings">
                 <SidebarMenuButton :is-active="route.path.startsWith('/admin/settings')">
                   <Settings class="h-4 w-4" />
@@ -271,7 +280,8 @@ import {
   ChevronDown,
   Moon,
   User,
-  Check
+  Check,
+  DollarSign
 } from 'lucide-vue-next'
 import { useAuth } from '@/composables/use-auth'
 import { useOrg } from '@/composables/useOrg'
