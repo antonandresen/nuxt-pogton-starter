@@ -108,9 +108,15 @@ initSEO()
 const { user } = useAuth()
 
 // Real-time subscription data from Convex
+const isQueryEnabled = computed(() => Boolean(user.value?.id))
+const subscriptionArgs = computed(() => ({
+  userId: (user.value?.id ?? '') as Id<"users">,
+}))
+
 const { data: subscription, isLoading, error } = useConvexQuery(
   api.subscriptions.getByUserId,
-  () => user.value?.id ? { userId: user.value.id as Id<"users"> } : 'skip'
+  subscriptionArgs,
+  { enabled: isQueryEnabled }
 )
 
 const refresh = () => {
