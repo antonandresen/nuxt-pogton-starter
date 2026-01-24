@@ -117,7 +117,7 @@
             {{ isEditing ? 'Update pricing plan details.' : 'Add a new pricing tier.' }}
           </DialogDescription>
         </DialogHeader>
-        <div class="space-y-4 py-2 max-h-[60vh] overflow-y-auto">
+        <div class="space-y-4 py-2 px-1 max-h-[60vh] overflow-y-auto">
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="space-y-2">
               <Label for="plan-name">Name</Label>
@@ -135,11 +135,25 @@
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="space-y-2">
               <Label for="plan-monthly">Monthly Price ($)</Label>
-              <Input id="plan-monthly" v-model.number="form.monthlyPrice" type="number" />
+              <Input 
+                id="plan-monthly" 
+                v-model.number="form.monthlyPrice" 
+                type="number" 
+                :readonly="!!form.stripePriceIdMonthly"
+                :class="{ 'bg-muted': form.stripePriceIdMonthly }"
+              />
+              <p v-if="form.stripePriceIdMonthly" class="text-xs text-muted-foreground">Auto-populated from Stripe</p>
             </div>
             <div class="space-y-2">
               <Label for="plan-annual">Annual Price ($/mo)</Label>
-              <Input id="plan-annual" v-model.number="form.annualPrice" type="number" />
+              <Input 
+                id="plan-annual" 
+                v-model.number="form.annualPrice" 
+                type="number" 
+                :readonly="!!form.stripePriceIdAnnual"
+                :class="{ 'bg-muted': form.stripePriceIdAnnual }"
+              />
+              <p v-if="form.stripePriceIdAnnual" class="text-xs text-muted-foreground">Auto-populated from Stripe</p>
             </div>
           </div>
 
@@ -331,6 +345,23 @@ const form = reactive({
 })
 
 const featuresText = ref('')
+
+// Auto-populate prices from selected Stripe prices
+watch(() => form.stripePriceIdMonthly, (priceId) => {
+  if (!priceId) return
+  const price = stripePrices.value?.find((p: any) => p.stripeId === priceId)
+  if (price?.unitAmount) {
+    form.monthlyPrice = price.unitAmount / 100
+  }
+})
+
+watch(() => form.stripePriceIdAnnual, (priceId) => {
+  if (!priceId) return
+  const price = stripePrices.value?.find((p: any) => p.stripeId === priceId)
+  if (price?.unitAmount) {
+    form.annualPrice = price.unitAmount / 100
+  }
+})
 
 const resetForm = () => {
   form.name = ''
