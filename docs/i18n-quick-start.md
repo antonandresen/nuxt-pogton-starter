@@ -2,9 +2,9 @@
 
 ## What Was Implemented
 
-✅ **Language Selector Component** with flag icons (🇬🇧 🇪🇸 🇫🇷 🇩🇪)  
+✅ **Language Selector Dropdown** with flag icons (🇬🇧 🇪🇸 🇫🇷 🇩🇪 🇸🇪)  
 ✅ **Database Schema Updates** for translatable strings  
-✅ **Admin UI** with language switcher  
+✅ **Admin UI** with language dropdown selector  
 ✅ **Frontend Display** with automatic locale detection  
 ✅ **Migration Script** for existing data  
 
@@ -16,7 +16,7 @@ When creating/editing a pricing plan, you'll see:
 ┌─────────────────────────────────────────────────┐
 │ Create Plan                                     │
 ├─────────────────────────────────────────────────┤
-│ Edit Language: [🇬🇧 EN] [🇪🇸 ES] [🇫🇷 FR] [🇩🇪 DE] │
+│ Edit Language: [🇬🇧 English ▾]                   │
 │                                                 │
 │ Name (EN): Pro Plan                            │
 │ Description (EN): For growing teams            │
@@ -30,7 +30,7 @@ When creating/editing a pricing plan, you'll see:
 └─────────────────────────────────────────────────┘
 ```
 
-**Click on a flag** to switch languages and enter translations.
+**Select a language from the dropdown** to switch languages and enter translations.
 
 ## How It Works
 
@@ -79,7 +79,7 @@ const displayName = getTranslated(plan.name) // Auto-detects user's language
    - Description: "Perfect for individuals"
    - Features: "5 projects\n2GB storage\nEmail support"
 
-3. **Clicks 🇪🇸 (Spanish flag)**
+3. **Selects 🇪🇸 Español from dropdown**
 4. **Fills Spanish version** (optional - if left empty, shows English):
    - Name: "Plan Inicial"
    - Description: "Perfecto para individuos"

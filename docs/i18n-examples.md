@@ -31,6 +31,7 @@ const plan = {
 - 🇪🇸 Spanish user: "Plan Pro" / "Para equipos"
 - 🇫🇷 French user: "Plan Pro" / "For teams" (description falls back to EN)
 - 🇩🇪 German user: "Pro Plan" / "For teams" (both fall back to EN)
+- 🇸🇪 Swedish user: "Pro Plan" / "For teams" (both fall back to EN)
 
 ---
 
@@ -279,8 +280,8 @@ locale.value = 'en'
 // Test Spanish
 locale.value = 'es'
 
-// Test missing translation fallback (French with no translations)
-locale.value = 'fr'
+// Test missing translation fallback (Swedish with no translations)
+locale.value = 'sv'
 // Should show English content automatically
 ```
 

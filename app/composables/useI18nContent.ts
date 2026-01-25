@@ -8,10 +8,19 @@ export interface TranslatableString {
   es?: string // Optional - Spanish
   fr?: string // Optional - French
   de?: string // Optional - German
+  sv?: string // Optional - Swedish
 }
 
-export const SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'de'] as const
+export const SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'de', 'sv'] as const
 export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number]
+
+export const LANGUAGE_NAMES: Record<SupportedLanguage, { label: string; flag: string }> = {
+  en: { label: 'English', flag: '🇬🇧' },
+  es: { label: 'Español', flag: '🇪🇸' },
+  fr: { label: 'Français', flag: '🇫🇷' },
+  de: { label: 'Deutsch', flag: '🇩🇪' },
+  sv: { label: 'Svenska', flag: '🇸🇪' },
+}
 
 /**
  * Default language for fallback
@@ -66,6 +75,7 @@ export function useI18nContent() {
     es: '',
     fr: '',
     de: '',
+    sv: '',
   })
 
   /**
@@ -76,6 +86,7 @@ export function useI18nContent() {
     es: undefined,
     fr: undefined,
     de: undefined,
+    sv: undefined,
   })
 
   /**
@@ -111,5 +122,6 @@ export function useI18nContent() {
     getMissingTranslations,
     SUPPORTED_LANGUAGES,
     DEFAULT_LANGUAGE,
+    LANGUAGE_NAMES,
   }
 }

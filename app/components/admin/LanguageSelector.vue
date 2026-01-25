@@ -1,35 +1,37 @@
 <template>
-  <div class="flex items-center gap-2">
+  <div class="flex items-center gap-3">
     <Label v-if="showLabel" class="text-sm font-medium">Edit Language:</Label>
-    <div class="flex rounded-md border overflow-hidden">
-      <button
-        v-for="lang in languages"
-        :key="lang.code"
-        type="button"
-        class="px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent flex items-center gap-2"
-        :class="{
-          'bg-primary text-primary-foreground hover:bg-primary/90': modelValue === lang.code,
-          'text-muted-foreground': modelValue !== lang.code
-        }"
-        @click="$emit('update:modelValue', lang.code)"
-      >
-        <span class="text-base">{{ lang.flag }}</span>
-        <span>{{ lang.label }}</span>
-      </button>
-    </div>
+    <Select :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)">
+      <SelectTrigger class="w-[200px]">
+        <SelectValue>
+          <div class="flex items-center gap-2">
+            <span class="text-base">{{ currentLanguage?.flag }}</span>
+            <span>{{ currentLanguage?.label }}</span>
+          </div>
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem
+          v-for="[code, lang] in Object.entries(LANGUAGE_NAMES)"
+          :key="code"
+          :value="code"
+        >
+          <div class="flex items-center gap-2">
+            <span class="text-base">{{ lang.flag }}</span>
+            <span>{{ lang.label }}</span>
+          </div>
+        </SelectItem>
+      </SelectContent>
+    </Select>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { LANGUAGE_NAMES } from '~/composables/useI18nContent'
 
-interface Language {
-  code: string
-  label: string
-  flag: string
-}
-
-defineProps<{
+const props = defineProps<{
   modelValue: string
   showLabel?: boolean
 }>()
@@ -38,10 +40,7 @@ defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
-const languages: Language[] = [
-  { code: 'en', label: 'English', flag: '🇬🇧' },
-  { code: 'es', label: 'Español', flag: '🇪🇸' },
-  { code: 'fr', label: 'Français', flag: '🇫🇷' },
-  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
-]
+const currentLanguage = computed(() => {
+  return LANGUAGE_NAMES[props.modelValue as keyof typeof LANGUAGE_NAMES]
+})
 </script>

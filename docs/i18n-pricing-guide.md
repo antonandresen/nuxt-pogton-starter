@@ -22,6 +22,7 @@ The pricing plan system now supports multiple languages for better international
 | Spanish  | es   | 🇪🇸   |
 | French   | fr   | 🇫🇷   |
 | German   | de   | 🇩🇪   |
+| Swedish  | sv   | 🇸🇪   |
 
 ## Admin Usage
 
@@ -45,13 +46,18 @@ The pricing plan system now supports multiple languages for better international
 
 ### Language Selector UI
 
-The language selector appears at the top of the create/edit dialog:
+The language selector appears as a dropdown at the top of the create/edit dialog:
 
 ```
-Edit Language:  [🇬🇧 English] [🇪🇸 Español] [🇫🇷 Français] [🇩🇪 Deutsch]
+Edit Language:  [🇬🇧 English ▾]
+                 ├─ 🇬🇧 English
+                 ├─ 🇪🇸 Español
+                 ├─ 🇫🇷 Français
+                 ├─ 🇩🇪 Deutsch
+                 └─ 🇸🇪 Svenska
 ```
 
-Click a language to switch - form fields update to show that language's content.
+Select a language from the dropdown - form fields update to show that language's content.
 
 ## Frontend Usage
 
@@ -134,12 +140,13 @@ To add a new language:
    export const SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'de', 'it'] as const
    ```
 
-2. Update `app/components/admin/LanguageSelector.vue`:
+2. Update `app/components/admin/LanguageSelector.vue` (it uses `LANGUAGE_NAMES` automatically):
    ```typescript
-   const languages: Language[] = [
+   // In useI18nContent.ts - add to LANGUAGE_NAMES
+   export const LANGUAGE_NAMES = {
      // ... existing languages
-     { code: 'it', label: 'Italiano', flag: '🇮🇹' },
-   ]
+     it: { label: 'Italiano', flag: '🇮🇹' },
+   }
    ```
 
 3. Update schema in `convex/schema.ts` (add language to all translatable objects)

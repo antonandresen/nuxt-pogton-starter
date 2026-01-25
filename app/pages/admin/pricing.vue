@@ -294,7 +294,7 @@ const { toast } = useToast()
 const { getTranslated, createTranslatable } = useI18nContent()
 
 // Language state
-const currentLanguage = ref<'en' | 'es' | 'fr' | 'de'>('en')
+const currentLanguage = ref<'en' | 'es' | 'fr' | 'de' | 'sv'>('en')
 
 // Convex data
 const { data: plans, isLoading: isLoadingPlans } = useConvexQuery(api.pricingPlans.listAll, {})
@@ -383,11 +383,12 @@ const form = reactive<{
   displayOrder: 0,
 })
 
-const featuresText = reactive<Record<'en' | 'es' | 'fr' | 'de', string>>({
+const featuresText = reactive<Record<'en' | 'es' | 'fr' | 'de' | 'sv', string>>({
   en: '',
   es: '',
   fr: '',
   de: '',
+  sv: '',
 })
 
 // Auto-populate prices from selected Stripe prices
@@ -422,6 +423,7 @@ const resetForm = () => {
   featuresText.es = ''
   featuresText.fr = ''
   featuresText.de = ''
+  featuresText.sv = ''
   currentLanguage.value = 'en'
   selectedPlan.value = null
 }
@@ -445,18 +447,20 @@ const selectPlan = (plan: any) => {
   form.displayOrder = plan.displayOrder
   
   // Parse features for each language
-  const featuresByLang = { en: [] as string[], es: [] as string[], fr: [] as string[], de: [] as string[] }
+  const featuresByLang = { en: [] as string[], es: [] as string[], fr: [] as string[], de: [] as string[], sv: [] as string[] }
   plan.features.forEach((feature: TranslatableString) => {
     if (feature.en) featuresByLang.en.push(feature.en)
     if (feature.es) featuresByLang.es.push(feature.es)
     if (feature.fr) featuresByLang.fr.push(feature.fr)
     if (feature.de) featuresByLang.de.push(feature.de)
+    if (feature.sv) featuresByLang.sv.push(feature.sv)
   })
   
   featuresText.en = featuresByLang.en.join('\n')
   featuresText.es = featuresByLang.es.join('\n')
   featuresText.fr = featuresByLang.fr.join('\n')
   featuresText.de = featuresByLang.de.join('\n')
+  featuresText.sv = featuresByLang.sv.join('\n')
   
   currentLanguage.value = 'en'
   isDialogOpen.value = true
@@ -475,8 +479,9 @@ const savePlan = async () => {
   const esFeatures = featuresText.es.split('\n').map((f) => f.trim()).filter(Boolean)
   const frFeatures = featuresText.fr.split('\n').map((f) => f.trim()).filter(Boolean)
   const deFeatures = featuresText.de.split('\n').map((f) => f.trim()).filter(Boolean)
+  const svFeatures = featuresText.sv.split('\n').map((f) => f.trim()).filter(Boolean)
   
-  const maxLength = Math.max(enFeatures.length, esFeatures.length, frFeatures.length, deFeatures.length)
+  const maxLength = Math.max(enFeatures.length, esFeatures.length, frFeatures.length, deFeatures.length, svFeatures.length)
   const features: TranslatableString[] = []
   
   for (let i = 0; i < maxLength; i++) {
@@ -485,6 +490,7 @@ const savePlan = async () => {
       es: esFeatures[i] || undefined,
       fr: frFeatures[i] || undefined,
       de: deFeatures[i] || undefined,
+      sv: svFeatures[i] || undefined,
     })
   }
 
