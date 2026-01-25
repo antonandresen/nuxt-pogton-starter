@@ -112,27 +112,28 @@
     </Transition>
 
     <!-- Floating Button -->
-    <Transition
-      enter-active-class="transition duration-200 ease-out"
-      enter-from-class="scale-0 opacity-0"
-      enter-to-class="scale-100 opacity-100"
-      leave-active-class="transition duration-150 ease-in"
-      leave-from-class="scale-100 opacity-100"
-      leave-to-class="scale-0 opacity-0"
+    <button
+      @click="isOpen ? (isOpen = false) : openChat()"
+      class="w-16 h-16 rounded-full shadow-2xl bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-110 transition-all flex items-center justify-center group"
     >
-      <button
-        v-if="!isOpen"
-        @click="openChat"
-        class="w-16 h-16 rounded-full shadow-2xl bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-110 transition-all flex items-center justify-center group"
+      <Transition
+        mode="out-in"
+        enter-active-class="transition duration-150 ease-out"
+        enter-from-class="scale-0 rotate-90 opacity-0"
+        enter-to-class="scale-100 rotate-0 opacity-100"
+        leave-active-class="transition duration-150 ease-in"
+        leave-from-class="scale-100 rotate-0 opacity-100"
+        leave-to-class="scale-0 -rotate-90 opacity-0"
       >
-        <MessageCircle class="h-7 w-7 group-hover:scale-110 transition-transform" />
-      </button>
-    </Transition>
+        <ChevronDown v-if="isOpen" :key="'close'" class="h-7 w-7" />
+        <MessageCircle v-else :key="'open'" class="h-7 w-7" />
+      </Transition>
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { MessageCircle, X } from 'lucide-vue-next'
+import { MessageCircle, X, ChevronDown } from 'lucide-vue-next'
 import { api, useConvexAction, useConvexQuery } from '@/composables/useConvex'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
