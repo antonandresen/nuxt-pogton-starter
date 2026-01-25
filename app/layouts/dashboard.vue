@@ -3,9 +3,9 @@
     <Sidebar side="left" class="border-r bg-muted/30">
       <SidebarHeader class="border-b">
         <div class="flex items-center gap-3 px-2 py-1">
-          <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg">
+          <NuxtLink to="/" class="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity">
             <img src="/logo.png" alt="Pogton Logo" class="h-6 w-6 object-contain brightness-0 invert" />
-          </div>
+          </NuxtLink>
           <div class="min-w-0">
             <h2 class="text-lg font-bold tracking-tight">Pogton</h2>
             <DropdownMenu>
