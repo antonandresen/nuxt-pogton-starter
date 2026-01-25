@@ -17,6 +17,7 @@ import type * as featureFlags from "../featureFlags.js";
 import type * as helpers from "../helpers.js";
 import type * as invites from "../invites.js";
 import type * as memberships from "../memberships.js";
+import type * as migrations_migratePricingPlansToTranslatable from "../migrations/migratePricingPlansToTranslatable.js";
 import type * as notifications from "../notifications.js";
 import type * as onboarding from "../onboarding.js";
 import type * as orgs from "../orgs.js";
@@ -45,6 +46,7 @@ declare const fullApi: ApiFromModules<{
   helpers: typeof helpers;
   invites: typeof invites;
   memberships: typeof memberships;
+  "migrations/migratePricingPlansToTranslatable": typeof migrations_migratePricingPlansToTranslatable;
   notifications: typeof notifications;
   onboarding: typeof onboarding;
   orgs: typeof orgs;
