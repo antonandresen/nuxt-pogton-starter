@@ -37,7 +37,7 @@
             >
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="font-medium">{{ plan.name }}</span>
+                  <span class="font-medium">{{ getTranslated(plan.name) }}</span>
                   <Badge v-if="plan.isPopular" variant="secondary">Popular</Badge>
                   <Badge v-if="!plan.isActive" variant="outline">Inactive</Badge>
                 </div>
@@ -118,10 +118,22 @@
           </DialogDescription>
         </DialogHeader>
         <div class="space-y-4 py-2 px-1 max-h-[60vh] overflow-y-auto">
+          <!-- Language Selector -->
+          <div class="pb-2 border-b">
+            <LanguageSelector v-model="currentLanguage" show-label />
+          </div>
+
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="space-y-2">
-              <Label for="plan-name">Name</Label>
-              <Input id="plan-name" v-model="form.name" placeholder="Pro" />
+              <Label for="plan-name">
+                Name
+                <span v-if="currentLanguage !== 'en'" class="text-xs text-muted-foreground ml-1">({{ currentLanguage.toUpperCase() }})</span>
+              </Label>
+              <Input 
+                id="plan-name" 
+                v-model="form.name[currentLanguage]" 
+                :placeholder="currentLanguage === 'en' ? 'Pro' : form.name.en || 'Pro'"
+              />
             </div>
             <div class="space-y-2">
               <Label for="plan-order">Display Order</Label>
@@ -129,8 +141,15 @@
             </div>
           </div>
           <div class="space-y-2">
-            <Label for="plan-desc">Description</Label>
-            <Input id="plan-desc" v-model="form.description" placeholder="For growing teams" />
+            <Label for="plan-desc">
+              Description
+              <span v-if="currentLanguage !== 'en'" class="text-xs text-muted-foreground ml-1">({{ currentLanguage.toUpperCase() }})</span>
+            </Label>
+            <Input 
+              id="plan-desc" 
+              v-model="form.description[currentLanguage]" 
+              :placeholder="currentLanguage === 'en' ? 'For growing teams' : form.description.en || 'For growing teams'"
+            />
           </div>
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="space-y-2">
@@ -206,12 +225,15 @@
           </div>
 
           <div class="space-y-2">
-            <Label for="plan-features">Features (one per line)</Label>
+            <Label for="plan-features">
+              Features (one per line)
+              <span v-if="currentLanguage !== 'en'" class="text-xs text-muted-foreground ml-1">({{ currentLanguage.toUpperCase() }})</span>
+            </Label>
             <Textarea
               id="plan-features"
-              v-model="featuresText"
+              v-model="featuresText[currentLanguage]"
               rows="5"
-              placeholder="Feature 1&#10;Feature 2&#10;Feature 3"
+              :placeholder="currentLanguage === 'en' ? 'Feature 1\nFeature 2\nFeature 3' : (featuresText.en || 'Feature 1\nFeature 2\nFeature 3')"
             />
           </div>
           <div class="flex items-center justify-between">
@@ -251,6 +273,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { api, useConvexQuery, useConvexMutation } from '../../composables/useConvex'
+import LanguageSelector from '../../components/admin/LanguageSelector.vue'
+import type { TranslatableString } from '../../composables/useI18nContent'
 
 definePageMeta({
   layout: 'dashboard',
@@ -267,6 +291,10 @@ const { initSEO } = useSEO({
 initSEO()
 
 const { toast } = useToast()
+const { getTranslated, createTranslatable } = useI18nContent()
+
+// Language state
+const currentLanguage = ref<'en' | 'es' | 'fr' | 'de'>('en')
 
 // Convex data
 const { data: plans, isLoading: isLoadingPlans } = useConvexQuery(api.pricingPlans.listAll, {})
@@ -331,9 +359,20 @@ const isSaving = ref(false)
 const selectedPlan = ref<any>(null)
 const isEditing = computed(() => !!selectedPlan.value)
 
-const form = reactive({
-  name: '',
-  description: '',
+const form = reactive<{
+  name: TranslatableString
+  description: TranslatableString
+  monthlyPrice: number
+  annualPrice: number
+  stripePriceIdMonthly: string
+  stripePriceIdAnnual: string
+  stripeProductId: string
+  isPopular: boolean
+  isActive: boolean
+  displayOrder: number
+}>({
+  name: createTranslatable(),
+  description: createTranslatable(),
   monthlyPrice: 0,
   annualPrice: 0,
   stripePriceIdMonthly: '',
@@ -344,7 +383,12 @@ const form = reactive({
   displayOrder: 0,
 })
 
-const featuresText = ref('')
+const featuresText = reactive<Record<'en' | 'es' | 'fr' | 'de', string>>({
+  en: '',
+  es: '',
+  fr: '',
+  de: '',
+})
 
 // Auto-populate prices from selected Stripe prices
 watch(() => form.stripePriceIdMonthly, (priceId) => {
@@ -364,8 +408,8 @@ watch(() => form.stripePriceIdAnnual, (priceId) => {
 })
 
 const resetForm = () => {
-  form.name = ''
-  form.description = ''
+  form.name = createTranslatable()
+  form.description = createTranslatable()
   form.monthlyPrice = 0
   form.annualPrice = 0
   form.stripePriceIdMonthly = ''
@@ -374,7 +418,11 @@ const resetForm = () => {
   form.isPopular = false
   form.isActive = true
   form.displayOrder = (plans.value?.length ?? 0) + 1
-  featuresText.value = ''
+  featuresText.en = ''
+  featuresText.es = ''
+  featuresText.fr = ''
+  featuresText.de = ''
+  currentLanguage.value = 'en'
   selectedPlan.value = null
 }
 
@@ -395,35 +443,81 @@ const selectPlan = (plan: any) => {
   form.isPopular = plan.isPopular
   form.isActive = plan.isActive
   form.displayOrder = plan.displayOrder
-  featuresText.value = plan.features.join('\n')
+  
+  // Parse features for each language
+  const featuresByLang = { en: [] as string[], es: [] as string[], fr: [] as string[], de: [] as string[] }
+  plan.features.forEach((feature: TranslatableString) => {
+    if (feature.en) featuresByLang.en.push(feature.en)
+    if (feature.es) featuresByLang.es.push(feature.es)
+    if (feature.fr) featuresByLang.fr.push(feature.fr)
+    if (feature.de) featuresByLang.de.push(feature.de)
+  })
+  
+  featuresText.en = featuresByLang.en.join('\n')
+  featuresText.es = featuresByLang.es.join('\n')
+  featuresText.fr = featuresByLang.fr.join('\n')
+  featuresText.de = featuresByLang.de.join('\n')
+  
+  currentLanguage.value = 'en'
   isDialogOpen.value = true
 }
 
 const savePlan = async () => {
-  if (!form.name.trim()) {
-    toast({ title: 'Name required', variant: 'destructive' })
+  if (!form.name.en.trim()) {
+    toast({ title: 'Name required (English)', variant: 'destructive' })
     return
   }
 
   isSaving.value = true
-  const features = featuresText.value.split('\n').map((f) => f.trim()).filter(Boolean)
+  
+  // Build translatable features array
+  const enFeatures = featuresText.en.split('\n').map((f) => f.trim()).filter(Boolean)
+  const esFeatures = featuresText.es.split('\n').map((f) => f.trim()).filter(Boolean)
+  const frFeatures = featuresText.fr.split('\n').map((f) => f.trim()).filter(Boolean)
+  const deFeatures = featuresText.de.split('\n').map((f) => f.trim()).filter(Boolean)
+  
+  const maxLength = Math.max(enFeatures.length, esFeatures.length, frFeatures.length, deFeatures.length)
+  const features: TranslatableString[] = []
+  
+  for (let i = 0; i < maxLength; i++) {
+    features.push({
+      en: enFeatures[i] || enFeatures[0] || '',
+      es: esFeatures[i] || undefined,
+      fr: frFeatures[i] || undefined,
+      de: deFeatures[i] || undefined,
+    })
+  }
 
   try {
     if (isEditing.value) {
       await updateMutation.mutate({
         id: selectedPlan.value._id,
-        ...form,
+        name: form.name,
+        description: form.description,
+        monthlyPrice: form.monthlyPrice,
+        annualPrice: form.annualPrice,
         stripePriceIdMonthly: form.stripePriceIdMonthly || undefined,
         stripePriceIdAnnual: form.stripePriceIdAnnual || undefined,
+        stripeProductId: form.stripeProductId || undefined,
         features,
+        isPopular: form.isPopular,
+        isActive: form.isActive,
+        displayOrder: form.displayOrder,
       })
       toast({ title: 'Plan updated' })
     } else {
       await createMutation.mutate({
-        ...form,
+        name: form.name,
+        description: form.description,
+        monthlyPrice: form.monthlyPrice,
+        annualPrice: form.annualPrice,
         stripePriceIdMonthly: form.stripePriceIdMonthly || undefined,
         stripePriceIdAnnual: form.stripePriceIdAnnual || undefined,
+        stripeProductId: form.stripeProductId || undefined,
         features,
+        isPopular: form.isPopular,
+        isActive: form.isActive,
+        displayOrder: form.displayOrder,
       })
       toast({ title: 'Plan created' })
     }

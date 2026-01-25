@@ -259,14 +259,29 @@ export default defineSchema({
     .index("by_orgId_customerId", ["orgId", "customerId"]),
 
   pricingPlans: defineTable({
-    name: v.string(),
-    description: v.string(),
+    name: v.object({
+      en: v.string(),
+      es: v.optional(v.string()),
+      fr: v.optional(v.string()),
+      de: v.optional(v.string()),
+    }),
+    description: v.object({
+      en: v.string(),
+      es: v.optional(v.string()),
+      fr: v.optional(v.string()),
+      de: v.optional(v.string()),
+    }),
     monthlyPrice: v.number(),
     annualPrice: v.number(),
     stripePriceIdMonthly: v.optional(v.string()),
     stripePriceIdAnnual: v.optional(v.string()),
     stripeProductId: v.optional(v.string()),
-    features: v.array(v.string()),
+    features: v.array(v.object({
+      en: v.string(),
+      es: v.optional(v.string()),
+      fr: v.optional(v.string()),
+      de: v.optional(v.string()),
+    })),
     isPopular: v.boolean(),
     isActive: v.boolean(),
     displayOrder: v.number(),

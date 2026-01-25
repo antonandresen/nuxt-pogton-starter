@@ -33,8 +33,8 @@
           <CardHeader>
             <div class="flex justify-between items-start mb-4">
               <div>
-                <CardTitle class="text-xl">{{ plan.name }}</CardTitle>
-                <CardDescription>{{ plan.description }}</CardDescription>
+                <CardTitle class="text-xl">{{ getTranslated(plan.name) }}</CardTitle>
+                <CardDescription>{{ getTranslated(plan.description) }}</CardDescription>
               </div>
               <Badge v-if="plan.isPopular" variant="default">Most Popular</Badge>
             </div>
@@ -63,9 +63,9 @@
             <Separator />
 
             <ul class="space-y-3 flex-1">
-              <li v-for="feature in plan.features" :key="feature" class="flex items-start gap-3">
+              <li v-for="(feature, idx) in plan.features" :key="idx" class="flex items-start gap-3">
                 <Check class="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <span class="text-sm">{{ feature }}</span>
+                <span class="text-sm">{{ getTranslated(feature) }}</span>
               </li>
             </ul>
           </CardContent>
@@ -87,16 +87,17 @@ import { Separator } from '@/components/ui/separator'
 import { api, useConvexQuery } from '~/composables/useConvex'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { loadStripe } from '@stripe/stripe-js'
+import type { TranslatableString } from '~/composables/useI18nContent'
 
 interface Plan {
   _id: string
-  name: string
-  description: string
+  name: TranslatableString
+  description: TranslatableString
   monthlyPrice: number
   annualPrice: number
   stripePriceIdMonthly?: string
   stripePriceIdAnnual?: string
-  features: string[]
+  features: TranslatableString[]
   isPopular: boolean
 }
 
@@ -109,6 +110,7 @@ const props = withDefaults(defineProps<{
 const config = useRuntimeConfig()
 const router = useRouter()
 const { toast } = useToast()
+const { getTranslated } = useI18nContent()
 
 const { data: plans, isLoading } = useConvexQuery(api.pricingPlans.listActive, {})
 
