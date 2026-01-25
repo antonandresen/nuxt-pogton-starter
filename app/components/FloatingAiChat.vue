@@ -1,5 +1,5 @@
 <template>
-  <div v-if="config?.enabled" class="fixed bottom-6 right-6 z-50">
+  <div v-if="config?.enabled" class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
     <!-- Chat Window -->
     <Transition
       enter-active-class="transition duration-200 ease-out"
@@ -114,20 +114,22 @@
     <!-- Floating Button -->
     <button
       @click="isOpen ? (isOpen = false) : openChat()"
-      class="w-16 h-16 rounded-full shadow-2xl bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-110 transition-all flex items-center justify-center group"
+      class="w-16 h-16 flex-shrink-0 rounded-full shadow-2xl bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-110 transition-all flex items-center justify-center group relative"
     >
-      <Transition
-        mode="out-in"
-        enter-active-class="transition duration-150 ease-out"
-        enter-from-class="scale-0 rotate-90 opacity-0"
-        enter-to-class="scale-100 rotate-0 opacity-100"
-        leave-active-class="transition duration-150 ease-in"
-        leave-from-class="scale-100 rotate-0 opacity-100"
-        leave-to-class="scale-0 -rotate-90 opacity-0"
-      >
-        <ChevronDown v-if="isOpen" :key="'close'" class="h-7 w-7" />
-        <MessageCircle v-else :key="'open'" class="h-7 w-7" />
-      </Transition>
+      <div class="w-7 h-7 relative flex items-center justify-center">
+        <Transition
+          mode="out-in"
+          enter-active-class="transition duration-150 ease-out"
+          enter-from-class="scale-0 rotate-90 opacity-0"
+          enter-to-class="scale-100 rotate-0 opacity-100"
+          leave-active-class="transition duration-150 ease-in"
+          leave-from-class="scale-100 rotate-0 opacity-100"
+          leave-to-class="scale-0 -rotate-90 opacity-0"
+        >
+          <ChevronDown v-if="isOpen" :key="'close'" class="h-7 w-7 absolute inset-0" />
+          <MessageCircle v-else :key="'open'" class="h-7 w-7 absolute inset-0" />
+        </Transition>
+      </div>
     </button>
   </div>
 </template>
