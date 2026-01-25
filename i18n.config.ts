@@ -1,5 +1,5 @@
 import en from './locales/en.json'
-import se from './locales/se.json'
+import sv from './locales/sv.json'
 
 export default defineI18nConfig(() => ({
     legacy: false,
@@ -7,7 +7,7 @@ export default defineI18nConfig(() => ({
     fallbackLocale: 'en',
     messages: {
      en,
-     se
+     sv
     }
   }))
   

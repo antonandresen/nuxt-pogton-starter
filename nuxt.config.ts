@@ -310,7 +310,7 @@ export default defineNuxtConfig({
         name: 'English'
       },
       {
-        code: 'se',
+        code: 'sv',
         language: 'sv-SE',
         name: 'Svenska'
       }
