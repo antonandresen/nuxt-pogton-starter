@@ -1,0 +1,16 @@
+---
+description: Use index pages inside folders for Nuxt routing
+alwaysApply: true
+---
+
+# Nuxt pages should use folder + index.vue
+
+- Prefer `app/pages/foo.vue` for non-nested routes
+- Never keep both a file and a folder with the same name in `app/pages`
+- If a route needs children, move it into a folder and use `index.vue`
+
+Examples:
+
+✅ `app/pages/dashboard/orgs.vue` (no children)
+✅ `app/pages/dashboard/orgs/index.vue` + `app/pages/dashboard/orgs/[orgId]/index.vue`
+❌ `app/pages/dashboard/orgs.vue` + `app/pages/dashboard/orgs/`

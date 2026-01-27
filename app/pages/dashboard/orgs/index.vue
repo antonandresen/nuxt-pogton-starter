@@ -122,4 +122,3 @@ const switchOrg = async (id: string) => {
   }
 }
 </script>
-
