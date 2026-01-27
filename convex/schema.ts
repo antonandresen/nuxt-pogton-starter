@@ -228,6 +228,15 @@ export default defineSchema({
   })
     .index("by_key", ["key"]),
 
+  appSettings: defineTable({
+    key: v.string(),
+    workspacesEnabled: v.boolean(),
+    invitationsEnabled: v.boolean(),
+    updatedBy: v.optional(v.id("users")),
+    updatedAt: v.number(),
+  })
+    .index("by_key", ["key"]),
+
   crmCustomers: defineTable({
     orgId: v.id("organizations"),
     userId: v.id("users"),

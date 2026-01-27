@@ -1,5 +1,6 @@
 import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
+import { api } from "./_generated/api"
 import { requireCurrentOrg, requireOrgPermission, requireUser } from "./helpers"
 
 export const getByToken = query({
@@ -86,6 +87,10 @@ export const createForCurrentOrg = mutation({
   },
   handler: async (ctx, args) => {
     const { orgId, userId } = await requireOrgPermission(ctx, "member:write")
+    const settings = await ctx.runQuery(api.appSettings.getPublic, {})
+    if (!settings.invitationsEnabled) {
+      throw new Error("Invitations are disabled")
+    }
     return await ctx.db.insert("invites", {
       orgId,
       email: args.email,
@@ -102,6 +107,10 @@ export const acceptByToken = mutation({
   args: { token: v.string() },
   handler: async (ctx, args) => {
     const { userId } = await requireUser(ctx)
+    const settings = await ctx.runQuery(api.appSettings.getPublic, {})
+    if (!settings.invitationsEnabled) {
+      throw new Error("Invitations are disabled")
+    }
     const invite = await ctx.db
       .query("invites")
       .withIndex("by_token", (q) => q.eq("token", args.token))

@@ -1,5 +1,6 @@
 import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
+import { api } from "./_generated/api"
 import { requireOrgPermission, requireUser, toSlug } from "./helpers"
 
 export const getById = query({
@@ -76,6 +77,10 @@ export const createForCurrentUser = mutation({
   },
   handler: async (ctx, args) => {
     const { userId } = await requireUser(ctx)
+    const settings = await ctx.runQuery(api.appSettings.getPublic, {})
+    if (!settings.workspacesEnabled) {
+      throw new Error("Workspaces are disabled")
+    }
     const baseSlug = toSlug(args.slug || args.name)
     const existing = await ctx.db
       .query("organizations")
@@ -114,6 +119,10 @@ export const switchCurrentOrg = mutation({
   args: { orgId: v.id("organizations") },
   handler: async (ctx, args) => {
     const { userId } = await requireUser(ctx)
+    const settings = await ctx.runQuery(api.appSettings.getPublic, {})
+    if (!settings.workspacesEnabled) {
+      throw new Error("Workspaces are disabled")
+    }
     const membership = await ctx.db
       .query("memberships")
       .withIndex("by_orgId_userId", (q) => q.eq("orgId", args.orgId).eq("userId", userId))

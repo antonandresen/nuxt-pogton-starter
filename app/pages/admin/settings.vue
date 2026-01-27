@@ -9,6 +9,7 @@
       <TabsList class="flex flex-wrap gap-2">
         <TabsTrigger value="feature-flags">Feature Flags</TabsTrigger>
         <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
+        <TabsTrigger value="app-settings">App Settings</TabsTrigger>
       </TabsList>
 
       <TabsContent value="feature-flags">
@@ -141,6 +142,37 @@
         </Card>
       </TabsContent>
 
+      <TabsContent value="app-settings">
+        <Card>
+          <CardHeader>
+            <CardTitle>App Settings</CardTitle>
+            <CardDescription>Control global product access and workflows.</CardDescription>
+          </CardHeader>
+          <CardContent class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <Label>Workspaces</Label>
+                <p class="text-xs text-muted-foreground">Allow users to create and switch workspaces.</p>
+              </div>
+              <Switch v-model="appSettingsForm.workspacesEnabled" />
+            </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <Label>Invitations</Label>
+                <p class="text-xs text-muted-foreground">Allow workspace invites and accepting invites.</p>
+              </div>
+              <Switch v-model="appSettingsForm.invitationsEnabled" />
+            </div>
+            <div class="flex items-center gap-2">
+              <Button :disabled="isSavingAppSettings" @click="saveAppSettings">
+                <Loader2 v-if="isSavingAppSettings" class="mr-2 h-4 w-4 animate-spin" />
+                Save app settings
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
     </Tabs>
   </div>
 </template>
@@ -185,6 +217,8 @@ const { toast } = useToast()
 const { flags, upsert } = useFeatureFlags()
 const { data: aiConfig } = useConvexQuery(api.aiChat.getAdminConfig, {})
 const saveAiMutation = useConvexMutation(api.aiChat.upsertAdminConfig)
+const { data: appSettings } = useConvexQuery(api.appSettings.getAdmin, {})
+const saveAppSettingsMutation = useConvexMutation(api.appSettings.upsertAdmin)
 
 const isCreateFlagOpen = ref(false)
 const isCreatingFlag = ref(false)
@@ -204,6 +238,12 @@ const aiForm = reactive({
   ctaUrl: '',
   maxTokens: 512,
   temperature: 0.4,
+})
+
+const isSavingAppSettings = ref(false)
+const appSettingsForm = reactive({
+  workspacesEnabled: true,
+  invitationsEnabled: true,
 })
 
 
@@ -282,6 +322,14 @@ watchEffect(() => {
   aiForm.temperature = aiConfig.value.temperature ?? aiForm.temperature
 })
 
+watchEffect(() => {
+  if (!appSettings.value) return
+  appSettingsForm.workspacesEnabled =
+    appSettings.value.workspacesEnabled ?? appSettingsForm.workspacesEnabled
+  appSettingsForm.invitationsEnabled =
+    appSettings.value.invitationsEnabled ?? appSettingsForm.invitationsEnabled
+})
+
 const saveAiConfig = async () => {
   isSavingAi.value = true
   try {
@@ -307,6 +355,28 @@ const saveAiConfig = async () => {
     })
   } finally {
     isSavingAi.value = false
+  }
+}
+
+const saveAppSettings = async () => {
+  isSavingAppSettings.value = true
+  try {
+    await saveAppSettingsMutation.mutate({
+      workspacesEnabled: appSettingsForm.workspacesEnabled,
+      invitationsEnabled: appSettingsForm.invitationsEnabled,
+    })
+    toast({
+      title: 'App settings updated',
+      description: 'Settings saved successfully.',
+    })
+  } catch (error) {
+    toast({
+      title: 'Error',
+      description: 'Failed to save app settings.',
+      variant: 'destructive'
+    })
+  } finally {
+    isSavingAppSettings.value = false
   }
 }
 

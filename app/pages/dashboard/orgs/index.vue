@@ -5,6 +5,13 @@
       <p class="text-muted-foreground">Create, switch, and manage workspaces</p>
     </div>
 
+    <div
+      v-if="!workspacesEnabled"
+      class="rounded-md border border-dashed bg-muted/40 p-4 text-sm text-muted-foreground"
+    >
+      Workspaces are currently disabled by an admin.
+    </div>
+
     <Card>
       <CardHeader>
         <CardTitle>Create Workspace</CardTitle>
@@ -20,7 +27,7 @@
             <Label for="org-slug">Slug (optional)</Label>
             <Input id="org-slug" v-model="form.slug" placeholder="acme" />
           </div>
-          <Button type="submit" :disabled="isLoading">
+          <Button type="submit" :disabled="isLoading || !workspacesEnabled">
             <Loader2 v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
             Create
           </Button>
@@ -49,7 +56,7 @@
             <Button
               variant="outline"
               size="sm"
-              :disabled="org.id === currentOrgId"
+              :disabled="org.id === currentOrgId || !workspacesEnabled"
               @click="switchOrg(org.id)"
             >
               {{ org.id === currentOrgId ? 'Current' : 'Switch' }}
@@ -74,6 +81,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Loader2 } from 'lucide-vue-next'
+import { api, useConvexQuery } from '@/composables/useConvex'
 
 definePageMeta({
   layout: 'dashboard',
@@ -92,6 +100,9 @@ initSEO()
 const { toast } = useToast()
 const { orgs, currentOrgId, create, switchOrg: switchOrgAction } = useOrg()
 const isLoading = ref(false)
+const { data: appSettings } = useConvexQuery(api.appSettings.getPublic, {})
+
+const workspacesEnabled = computed(() => appSettings.value?.workspacesEnabled ?? true)
 
 const form = reactive({
   name: '',
@@ -99,6 +110,10 @@ const form = reactive({
 })
 
 const handleCreate = async () => {
+  if (!workspacesEnabled.value) {
+    toast({ title: 'Workspaces disabled', description: 'Workspaces are disabled by an admin.' })
+    return
+  }
   if (!form.name) return
   isLoading.value = true
   try {
@@ -114,6 +129,10 @@ const handleCreate = async () => {
 }
 
 const switchOrg = async (id: string) => {
+  if (!workspacesEnabled.value) {
+    toast({ title: 'Workspaces disabled', description: 'Workspaces are disabled by an admin.' })
+    return
+  }
   try {
     await switchOrgAction(id)
     toast({ title: 'Workspace switched' })
