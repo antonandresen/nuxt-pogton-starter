@@ -112,6 +112,11 @@ export const api = {
     upsertAdminConfig: 'aiChat:upsertAdminConfig',
     ask: 'aiChat:ask',
   },
+  appSettings: {
+    getPublic: 'appSettings:getPublic',
+    getAdmin: 'appSettings:getAdmin',
+    upsertAdmin: 'appSettings:upsertAdmin',
+  },
   crm: {
     listForCurrentOrg: 'crm:listForCurrentOrg',
     upsertForCurrentOrg: 'crm:upsertForCurrentOrg',
