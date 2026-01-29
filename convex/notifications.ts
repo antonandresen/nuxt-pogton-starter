@@ -27,6 +27,7 @@ export const create = mutation({
     title: v.string(),
     body: v.string(),
     type: v.string(),
+    metadata: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("notifications", {
@@ -34,6 +35,7 @@ export const create = mutation({
       title: args.title,
       body: args.body,
       type: args.type,
+      metadata: args.metadata,
       createdAt: Date.now(),
     })
   },

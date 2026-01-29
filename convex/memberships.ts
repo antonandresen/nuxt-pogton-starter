@@ -110,11 +110,25 @@ export const listForCurrentOrg = query({
   args: {},
   handler: async (ctx) => {
     const { orgId } = await requireOrgPermission(ctx, "member:read")
-    return await ctx.db
+    const memberships = await ctx.db
       .query("memberships")
       .withIndex("by_orgId", (q) => q.eq("orgId", orgId))
       .filter((q) => q.eq(q.field("deletedAt"), undefined))
       .collect()
+
+    // Enrich with user details
+    const enriched = await Promise.all(
+      memberships.map(async (membership) => {
+        const user = await ctx.db.get(membership.userId)
+        return {
+          ...membership,
+          userEmail: user?.email,
+          userName: user?.name,
+        }
+      })
+    )
+
+    return enriched
   },
 })
 

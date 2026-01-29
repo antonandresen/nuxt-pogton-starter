@@ -1,7 +1,7 @@
 import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
 import { api } from "./_generated/api"
-import { requireCurrentOrg, requireOrgPermission, requireUser } from "./helpers"
+import { requireCurrentOrg, requireOrgPermission, requireUser, getUserByEmail } from "./helpers"
 
 export const getByToken = query({
   args: { token: v.string() },
@@ -91,7 +91,9 @@ export const createForCurrentOrg = mutation({
     if (!settings.invitationsEnabled) {
       throw new Error("Invitations are disabled")
     }
-    return await ctx.db.insert("invites", {
+    
+    const org = await ctx.db.get(orgId)
+    const inviteId = await ctx.db.insert("invites", {
       orgId,
       email: args.email,
       role: args.role,
@@ -100,6 +102,26 @@ export const createForCurrentOrg = mutation({
       createdBy: userId,
       createdAt: Date.now(),
     })
+
+    // Create notification if user exists
+    const invitee = await getUserByEmail(ctx, args.email)
+    if (invitee) {
+      await ctx.db.insert("notifications", {
+        userId: invitee._id,
+        title: "Workspace Invitation",
+        body: `You've been invited to join ${org?.name ?? "a workspace"}`,
+        type: "invite",
+        metadata: {
+          inviteId,
+          token: args.token,
+          orgId,
+          orgName: org?.name,
+        },
+        createdAt: Date.now(),
+      })
+    }
+
+    return inviteId
   },
 })
 

@@ -134,6 +134,7 @@ export default defineSchema({
     title: v.string(),
     body: v.string(),
     type: v.string(),
+    metadata: v.optional(v.any()),
     readAt: v.optional(v.number()),
     createdAt: v.number(),
   })

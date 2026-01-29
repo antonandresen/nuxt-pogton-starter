@@ -34,10 +34,16 @@
                       {{ org.id === currentOrgId ? 'Current' : 'Switch' }}
                     </button>
                     <NuxtLink
+                      :to="`/dashboard/orgs/${org.id}/team`"
+                      class="inline-flex h-7 items-center rounded-md border px-2 text-xs font-medium transition hover:bg-muted"
+                    >
+                      Team
+                    </NuxtLink>
+                    <NuxtLink
                       :to="`/dashboard/orgs/${org.id}`"
                       class="inline-flex h-7 items-center rounded-md border px-2 text-xs font-medium transition hover:bg-muted"
                     >
-                      Configure
+                      Settings
                     </NuxtLink>
                   </div>
                 </DropdownMenuItem>
@@ -226,9 +232,14 @@
 
     <SidebarContent class="flex-1">
       <div class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b px-6 py-4">
-        <div class="flex items-center gap-4">
-          <SidebarTrigger />
-          <DashboardBreadcrumb :breadcrumbs="breadcrumbs" />
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <SidebarTrigger />
+            <DashboardBreadcrumb :breadcrumbs="breadcrumbs" />
+          </div>
+          <ClientOnly>
+            <NotificationsDropdown />
+          </ClientOnly>
         </div>
       </div>
       <div class="p-6">

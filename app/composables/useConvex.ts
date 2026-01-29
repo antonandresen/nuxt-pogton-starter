@@ -61,10 +61,12 @@ export const api = {
     listForCurrentOrg: 'memberships:listForCurrentOrg',
   },
   invites: {
+    getByToken: 'invites:getByToken',
     listByOrg: 'invites:listByOrg',
     listForCurrentOrg: 'invites:listForCurrentOrg',
     createForCurrentOrg: 'invites:createForCurrentOrg',
     acceptByToken: 'invites:acceptByToken',
+    revoke: 'invites:revoke',
   },
   auditLogs: {
     listForCurrentOrg: 'auditLogs:listForCurrentOrg',
