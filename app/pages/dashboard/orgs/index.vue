@@ -12,7 +12,7 @@
       Workspaces are currently disabled by an admin.
     </div>
 
-    <Card>
+    <Card v-if="workspacesEnabled">
       <CardHeader>
         <CardTitle>Create Workspace</CardTitle>
         <CardDescription>Spin up a new org for a team or project</CardDescription>
@@ -27,7 +27,7 @@
             <Label for="org-slug">Slug (optional)</Label>
             <Input id="org-slug" v-model="form.slug" placeholder="acme" />
           </div>
-          <Button type="submit" :disabled="isLoading || !workspacesEnabled">
+          <Button type="submit" :disabled="isLoading">
             <Loader2 v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
             Create
           </Button>
@@ -54,13 +54,15 @@
               </div>
             </div>
             <Button
+              v-if="workspacesEnabled"
               variant="outline"
               size="sm"
-              :disabled="org.id === currentOrgId || !workspacesEnabled"
+              :disabled="org.id === currentOrgId"
               @click="switchOrg(org.id)"
             >
               {{ org.id === currentOrgId ? 'Current' : 'Switch' }}
             </Button>
+            <span v-else class="text-xs text-muted-foreground">Disabled</span>
           </div>
         </div>
       </CardContent>

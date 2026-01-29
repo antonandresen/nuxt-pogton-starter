@@ -110,7 +110,7 @@
                     Receive email notifications about your account
                   </p>
                 </div>
-                <Switch v-model="preferences.emailNotifications" />
+                <Switch v-model:checked="preferences.emailNotifications" />
               </div>
 
               <div class="flex items-center justify-between">
@@ -294,7 +294,7 @@
                     </div>
                     <div class="flex items-center justify-between">
                       <Label>Enabled</Label>
-                      <Switch v-model="webhookForm.enabled" />
+                      <Switch v-model:checked="webhookForm.enabled" />
                     </div>
                   </div>
                   <DialogFooter class="gap-2">
