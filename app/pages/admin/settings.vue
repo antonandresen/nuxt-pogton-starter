@@ -96,7 +96,7 @@
                 <Label>Enabled</Label>
                 <p class="text-xs text-muted-foreground">Turn the assistant on or off globally.</p>
               </div>
-              <Switch v-model="aiForm.enabled" />
+              <Switch v-model:checked="aiForm.enabled" />
             </div>
             <div class="grid gap-4 md:grid-cols-2">
               <div class="space-y-2">
@@ -154,14 +154,14 @@
                 <Label>Workspaces</Label>
                 <p class="text-xs text-muted-foreground">Allow users to create and switch workspaces.</p>
               </div>
-              <Switch v-model="appSettingsForm.workspacesEnabled" />
+              <Switch v-model:checked="appSettingsForm.workspacesEnabled" />
             </div>
             <div class="flex items-center justify-between">
               <div>
                 <Label>Invitations</Label>
                 <p class="text-xs text-muted-foreground">Allow workspace invites and accepting invites.</p>
               </div>
-              <Switch v-model="appSettingsForm.invitationsEnabled" />
+              <Switch v-model:checked="appSettingsForm.invitationsEnabled" />
             </div>
             <div class="flex items-center gap-2">
               <Button :disabled="isSavingAppSettings" @click="saveAppSettings">
