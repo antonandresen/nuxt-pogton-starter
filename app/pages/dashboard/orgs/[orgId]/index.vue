@@ -8,7 +8,7 @@
     <Card v-if="!selectedOrg">
       <CardHeader>
         <CardTitle>Workspace not found</CardTitle>
-        <CardDescription>We couldn't find that workspace.</CardDescription>
+        <CardDescription>We could not find that workspace.</CardDescription>
       </CardHeader>
       <CardContent>
         <Button variant="outline" as-child>
@@ -45,7 +45,7 @@
                 v-if="!canEditOrg"
                 class="rounded-md border border-dashed bg-muted/40 p-4 text-sm text-muted-foreground"
               >
-                You don't have permission to edit this workspace.
+                You do not have permission to edit this workspace.
               </div>
 
               <form v-else class="space-y-4" @submit.prevent="handleSave">
@@ -119,7 +119,7 @@
               </CardHeader>
               <CardContent>
                 <div v-if="!canManageMembers" class="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
-                  You don't have permission to manage team members.
+                  You do not have permission to manage team members.
                 </div>
                 <div v-else-if="!members?.length" class="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
                   No members yet.
@@ -154,7 +154,7 @@
             <Card>
               <CardHeader>
                 <CardTitle>Pending Invites</CardTitle>
-                <CardDescription>Invitations that haven't been accepted yet</CardDescription>
+                <CardDescription>Invitations that have not been accepted yet</CardDescription>
               </CardHeader>
               <CardContent>
                 <div v-if="!pendingInvites?.length" class="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
@@ -317,12 +317,12 @@ const handleSave = async () => {
   const slug = form.slug.trim()
 
   if (!name) {
-    toast({ title: 'Name required', description: 'Workspace name can't be empty.', variant: 'destructive' })
+    toast({ title: 'Name required', description: 'Workspace name cannot be empty.', variant: 'destructive' })
     return
   }
 
   if (!slug) {
-    toast({ title: 'Slug required', description: 'Workspace slug can't be empty.', variant: 'destructive' })
+    toast({ title: 'Slug required', description: 'Workspace slug cannot be empty.', variant: 'destructive' })
     return
   }
 
