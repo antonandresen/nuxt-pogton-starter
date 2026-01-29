@@ -327,5 +327,52 @@ export default defineSchema({
   })
     .index("by_stripeId", ["stripeId"])
     .index("by_stripeProductId", ["stripeProductId"]),
+
+  supportTickets: defineTable({
+    orgId: v.id("organizations"),
+    customerId: v.id("users"),
+    assignedToId: v.optional(v.id("users")),
+    subject: v.string(),
+    status: v.string(),
+    priority: v.string(),
+    tags: v.optional(v.array(v.string())),
+    channel: v.string(),
+    firstResponseAt: v.optional(v.number()),
+    resolvedAt: v.optional(v.number()),
+    closedAt: v.optional(v.number()),
+    lastMessageAt: v.number(),
+    unreadByCustomer: v.boolean(),
+    unreadByTeam: v.boolean(),
+    createdBy: v.id("users"),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    deletedAt: v.optional(v.number()),
+  })
+    .index("by_orgId", ["orgId"])
+    .index("by_orgId_customerId", ["orgId", "customerId"])
+    .index("by_orgId_status", ["orgId", "status"])
+    .index("by_customerId", ["customerId"])
+    .index("by_assignedToId", ["assignedToId"])
+    .index("by_orgId_createdAt", ["orgId", "createdAt"]),
+
+  supportMessages: defineTable({
+    orgId: v.id("organizations"),
+    ticketId: v.id("supportTickets"),
+    authorId: v.id("users"),
+    body: v.string(),
+    isInternal: v.boolean(),
+    attachments: v.optional(v.array(v.object({
+      name: v.string(),
+      url: v.string(),
+      size: v.number(),
+      type: v.string(),
+    }))),
+    createdAt: v.number(),
+    editedAt: v.optional(v.number()),
+    deletedAt: v.optional(v.number()),
+  })
+    .index("by_ticketId", ["ticketId"])
+    .index("by_orgId_ticketId", ["orgId", "ticketId"])
+    .index("by_orgId", ["orgId"]),
 })
 

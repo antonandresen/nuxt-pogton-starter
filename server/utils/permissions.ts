@@ -19,6 +19,8 @@ const rolePermissions = {
     "cms:write",
     "crm:read",
     "crm:write",
+    "support:read",
+    "support:write",
   ],
   ADMIN: [
     "org:read",
@@ -39,6 +41,8 @@ const rolePermissions = {
     "cms:write",
     "crm:read",
     "crm:write",
+    "support:read",
+    "support:write",
   ],
   STAFF: [
     "org:read",
@@ -47,6 +51,8 @@ const rolePermissions = {
     "cms:write",
     "crm:read",
     "crm:write",
+    "support:read",
+    "support:write",
   ],
   MEMBER: [
     "org:read",

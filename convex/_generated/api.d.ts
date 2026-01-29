@@ -27,6 +27,7 @@ import type * as pricingPlans from "../pricingPlans.js";
 import type * as purchases from "../purchases.js";
 import type * as stripe from "../stripe.js";
 import type * as subscriptions from "../subscriptions.js";
+import type * as supportTickets from "../supportTickets.js";
 import type * as usage from "../usage.js";
 import type * as users from "../users.js";
 import type * as webhooks from "../webhooks.js";
@@ -57,6 +58,7 @@ declare const fullApi: ApiFromModules<{
   purchases: typeof purchases;
   stripe: typeof stripe;
   subscriptions: typeof subscriptions;
+  supportTickets: typeof supportTickets;
   usage: typeof usage;
   users: typeof users;
   webhooks: typeof webhooks;
