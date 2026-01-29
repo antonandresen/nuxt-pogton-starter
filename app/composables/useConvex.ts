@@ -48,10 +48,12 @@ export const api = {
     getById: 'orgs:getById',
     getBySlug: 'orgs:getBySlug',
     listMine: 'orgs:listMine',
+    listAll: 'orgs:listAll',
     createForCurrentUser: 'orgs:createForCurrentUser',
     switchCurrentOrg: 'orgs:switchCurrentOrg',
     updateNameForCurrentOrg: 'orgs:updateNameForCurrentOrg',
     updateSlugForCurrentOrg: 'orgs:updateSlugForCurrentOrg',
+    deleteAdmin: 'orgs:deleteAdmin',
   },
   memberships: {
     getByOrgAndUser: 'memberships:getByOrgAndUser',

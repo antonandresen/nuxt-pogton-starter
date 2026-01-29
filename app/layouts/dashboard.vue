@@ -27,23 +27,17 @@
                   </div>
                   <div class="flex items-center gap-1">
                     <button
-                      class="inline-flex h-7 items-center rounded-md border px-2 text-xs font-medium transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
-                      :disabled="org.id === currentOrgId"
+                      v-if="org.id !== currentOrgId"
+                      class="inline-flex h-7 items-center rounded-md border px-2 text-xs font-medium transition hover:bg-muted"
                       @click.stop.prevent="handleSwitchOrg(org.id)"
                     >
-                      {{ org.id === currentOrgId ? 'Current' : 'Switch' }}
+                      Switch
                     </button>
-                    <NuxtLink
-                      :to="`/dashboard/orgs/${org.id}/team`"
-                      class="inline-flex h-7 items-center rounded-md border px-2 text-xs font-medium transition hover:bg-muted"
-                    >
-                      Team
-                    </NuxtLink>
                     <NuxtLink
                       :to="`/dashboard/orgs/${org.id}`"
                       class="inline-flex h-7 items-center rounded-md border px-2 text-xs font-medium transition hover:bg-muted"
                     >
-                      Settings
+                      {{ org.id === currentOrgId ? 'Manage' : 'View' }}
                     </NuxtLink>
                   </div>
                 </DropdownMenuItem>
@@ -149,6 +143,15 @@
                 <SidebarMenuButton :is-active="route.path.startsWith('/admin/users')">
                   <Users class="h-4 w-4" />
                   <span>Users</span>
+                </SidebarMenuButton>
+              </NuxtLink>
+            </SidebarMenuItem>
+            
+            <SidebarMenuItem>
+              <NuxtLink to="/admin/workspaces">
+                <SidebarMenuButton :is-active="route.path.startsWith('/admin/workspaces')">
+                  <Building2 class="h-4 w-4" />
+                  <span>Workspaces</span>
                 </SidebarMenuButton>
               </NuxtLink>
             </SidebarMenuItem>
