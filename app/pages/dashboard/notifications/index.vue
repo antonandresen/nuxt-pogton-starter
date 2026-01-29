@@ -187,3 +187,4 @@ const handleMarkAllRead = async () => {
 const formatDate = (timestamp: number) => {
   return new Date(timestamp).toLocaleString()
 }
+</script>

@@ -297,3 +297,4 @@ const handleRevokeInvite = async (inviteId: string) => {
 const formatDate = (timestamp: number) => {
   return new Date(timestamp).toLocaleDateString()
 }
+</script>

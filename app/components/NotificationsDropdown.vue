@@ -153,3 +153,4 @@ const formatRelativeTime = (timestamp: number) => {
   if (minutes > 0) return `${minutes}m ago`
   return 'Just now'
 }
+</script>
