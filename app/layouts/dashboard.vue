@@ -98,6 +98,15 @@
               </NuxtLink>
             </SidebarMenuItem>
 
+            <SidebarMenuItem>
+              <NuxtLink to="/dashboard/support">
+                <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/support')">
+                  <MessageCircle class="h-4 w-4" />
+                  <span>Support</span>
+                </SidebarMenuButton>
+              </NuxtLink>
+            </SidebarMenuItem>
+
           </SidebarMenu>
         </SidebarGroup>
 
@@ -179,6 +188,15 @@
                 <SidebarMenuButton :is-active="route.path.startsWith('/admin/settings')">
                   <Settings class="h-4 w-4" />
                   <span>Settings</span>
+                </SidebarMenuButton>
+              </NuxtLink>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <NuxtLink to="/admin/support">
+                <SidebarMenuButton :is-active="route.path.startsWith('/admin/support')">
+                  <Headphones class="h-4 w-4" />
+                  <span>Support Tickets</span>
                 </SidebarMenuButton>
               </NuxtLink>
             </SidebarMenuItem>
@@ -298,7 +316,9 @@ import {
   Moon,
   User,
   Check,
-  DollarSign
+  DollarSign,
+  MessageCircle,
+  Headphones
 } from 'lucide-vue-next'
 import { useAuth } from '@/composables/use-auth'
 import { useOrg } from '@/composables/useOrg'
