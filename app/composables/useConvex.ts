@@ -53,6 +53,7 @@ export const api = {
     switchCurrentOrg: 'orgs:switchCurrentOrg',
     updateNameForCurrentOrg: 'orgs:updateNameForCurrentOrg',
     updateSlugForCurrentOrg: 'orgs:updateSlugForCurrentOrg',
+    deleteForCurrentUser: 'orgs:deleteForCurrentUser',
     deleteAdmin: 'orgs:deleteAdmin',
   },
   memberships: {

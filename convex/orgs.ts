@@ -226,6 +226,72 @@ export const listAll = query({
   },
 })
 
+export const deleteForCurrentUser = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const { orgId, userId, membership } = await requireCurrentOrg(ctx)
+    
+    // Only OWNER can delete the workspace
+    if (membership.role !== "OWNER") {
+      throw new Error("Only workspace owners can delete the workspace")
+    }
+
+    const now = Date.now()
+
+    // Soft delete the org
+    await ctx.db.patch(orgId, {
+      deletedAt: now,
+      updatedAt: now,
+    })
+
+    // Soft delete all memberships
+    const memberships = await ctx.db
+      .query("memberships")
+      .withIndex("by_orgId", (q) => q.eq("orgId", orgId))
+      .filter((q) => q.eq(q.field("deletedAt"), undefined))
+      .collect()
+
+    await Promise.all(
+      memberships.map((membership) =>
+        ctx.db.patch(membership._id, {
+          deletedAt: now,
+          updatedAt: now,
+        })
+      )
+    )
+
+    // Handle users with this org as currentOrgId
+    const affectedUsers = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("currentOrgId"), orgId))
+      .collect()
+
+    await Promise.all(
+      affectedUsers.map(async (user) => {
+        // Find another active org for this user
+        const otherMembership = await ctx.db
+          .query("memberships")
+          .withIndex("by_userId", (q) => q.eq("userId", user._id))
+          .filter((q) =>
+            q.and(
+              q.neq(q.field("orgId"), orgId),
+              q.eq(q.field("deletedAt"), undefined),
+              q.eq(q.field("status"), "ACTIVE")
+            )
+          )
+          .first()
+
+        await ctx.db.patch(user._id, {
+          currentOrgId: otherMembership?.orgId ?? undefined,
+          updatedAt: now,
+        })
+      })
+    )
+
+    return orgId
+  },
+})
+
 export const deleteAdmin = mutation({
   args: { id: v.id("organizations") },
   handler: async (ctx, args) => {

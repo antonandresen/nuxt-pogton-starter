@@ -66,6 +66,46 @@
               </form>
             </CardContent>
           </Card>
+
+          <Card v-if="isOwner" class="border-destructive">
+            <CardHeader>
+              <CardTitle class="text-destructive">Danger Zone</CardTitle>
+              <CardDescription>Irreversible and destructive actions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div class="flex items-center justify-between rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+                <div>
+                  <p class="font-medium">Delete this workspace</p>
+                  <p class="text-sm text-muted-foreground">
+                    Permanently delete this workspace and all of its data. This action cannot be undone.
+                  </p>
+                </div>
+                <AlertDialog>
+                  <AlertDialogTrigger as-child>
+                    <Button variant="destructive">Delete Workspace</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will permanently delete <strong>{{ selectedOrg.name }}</strong> and remove all members.
+                        All data associated with this workspace will be lost. This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        @click="handleDeleteWorkspace"
+                        class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        Delete Workspace
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="team">
@@ -217,6 +257,17 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -266,10 +317,16 @@ const canManageMembers = computed(() => {
   if (selectedOrg.value.id !== currentOrgId.value) return false
   return hasPermission(selectedOrg.value.role, 'member:write')
 })
+const isOwner = computed(() => {
+  if (!selectedOrg.value) return false
+  if (selectedOrg.value.id !== currentOrgId.value) return false
+  return selectedOrg.value.role === 'OWNER'
+})
 
 // Settings
 const updateNameMutation = useConvexMutation(api.orgs.updateNameForCurrentOrg)
 const updateSlugMutation = useConvexMutation(api.orgs.updateSlugForCurrentOrg)
+const deleteWorkspaceMutation = useConvexMutation(api.orgs.deleteForCurrentUser)
 
 const form = reactive({
   name: '',
@@ -415,5 +472,19 @@ const handleRevokeInvite = async (inviteId: string) => {
 
 const formatDate = (timestamp: number) => {
   return new Date(timestamp).toLocaleDateString()
+}
+
+const handleDeleteWorkspace = async () => {
+  try {
+    await deleteWorkspaceMutation.mutate({})
+    toast({ 
+      title: 'Workspace deleted', 
+      description: 'Your workspace has been permanently deleted.' 
+    })
+    await navigateTo('/dashboard/orgs')
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to delete workspace.'
+    toast({ title: 'Error', description: message, variant: 'destructive' })
+  }
 }
 </script>
