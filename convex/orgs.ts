@@ -1,7 +1,7 @@
 import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
 import { api } from "./_generated/api"
-import { requireAdmin, requireOrgPermission, requireUser, toSlug } from "./helpers"
+import { requireAdmin, requireCurrentOrg, requireOrgPermission, requireUser, toSlug } from "./helpers"
 
 export const getById = query({
   args: { id: v.id("organizations") },
