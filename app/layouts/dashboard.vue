@@ -8,7 +8,7 @@
           </NuxtLink>
           <div class="min-w-0">
             <h2 class="text-lg font-bold tracking-tight">Pogton</h2>
-            <DropdownMenu>
+            <DropdownMenu v-if="workspacesEnabled">
               <DropdownMenuTrigger class="group flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
                 <span class="max-w-[140px] truncate">{{ currentOrg?.name ?? 'Select workspace' }}</span>
                 <ChevronDown class="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground" />
@@ -50,6 +50,9 @@
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            <div v-else class="text-xs text-muted-foreground">
+              <span class="max-w-[140px] truncate">{{ currentOrg?.name ?? 'Workspace' }}</span>
+            </div>
           </div>
         </div>
       </SidebarHeader>
@@ -288,6 +291,7 @@ import { useOrg } from '@/composables/useOrg'
 import { getAvatarUrl } from '@/utils/gravatar'
 import { hasPermission } from '@/utils/permissions'
 import { useToast } from '@/components/ui/toast/use-toast'
+import { api, useConvexQuery } from '@/composables/useConvex'
 
 const { user, logout } = useAuth()
 const { orgs, currentOrgId, switchOrg: switchOrgAction } = useOrg()
@@ -295,6 +299,7 @@ const { toast } = useToast()
 const route = useRoute()
 const colorMode = useColorMode()
 const showAvatarDialog = ref(false)
+const { data: appSettings } = useConvexQuery(api.appSettings.getPublic, {})
 
 const avatarUrl = computed(() => {
   if (!user.value) return ''
@@ -329,6 +334,8 @@ const currentOrgRole = computed(() => {
 
 const canAccessCms = computed(() => hasPermission(currentOrgRole.value, "cms:read"))
 const canAccessCrm = computed(() => hasPermission(currentOrgRole.value, "crm:read"))
+
+const workspacesEnabled = computed(() => appSettings.value?.workspacesEnabled ?? true)
 
 const handleLogout = async () => {
   await logout()
