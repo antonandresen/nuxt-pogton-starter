@@ -1,0 +1,40 @@
+# Convex API Registration
+
+When creating new Convex functions, you MUST register them in TWO places:
+
+## 1. Create the Convex function
+
+File: `convex/<module>.ts`
+
+```typescript
+export const myFunction = query({
+  args: { ... },
+  handler: async (ctx, args) => { ... }
+})
+```
+
+## 2. Register in useConvex.ts
+
+File: `app/composables/useConvex.ts`
+
+The `api` object is **manually maintained**. Add your new module/functions:
+
+```typescript
+export const api = {
+  // ... existing modules ...
+  myNewModule: {
+    myFunction: 'myNewModule:myFunction',
+    anotherFunction: 'myNewModule:anotherFunction',
+  },
+} as const
+```
+
+## Why
+
+The `useConvex.ts` file uses a manual API mapping for Vue composables. This is separate from Convex's auto-generated `_generated/api.d.ts`. Both must be updated for functions to work in the frontend.
+
+## Checklist
+
+- [ ] Created function in `convex/`
+- [ ] Added to `api` object in `app/composables/useConvex.ts`
+- [ ] If new module, added permissions to `convex/permissions.ts`, `server/utils/permissions.ts`, and `app/utils/permissions.ts`

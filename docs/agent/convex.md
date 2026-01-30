@@ -9,5 +9,8 @@
   - Convex auth token/JWKS
   - Stripe (checkout/portal/success) + webhooks
   - other non-Convex side effects requiring secrets
-- **Generated client API map**:
-  - When adding/renaming Convex functions, update the manual API map in `app/composables/useConvex.ts` so client imports stay in sync.
+- **Generated client API map** (CRITICAL):
+  - When adding/renaming Convex functions, **you MUST update** the manual `api` object in `app/composables/useConvex.ts`
+  - Format: `moduleName: { functionName: 'moduleName:functionName' }`
+  - Without this, the Vue pages will fail silently (blank page, no errors)
+  - See [`.cursor/rules/convex-api.mdc`](../../.cursor/rules/convex-api.mdc) for details

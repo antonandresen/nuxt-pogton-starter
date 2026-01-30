@@ -141,6 +141,16 @@ export const api = {
     listPrices: 'stripe:listPrices',
     listPricesByProduct: 'stripe:listPricesByProduct',
   },
+  supportTickets: {
+    create: 'supportTickets:create',
+    listForOrg: 'supportTickets:listForOrg',
+    listForCurrentUser: 'supportTickets:listForCurrentUser',
+    get: 'supportTickets:get',
+    markAsRead: 'supportTickets:markAsRead',
+    sendMessage: 'supportTickets:sendMessage',
+    update: 'supportTickets:update',
+    remove: 'supportTickets:remove',
+  },
 } as const
 
 // Re-export composables
