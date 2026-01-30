@@ -96,11 +96,11 @@
 </template>
 
 <script setup lang="ts">
-import { useToast } from '../../../components/ui/toast/use-toast'
-import { Card, CardContent } from '../../../components/ui/card'
-import { Button } from '../../../components/ui/button'
-import { Textarea } from '../../../components/ui/textarea'
-import { api, useConvexMutation, useConvexQuery, type Id } from '../../../composables/useConvex'
+import { useToast } from '@/components/ui/toast/use-toast'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { api, useConvexMutation, useConvexQuery, type Id } from '@/composables/useConvex'
 
 definePageMeta({
   layout: 'dashboard',

@@ -1,0 +1,37 @@
+# Import Conventions
+
+## Always use `@/` alias for imports
+
+- **NEVER** use relative paths like `../../../components/ui/button`
+- **ALWAYS** use `@/` alias: `@/components/ui/button`
+
+### Correct patterns
+
+```typescript
+import { Button } from '@/components/ui/button'
+import { api, useConvexQuery } from '@/composables/useConvex'
+import { hasPermission } from '@/utils/permissions'
+import { useAuth } from '@/composables/use-auth'
+```
+
+### Incorrect patterns
+
+```typescript
+import { Button } from '../../../components/ui/button'  // ❌ NO
+import { api } from '../../composables/useConvex'        // ❌ NO
+import { hasPermission } from '../utils/permissions'    // ❌ NO
+```
+
+## Why
+
+- Cleaner, more maintainable code
+- TypeScript resolves `@/` imports more reliably
+- Easier to move files without updating imports
+- Matches Nuxt conventions
+
+## Applies to
+
+- All `.vue` files in `app/pages/`
+- All `.vue` files in `app/components/`
+- All `.ts` files in `app/composables/`
+- All `.ts` files in `app/utils/`

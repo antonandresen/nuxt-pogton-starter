@@ -76,7 +76,10 @@
         <CardDescription>{{ filteredTickets?.length || 0 }} tickets</CardDescription>
       </CardHeader>
       <CardContent>
-        <div v-if="!filteredTickets?.length" class="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+        <div v-if="tickets === undefined" class="flex items-center justify-center p-8">
+          <div class="text-muted-foreground">Loading tickets...</div>
+        </div>
+        <div v-else-if="!filteredTickets?.length" class="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
           No tickets found.
         </div>
         <div v-else class="rounded-md border">
@@ -226,29 +229,29 @@
 </template>
 
 <script setup lang="ts">
-import { useToast } from '../../components/ui/toast/use-toast'
+import { useToast } from '@/components/ui/toast/use-toast'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../components/ui/card'
-import { Button } from '../../components/ui/button'
-import { Textarea } from '../../components/ui/textarea'
-import { Checkbox } from '../../components/ui/checkbox'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select'
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '../../components/ui/dialog'
-import { api, useConvexMutation, useConvexQuery, type Id } from '../../composables/useConvex'
-import { useOrg } from '../../composables/useOrg'
-import { hasPermission } from '../../utils/permissions'
+} from '@/components/ui/dialog'
+import { api, useConvexMutation, useConvexQuery, type Id } from '@/composables/useConvex'
+import { useOrg } from '@/composables/useOrg'
+import { hasPermission } from '@/utils/permissions'
 
 definePageMeta({
   layout: 'dashboard',

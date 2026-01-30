@@ -19,7 +19,10 @@
         <CardDescription>View and manage your support requests</CardDescription>
       </CardHeader>
       <CardContent>
-        <div v-if="!tickets?.length" class="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+        <div v-if="tickets === undefined" class="flex items-center justify-center p-8">
+          <div class="text-muted-foreground">Loading tickets...</div>
+        </div>
+        <div v-else-if="!tickets?.length" class="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
           <p class="mb-4">No support tickets yet.</p>
           <Button @click="showNewTicketDialog = true" variant="outline">Create your first ticket</Button>
         </div>
@@ -105,17 +108,17 @@
 </template>
 
 <script setup lang="ts">
-import { useToast } from '../../../components/ui/toast/use-toast'
+import { useToast } from '@/components/ui/toast/use-toast'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../../components/ui/card'
-import { Button } from '../../../components/ui/button'
-import { Input } from '../../../components/ui/input'
-import { Textarea } from '../../../components/ui/textarea'
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Dialog,
   DialogContent,
@@ -123,15 +126,15 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '../../../components/ui/dialog'
+} from '@/components/ui/dialog'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../components/ui/select'
-import { api, useConvexMutation, useConvexQuery } from '../../../composables/useConvex'
+} from '@/components/ui/select'
+import { api, useConvexMutation, useConvexQuery } from '@/composables/useConvex'
 
 definePageMeta({
   layout: 'dashboard',
