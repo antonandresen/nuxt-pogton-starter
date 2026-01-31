@@ -196,7 +196,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Loader2 } from 'lucide-vue-next'
 import { useFeatureFlags } from '@/composables/useFeatureFlags'
-import { api, useConvexMutation, useConvexQuery } from '../../composables/useConvex'
+import { api, useConvexMutation, useConvexQuery } from '@/composables/useConvex'
 
 definePageMeta({
   layout: 'dashboard',

@@ -272,9 +272,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { api, useConvexQuery, useConvexMutation } from '../../composables/useConvex'
-import LanguageSelector from '../../components/admin/LanguageSelector.vue'
-import type { TranslatableString } from '../../composables/useI18nContent'
+import { api, useConvexQuery, useConvexMutation } from '@/composables/useConvex'
+import LanguageSelector from '@/components/admin/LanguageSelector.vue'
+import type { TranslatableString } from '@/composables/useI18nContent'
 
 definePageMeta({
   layout: 'dashboard',
