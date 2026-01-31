@@ -108,7 +108,7 @@
                 <TableCell>
                   <div class="font-medium">{{ ticket.subject }}</div>
                   <div class="text-xs text-muted-foreground">
-                    {{ ticket.tags.join(', ') || '—' }}
+                    {{ ticket.tags?.join(', ') || '—' }}
                   </div>
                 </TableCell>
                 <TableCell>

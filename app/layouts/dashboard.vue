@@ -139,8 +139,8 @@
           <SidebarGroupLabel class="text-xs uppercase tracking-wider px-3">Admin</SidebarGroupLabel>
           <SidebarMenu class="space-y-1 px-2">
             <SidebarMenuItem>
-              <NuxtLink to="/admin">
-                <SidebarMenuButton :is-active="route.path === '/admin'">
+              <NuxtLink to="/dashboard/admin">
+                <SidebarMenuButton :is-active="route.path === '/dashboard/admin'">
                   <LineChart class="h-4 w-4" />
                   <span>Overview</span>
                 </SidebarMenuButton>
@@ -148,8 +148,8 @@
             </SidebarMenuItem>
             
             <SidebarMenuItem>
-              <NuxtLink to="/admin/users">
-                <SidebarMenuButton :is-active="route.path.startsWith('/admin/users')">
+              <NuxtLink to="/dashboard/admin/users">
+                <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/admin/users')">
                   <Users class="h-4 w-4" />
                   <span>Users</span>
                 </SidebarMenuButton>
@@ -157,8 +157,8 @@
             </SidebarMenuItem>
             
             <SidebarMenuItem>
-              <NuxtLink to="/admin/workspaces">
-                <SidebarMenuButton :is-active="route.path.startsWith('/admin/workspaces')">
+              <NuxtLink to="/dashboard/admin/workspaces">
+                <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/admin/workspaces')">
                   <Building2 class="h-4 w-4" />
                   <span>Workspaces</span>
                 </SidebarMenuButton>
@@ -166,8 +166,8 @@
             </SidebarMenuItem>
             
             <SidebarMenuItem>
-              <NuxtLink to="/admin/subscriptions">
-                <SidebarMenuButton :is-active="route.path.startsWith('/admin/subscriptions')">
+              <NuxtLink to="/dashboard/admin/subscriptions">
+                <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/admin/subscriptions')">
                   <CreditCard class="h-4 w-4" />
                   <span>Subscriptions</span>
                 </SidebarMenuButton>
@@ -175,8 +175,8 @@
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <NuxtLink to="/admin/pricing">
-                <SidebarMenuButton :is-active="route.path.startsWith('/admin/pricing')">
+              <NuxtLink to="/dashboard/admin/pricing">
+                <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/admin/pricing')">
                   <DollarSign class="h-4 w-4" />
                   <span>Pricing</span>
                 </SidebarMenuButton>
@@ -184,8 +184,8 @@
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <NuxtLink to="/admin/settings">
-                <SidebarMenuButton :is-active="route.path.startsWith('/admin/settings')">
+              <NuxtLink to="/dashboard/admin/settings">
+                <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/admin/settings')">
                   <Settings class="h-4 w-4" />
                   <span>Settings</span>
                 </SidebarMenuButton>
@@ -193,8 +193,8 @@
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <NuxtLink to="/admin/support">
-                <SidebarMenuButton :is-active="route.path.startsWith('/admin/support')">
+              <NuxtLink to="/dashboard/admin/support">
+                <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/admin/support')">
                   <Headphones class="h-4 w-4" />
                   <span>Support Tickets</span>
                 </SidebarMenuButton>
