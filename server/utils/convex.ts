@@ -19,6 +19,7 @@ export const api = {
     getByStripeCustomerId: 'users:getByStripeCustomerId' as any,
     list: 'users:list' as any,
     create: 'users:create' as any,
+    updateCurrentOrg: 'users:updateCurrentOrg' as any,
     updateStripeCustomerId: 'users:updateStripeCustomerId' as any,
     updateRole: 'users:updateRole' as any,
     updateAvatar: 'users:updateAvatar' as any,
@@ -35,6 +36,7 @@ export const api = {
   },
   orgs: {
     listMine: 'orgs:listMine' as any,
+    create: 'orgs:create' as any,
     createForCurrentUser: 'orgs:createForCurrentUser' as any,
     switchCurrentOrg: 'orgs:switchCurrentOrg' as any,
   },
@@ -49,5 +51,14 @@ export const api = {
   stripe: {
     upsertProduct: 'stripe:upsertProduct' as any,
     upsertPrice: 'stripe:upsertPrice' as any,
+  },
+  memberships: {
+    create: 'memberships:create' as any,
+  },
+  onboarding: {
+    upsert: 'onboarding:upsert' as any,
+  },
+  auditLogs: {
+    create: 'auditLogs:create' as any,
   },
 } as const
