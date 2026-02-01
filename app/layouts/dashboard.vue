@@ -272,6 +272,12 @@
     <ClientOnly>
       <AvatarUploadDialog v-model:open="showAvatarDialog" />
     </ClientOnly>
+    
+    <!-- Onboarding Dialog -->
+    <ClientOnly>
+      <OnboardingDialog />
+    </ClientOnly>
+
     <CookieBanner />
     <ClientOnly>
       <FloatingAiChat />

@@ -163,6 +163,13 @@
               </div>
               <Switch v-model:checked="appSettingsForm.invitationsEnabled" />
             </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <Label>Onboarding</Label>
+                <p class="text-xs text-muted-foreground">Show onboarding dialog to new users until completed.</p>
+              </div>
+              <Switch v-model:checked="appSettingsForm.onboardingEnabled" />
+            </div>
             <div class="flex items-center gap-2">
               <Button :disabled="isSavingAppSettings" @click="saveAppSettings">
                 <Loader2 v-if="isSavingAppSettings" class="mr-2 h-4 w-4 animate-spin" />
@@ -244,6 +251,7 @@ const isSavingAppSettings = ref(false)
 const appSettingsForm = reactive({
   workspacesEnabled: true,
   invitationsEnabled: true,
+  onboardingEnabled: true,
 })
 
 
@@ -328,6 +336,8 @@ watchEffect(() => {
     appSettings.value.workspacesEnabled ?? appSettingsForm.workspacesEnabled
   appSettingsForm.invitationsEnabled =
     appSettings.value.invitationsEnabled ?? appSettingsForm.invitationsEnabled
+  appSettingsForm.onboardingEnabled =
+    appSettings.value.onboardingEnabled ?? appSettingsForm.onboardingEnabled
 })
 
 const saveAiConfig = async () => {
@@ -364,6 +374,7 @@ const saveAppSettings = async () => {
     await saveAppSettingsMutation.mutate({
       workspacesEnabled: appSettingsForm.workspacesEnabled,
       invitationsEnabled: appSettingsForm.invitationsEnabled,
+      onboardingEnabled: appSettingsForm.onboardingEnabled,
     })
     toast({
       title: 'App settings updated',

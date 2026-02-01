@@ -7,6 +7,7 @@ const SETTINGS_KEY = "default"
 const defaultSettings = {
   workspacesEnabled: true,
   invitationsEnabled: true,
+  onboardingEnabled: true,
 }
 
 export const getPublic = query({
@@ -24,6 +25,7 @@ export const getPublic = query({
     return {
       workspacesEnabled: settings.workspacesEnabled,
       invitationsEnabled: settings.invitationsEnabled,
+      onboardingEnabled: settings.onboardingEnabled,
     }
   },
 })
@@ -51,6 +53,7 @@ export const upsertAdmin = mutation({
   args: {
     workspacesEnabled: v.boolean(),
     invitationsEnabled: v.boolean(),
+    onboardingEnabled: v.boolean(),
   },
   handler: async (ctx, args) => {
     const { user } = await requireAdmin(ctx)
@@ -64,6 +67,7 @@ export const upsertAdmin = mutation({
       await ctx.db.patch(settings._id, {
         workspacesEnabled: args.workspacesEnabled,
         invitationsEnabled: args.invitationsEnabled,
+        onboardingEnabled: args.onboardingEnabled,
         updatedBy: user._id,
         updatedAt: now,
       })
@@ -74,6 +78,7 @@ export const upsertAdmin = mutation({
       key: SETTINGS_KEY,
       workspacesEnabled: args.workspacesEnabled,
       invitationsEnabled: args.invitationsEnabled,
+      onboardingEnabled: args.onboardingEnabled,
       updatedBy: user._id,
       updatedAt: now,
     })
