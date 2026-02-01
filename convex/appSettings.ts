@@ -25,7 +25,7 @@ export const getPublic = query({
     return {
       workspacesEnabled: settings.workspacesEnabled,
       invitationsEnabled: settings.invitationsEnabled,
-      onboardingEnabled: settings.onboardingEnabled,
+      onboardingEnabled: settings.onboardingEnabled ?? defaultSettings.onboardingEnabled,
     }
   },
 })
@@ -39,13 +39,18 @@ export const getAdmin = query({
       .withIndex("by_key", (q) => q.eq("key", SETTINGS_KEY))
       .first()
 
-    return (
-      settings ?? {
+    if (!settings) {
+      return {
         key: SETTINGS_KEY,
         ...defaultSettings,
         updatedAt: 0,
       }
-    )
+    }
+
+    return {
+      ...settings,
+      onboardingEnabled: settings.onboardingEnabled ?? defaultSettings.onboardingEnabled,
+    }
   },
 })
 
