@@ -1,0 +1,21 @@
+# Browser wait times
+
+When using browser automation tools:
+
+- Use `browser_snapshot` to check page state instead of waiting blindly
+- If you must wait, use the `time` parameter (in milliseconds), NOT `seconds`
+- **NEVER wait more than 5 seconds** (5000ms) at a time
+- Prefer incremental 1-2 second waits with checks in between
+- For page loads/navigation, wait 2s max then snapshot to verify
+
+Example:
+```javascript
+// Bad: Wait 3000 seconds (50 minutes!)
+browser_wait_for({ seconds: 3 })
+
+// Good: Wait 2 seconds
+browser_wait_for({ time: 2000 })
+
+// Better: Just check the state
+browser_snapshot()
+```

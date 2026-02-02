@@ -6,7 +6,8 @@ This repo is a **Nuxt 4 + Convex SaaS starter** (auth, orgs, Stripe, i18n, shadc
 - **start prod**: `npm run start:prod`
 - **preview**: `npm run preview`
 - **generate**: `npm run generate`
-- **create admin**: `npm run create-admin`
+- **create admin**: `npm run create-admin` (creates first admin user with org/workspace)
+- **fix admin org**: `npm run fix-admin-org` (adds org/workspace to existing admin without one)
 
 ## Progressive disclosure
 - Nuxt/Vue patterns: [`docs/agent/nuxt.md`](docs/agent/nuxt.md)

@@ -143,6 +143,7 @@ export const api = {
   },
   supportTickets: {
     create: 'supportTickets:create',
+    listAll: 'supportTickets:listAll',
     listForOrg: 'supportTickets:listForOrg',
     listForCurrentUser: 'supportTickets:listForCurrentUser',
     get: 'supportTickets:get',

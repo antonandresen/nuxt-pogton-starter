@@ -70,14 +70,34 @@ async function createFirstAdmin() {
     const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10)
     
     console.log('👤 Creating admin user...')
-    await convex.mutation(api.users.create, {
+    const userId = await convex.mutation(api.users.create, {
       email: ADMIN_EMAIL,
       password: hashedPassword,
       role: 'ADMIN'
     })
 
+    console.log('🏢 Creating admin workspace...')
+    const orgId = await convex.mutation(api.orgs.create, {
+      name: 'Admin Workspace',
+      slug: 'admin',
+      createdBy: userId,
+    })
+
+    await convex.mutation(api.memberships.create, {
+      orgId,
+      userId,
+      role: 'OWNER',
+      status: 'ACTIVE',
+    })
+
+    await convex.mutation(api.users.updateCurrentOrg, {
+      id: userId,
+      currentOrgId: orgId,
+    })
+
     console.log('✅ Admin user created successfully!')
     console.log(`📧 Email: ${ADMIN_EMAIL}`)
+    console.log(`🏢 Workspace: Admin Workspace (slug: admin)`)
   } catch (error) {
     if (error instanceof Error) {
       console.error('❌ Error:', error.message)

@@ -15,6 +15,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "create-admin": "npx tsx server/commands/create-admin.ts",
+    "fix-admin-org": "npx tsx server/commands/fix-admin-org.ts",
     "convex:dev": "npx convex dev",
     "convex:deploy": "npx convex deploy"
   },

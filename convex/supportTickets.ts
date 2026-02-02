@@ -1,7 +1,7 @@
 import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
 import type { Doc, Id } from "./_generated/dataModel"
-import { requireOrgPermission } from "./helpers"
+import { requireOrgPermission, requireAdmin } from "./helpers"
 
 const STATUS_VALUES = ["open", "in_progress", "waiting_customer", "resolved", "closed"] as const
 const PRIORITY_VALUES = ["low", "normal", "high", "urgent"] as const
@@ -85,6 +85,72 @@ export const create = mutation({
     }
 
     return ticketId
+  },
+})
+
+// List ALL tickets (site admin view)
+export const listAll = query({
+  args: {
+    status: v.optional(v.string()),
+    assignedToId: v.optional(v.id("users")),
+  },
+  handler: async (ctx, args) => {
+    const { user } = await requireAdmin(ctx)
+
+    let ticketsQuery = ctx.db
+      .query("supportTickets")
+      .filter((q) => q.eq(q.field("deletedAt"), undefined))
+
+    const tickets = await ticketsQuery.collect()
+
+    // Filter in memory for optional filters
+    let filteredTickets = tickets
+    if (args.status) {
+      filteredTickets = filteredTickets.filter(t => t.status === args.status)
+    }
+    if (args.assignedToId) {
+      filteredTickets = filteredTickets.filter(t => t.assignedToId === args.assignedToId)
+    }
+
+    // Sort by lastMessageAt desc
+    filteredTickets.sort((a, b) => b.lastMessageAt - a.lastMessageAt)
+
+    // Fetch related data
+    const customerIds = Array.from(new Set(filteredTickets.map(t => t.customerId)))
+    const assignedIds = Array.from(new Set(filteredTickets.map(t => t.assignedToId).filter(Boolean))) as Id<"users">[]
+    
+    const customers = await Promise.all(customerIds.map(id => ctx.db.get(id)))
+    const assignees = await Promise.all(assignedIds.map(id => ctx.db.get(id)))
+
+    const customerById = new Map(customers.filter(Boolean).map(c => [c!._id, c!]))
+    const assigneeById = new Map(assignees.filter(Boolean).map(a => [a!._id, a!]))
+
+    return filteredTickets.map(ticket => {
+      const customer = customerById.get(ticket.customerId)
+      const assignee = ticket.assignedToId ? assigneeById.get(ticket.assignedToId) : null
+
+      return {
+        _id: ticket._id,
+        subject: ticket.subject,
+        status: ticket.status,
+        priority: ticket.priority,
+        tags: ticket.tags ?? [],
+        channel: ticket.channel,
+        unreadByTeam: ticket.unreadByTeam,
+        lastMessageAt: ticket.lastMessageAt,
+        createdAt: ticket.createdAt,
+        customer: customer ? {
+          _id: customer._id,
+          email: customer.email,
+          name: customer.name,
+        } : null,
+        assignedTo: assignee ? {
+          _id: assignee._id,
+          email: assignee.email,
+          name: assignee.name,
+        } : null,
+      }
+    })
   },
 })
 
@@ -458,7 +524,7 @@ export const sendMessage = mutation({
   },
 })
 
-// Update ticket (team only)
+// Update ticket (site admin only)
 export const update = mutation({
   args: {
     ticketId: v.id("supportTickets"),
@@ -468,11 +534,10 @@ export const update = mutation({
     tags: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
-    const { orgId } = await requireOrgPermission(ctx, "support:write")
+    await requireAdmin(ctx)
 
     const ticket = await ctx.db.get(args.ticketId)
     if (!ticket || ticket.deletedAt) throw new Error("Ticket not found")
-    if (ticket.orgId !== orgId) throw new Error("Access denied")
 
     const updates: Partial<Doc<"supportTickets">> = {
       updatedAt: Date.now(),
@@ -504,15 +569,14 @@ export const update = mutation({
   },
 })
 
-// Delete ticket (team only)
+// Delete ticket (site admin only)
 export const remove = mutation({
   args: { ticketId: v.id("supportTickets") },
   handler: async (ctx, args) => {
-    const { orgId } = await requireOrgPermission(ctx, "support:write")
+    await requireAdmin(ctx)
 
     const ticket = await ctx.db.get(args.ticketId)
     if (!ticket || ticket.deletedAt) throw new Error("Ticket not found")
-    if (ticket.orgId !== orgId) throw new Error("Access denied")
 
     await ctx.db.patch(args.ticketId, {
       deletedAt: Date.now(),

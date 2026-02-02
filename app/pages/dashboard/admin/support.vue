@@ -250,8 +250,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { api, useConvexMutation, useConvexQuery, type Id } from '@/composables/useConvex'
-import { useOrg } from '@/composables/useOrg'
-import { hasPermission } from '@/utils/permissions'
 
 definePageMeta({
   layout: 'dashboard',
@@ -268,12 +266,11 @@ const { initSEO } = useSEO({
 initSEO()
 
 const { toast } = useToast()
-const { orgs, currentOrgId } = useOrg()
 
 const statusFilter = ref('all')
 const assigneeFilter = ref('all')
 
-const { data: tickets } = useConvexQuery(api.supportTickets.listForOrg, computed(() => ({
+const { data: tickets } = useConvexQuery(api.supportTickets.listAll, computed(() => ({
   status: statusFilter.value !== 'all' ? statusFilter.value : undefined,
 })))
 
@@ -290,22 +287,6 @@ const { data: ticketData } = useConvexQuery(
   api.supportTickets.get,
   computed(() => selectedTicketId.value ? { ticketId: selectedTicketId.value } : 'skip')
 )
-
-const currentOrgRole = computed(() => {
-  const org = orgs.value.find((item) => item.id === currentOrgId.value)
-  return (org?.role as any) ?? null
-})
-
-const canRead = computed(() => hasPermission(currentOrgRole.value, "support:read"))
-
-watchEffect(() => {
-  if (process.server) return
-  if (!currentOrgRole.value) return
-  if (!canRead.value) {
-    toast({ title: 'No access', description: 'You do not have support access.', variant: 'destructive' })
-    navigateTo('/dashboard')
-  }
-})
 
 const filteredTickets = computed(() => {
   if (!tickets.value) return []
