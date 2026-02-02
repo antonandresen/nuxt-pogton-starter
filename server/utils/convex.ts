@@ -57,6 +57,7 @@ export const api = {
   },
   onboarding: {
     upsert: 'onboarding:upsert' as any,
+    getByUser: 'onboarding:getByUser' as any,
   },
   auditLogs: {
     create: 'auditLogs:create' as any,

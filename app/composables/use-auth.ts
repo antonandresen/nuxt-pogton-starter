@@ -24,22 +24,63 @@ interface User {
 export function useAuth() {
   const user = useState<User | null>('auth-user', () => null)
   const convexAuthState = useState<boolean>('convex-authenticated', () => true)
+  // SSR data is available immediately, so we're hydrated from the start
+  const isHydrated = useState<boolean>('auth-hydrated', () => false)
   
-  // Only query on client-side (Convex client plugin is .client.ts)
-  const { data: currentUser } = process.client 
+  // SSR: Fetch user from our API (this runs on server AND client first load)
+  // The server has access to auth cookies and can query Convex
+  const { data: ssrUser } = useFetch('/api/auth/me', {
+    credentials: 'include',
+    key: 'auth-user-ssr',
+    // Don't refetch on client navigation - Convex handles real-time updates
+    getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key] || nuxtApp.static.data[key],
+  })
+
+  // Set user from SSR data immediately (works on both server and client)
+  watchEffect(() => {
+    const userData = ssrUser.value?.user as {
+      id: string
+      email: string
+      role: 'USER' | 'ADMIN'
+      createdAt: number
+      avatar?: string
+      name?: string
+      currentOrgId?: string | null
+    } | null | undefined
+    
+    if (userData) {
+      isHydrated.value = true
+      user.value = {
+        id: userData.id,
+        email: userData.email,
+        role: userData.role,
+        createdAt: new Date(userData.createdAt),
+        avatar: userData.avatar,
+        name: userData.name,
+        currentOrgId: userData.currentOrgId ?? null,
+      }
+    } else if (ssrUser.value && !ssrUser.value.user) {
+      // SSR returned but user is null (not authenticated)
+      isHydrated.value = true
+    }
+  })
+
+  // Client-side: Convex subscription for real-time updates (avatar changes, etc.)
+  const { data: convexUser } = process.client 
     ? useConvexQuery(api.users.getCurrent, {})
     : { data: ref(null) }
 
+  // When Convex updates (client-only), sync to user state
   watchEffect(() => {
-    if (process.client && currentUser.value) {
+    if (process.client && convexUser.value) {
       user.value = {
-        id: currentUser.value._id,
-        email: currentUser.value.email,
-        role: currentUser.value.role,
-        createdAt: new Date(currentUser.value.createdAt),
-        avatar: currentUser.value.avatar,
-        name: currentUser.value.name,
-        currentOrgId: currentUser.value.currentOrgId ?? null,
+        id: convexUser.value._id,
+        email: convexUser.value.email,
+        role: convexUser.value.role,
+        createdAt: new Date(convexUser.value.createdAt),
+        avatar: convexUser.value.avatar,
+        name: convexUser.value.name,
+        currentOrgId: convexUser.value.currentOrgId ?? null,
       }
     }
   })
@@ -93,6 +134,7 @@ export function useAuth() {
   return {
     user,
     isAuthenticated,
+    isHydrated,
     login,
     register,
     logout,

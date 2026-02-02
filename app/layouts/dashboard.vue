@@ -110,11 +110,11 @@
           </SidebarMenu>
         </SidebarGroup>
 
-        <!-- Staff Navigation -->
-        <SidebarGroup v-if="canAccessCms || canAccessCrm" class="mt-4">
+        <!-- Staff Navigation (only show after hydration to prevent flash) -->
+        <SidebarGroup v-if="isHydrated && user?.role === 'ADMIN'" class="mt-4">
           <SidebarGroupLabel class="text-xs uppercase tracking-wider px-3">Staff</SidebarGroupLabel>
           <SidebarMenu class="space-y-1 px-2">
-            <SidebarMenuItem v-if="canAccessCms">
+            <SidebarMenuItem>
               <NuxtLink to="/dashboard/cms">
                 <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/cms')">
                   <FileText class="h-4 w-4" />
@@ -123,7 +123,7 @@
               </NuxtLink>
             </SidebarMenuItem>
 
-            <SidebarMenuItem v-if="canAccessCrm">
+            <SidebarMenuItem>
               <NuxtLink to="/dashboard/crm">
                 <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/crm')">
                   <UsersRound class="h-4 w-4" />
@@ -134,8 +134,8 @@
           </SidebarMenu>
         </SidebarGroup>
 
-        <!-- Admin Navigation -->
-        <SidebarGroup v-if="user?.role === 'ADMIN'" class="mt-4">
+        <!-- Admin Navigation (only show after hydration to prevent flash) -->
+        <SidebarGroup v-if="isHydrated && user?.role === 'ADMIN'" class="mt-4">
           <SidebarGroupLabel class="text-xs uppercase tracking-wider px-3">Admin</SidebarGroupLabel>
           <SidebarMenu class="space-y-1 px-2">
             <SidebarMenuItem>
@@ -329,11 +329,10 @@ import {
 import { useAuth } from '@/composables/use-auth'
 import { useOrg } from '@/composables/useOrg'
 import { getAvatarUrl } from '@/utils/gravatar'
-import { hasPermission } from '@/utils/permissions'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { api, useConvexQuery } from '@/composables/useConvex'
 
-const { user, logout } = useAuth()
+const { user, logout, isHydrated } = useAuth()
 const { orgs, currentOrgId, switchOrg: switchOrgAction } = useOrg()
 const { toast } = useToast()
 const route = useRoute()
@@ -364,16 +363,6 @@ const breadcrumbs = computed(() => {
 const currentOrg = computed(() => {
   return orgs.value.find((org: { id: string }) => org.id === currentOrgId.value) ?? null
 })
-
-const currentOrgRole = computed(() => {
-  const org = orgs.value.find(
-    (item: { id: string; role?: string | null }) => item.id === currentOrgId.value
-  )
-  return (org?.role as any) ?? null
-})
-
-const canAccessCms = computed(() => hasPermission(currentOrgRole.value, "cms:read"))
-const canAccessCrm = computed(() => hasPermission(currentOrgRole.value, "crm:read"))
 
 const workspacesEnabled = computed(() => appSettings.value?.workspacesEnabled ?? true)
 

@@ -244,7 +244,7 @@ import { useOnboarding } from '@/composables/useOnboarding'
 import { api, useConvexQuery } from '@/composables/useConvex'
 
 const { toast } = useToast()
-const { onboarding, update } = useOnboarding()
+const { onboarding, isHydrated, update } = useOnboarding()
 const { data: appSettings } = useConvexQuery(api.appSettings.getPublic, {})
 const route = useRoute()
 const isSaving = ref(false)
@@ -276,10 +276,14 @@ const form = reactive({
 })
 
 // Only show dialog if:
-// 1. We're on a dashboard route (not the onboarding page itself)
-// 2. Onboarding is enabled in app settings
-// 3. User hasn't completed onboarding
+// 1. Data has been hydrated (prevents flash during initial load)
+// 2. We're on a dashboard route (not the onboarding page itself)
+// 3. Onboarding is enabled in app settings
+// 4. User hasn't completed onboarding
 const shouldShowDialog = computed(() => {
+  // Don't show anything until we have real data from the server
+  if (!isHydrated.value) return false
+  
   const isDashboard = route.path.startsWith('/dashboard')
   const isOnboardingPage = route.path === '/dashboard/onboarding'
   const onboardingEnabled = appSettings.value?.onboardingEnabled ?? true
