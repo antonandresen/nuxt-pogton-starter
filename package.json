@@ -8,6 +8,7 @@
   "scripts": {
     "build": "npx convex deploy --cmd 'nuxt build'",
     "dev": "concurrently \"npm run dev:convex\" \"npm run dev:nuxt\"",
+    "dev:clear": "npx rimraf node_modules .nuxt .output && npm install && npm run dev",
     "dev:convex": "npx convex dev",
     "dev:nuxt": "nuxt dev",
     "start:prod": "node ./server/index.mjs",

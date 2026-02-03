@@ -2,6 +2,7 @@ This repo is a **Nuxt 4 + Convex SaaS starter** (auth, orgs, Stripe, i18n, shadc
 
 ## Commands (npm)
 - **dev**: `npm run dev` (runs `nuxt dev` + `npx convex dev`)
+- **dev:clear**: `npm run dev:clear` (clears cache/node_modules, reinstalls, then runs dev)
 - **build**: `npm run build` (deploys Convex then `nuxt build`)
 - **start prod**: `npm run start:prod`
 - **preview**: `npm run preview`

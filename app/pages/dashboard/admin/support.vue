@@ -285,7 +285,7 @@ const sendingReply = ref(false)
 
 const { data: ticketData } = useConvexQuery(
   api.supportTickets.get,
-  computed(() => selectedTicketId.value ? { ticketId: selectedTicketId.value } : 'skip')
+  computed(() => ({ ticketId: selectedTicketId.value || '' }))
 )
 
 const filteredTickets = computed(() => {

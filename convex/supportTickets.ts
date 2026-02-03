@@ -256,8 +256,11 @@ export const listForCurrentUser = query({
 
 // Get single ticket with messages
 export const get = query({
-  args: { ticketId: v.id("supportTickets") },
+  args: { ticketId: v.union(v.id("supportTickets"), v.string()) },
   handler: async (ctx, args) => {
+    // Return null if no valid ticket ID
+    if (!args.ticketId || args.ticketId === '') return null
+    
     const identity = await ctx.auth.getUserIdentity()
     if (!identity) throw new Error("Not authenticated")
 
@@ -267,8 +270,9 @@ export const get = query({
       .first()
     if (!user) throw new Error("User not found")
 
-    const ticket = await ctx.db.get(args.ticketId)
-    if (!ticket || ticket.deletedAt) throw new Error("Ticket not found")
+    const ticketId = args.ticketId as Id<"supportTickets">
+    const ticket = await ctx.db.get(ticketId)
+    if (!ticket || ticket.deletedAt) return null
 
     // Check access: customer can see their own, team can see org tickets
     const isCustomer = ticket.customerId === user._id
@@ -293,7 +297,7 @@ export const get = query({
     // Fetch messages
     const messages = await ctx.db
       .query("supportMessages")
-      .withIndex("by_ticketId", (q) => q.eq("ticketId", args.ticketId))
+      .withIndex("by_ticketId", (q) => q.eq("ticketId", ticketId))
       .filter((q) => q.eq(q.field("deletedAt"), undefined))
       .collect()
 
