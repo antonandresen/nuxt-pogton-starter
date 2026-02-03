@@ -181,20 +181,23 @@ const getPageContext = () => {
 const send = async () => {
   const content = input.value.trim()
   if (!content) return
+
   messages.value.push({ role: 'user', content })
   input.value = ''
   isLoading.value = true
 
   try {
-    const response = await askAction.run({
+    const response = await askAction.mutate({
       messages: messages.value,
       page: getPageContext(),
     })
     messages.value.push({ role: 'assistant', content: response.message })
   } catch (error) {
+    console.error('AI Chat error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     messages.value.push({
       role: 'assistant',
-      content: 'Sorry, I ran into an error. Try again in a moment.',
+      content: `Sorry, I ran into an error: ${errorMessage}`,
     })
   } finally {
     isLoading.value = false

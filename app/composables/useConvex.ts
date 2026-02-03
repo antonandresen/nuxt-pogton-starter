@@ -182,7 +182,7 @@ export function useConvexMutation(mutation: any) {
 export function useConvexAction(action: any) {
   if (process.server) {
     return {
-      run: async () => {
+      mutate: async () => {
         throw new Error('Convex actions are client-only')
       },
       isLoading: ref(false),

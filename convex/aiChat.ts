@@ -109,8 +109,10 @@ export const ask = action({
 
       const config = (await ctx.runQuery(api.aiChat.getRuntimeConfig, {})) as RuntimeConfig
       if (!config?.enabled) {
-        throw new Error("AI chat disabled")
+        throw new Error("AI chat is disabled. Enable it in Admin Settings.")
       }
+
+      console.log("AI Chat request - Model:", config.model)
 
       const pageContext = [
         args.page?.title ? `Page title: ${args.page.title}` : null,
