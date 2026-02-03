@@ -5,6 +5,40 @@ import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { requireAdmin } from "./helpers"
 
+// Helper to call OpenRouter API directly
+async function callOpenRouter(
+  model: string,
+  systemPrompt: string,
+  messages: ChatMessage[],
+  temperature: number,
+  maxTokens: number
+): Promise<string> {
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      "Content-Type": "application/json",
+      "HTTP-Referer": process.env.CONVEX_SITE_URL || "",
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: "system", content: systemPrompt },
+        ...messages,
+      ],
+      temperature,
+      max_tokens: maxTokens,
+    }),
+  })
+
+  if (!response.ok) {
+    throw new Error(`OpenRouter API error: ${response.statusText}`)
+  }
+
+  const data = await response.json()
+  return data.choices[0].message.content
+}
+
 const CONFIG_KEY = "default"
 
 type ChatMessage = {
@@ -60,7 +94,7 @@ export const getRuntimeConfig = query({
     if (!config) {
       return {
         enabled: false,
-        model: "gpt-4o-mini",
+        model: "z-ai/glm-4.5-air:free",
         systemPrompt: "",
         greeting: "Hi! Ask me anything about the product.",
         ctaLabel: undefined,
@@ -121,16 +155,35 @@ export const ask = action({
       .filter(Boolean)
       .join("\n")
 
-    const { text }: { text: string } = await generateText({
-      model: openai(config.model || "gpt-4o-mini"),
-      system: systemPrompt,
-      messages: args.messages.map((message) => ({
-        role: message.role as ChatMessage["role"],
-        content: message.content,
-      })),
-      temperature: config.temperature ?? 0.4,
-      maxTokens: config.maxTokens ?? 512,
-    })
+    // Determine provider based on model name
+    const modelName = config.model || "z-ai/glm-4.5-air:free"
+    const isOpenRouterModel = modelName.includes("/") || modelName.includes(":")
+
+    let text: string
+
+    if (isOpenRouterModel) {
+      // Use OpenRouter API
+      text = await callOpenRouter(
+        modelName,
+        systemPrompt,
+        args.messages as ChatMessage[],
+        config.temperature ?? 0.4,
+        config.maxTokens ?? 512
+      )
+    } else {
+      // Use OpenAI SDK
+      const response = await generateText({
+        model: openai(modelName),
+        system: systemPrompt,
+        messages: args.messages.map((message) => ({
+          role: message.role as ChatMessage["role"],
+          content: message.content,
+        })),
+        temperature: config.temperature ?? 0.4,
+        maxTokens: config.maxTokens ?? 512,
+      })
+      text = response.text
+    }
 
     return { message: text }
   },

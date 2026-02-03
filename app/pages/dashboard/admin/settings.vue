@@ -101,7 +101,52 @@
             <div class="grid gap-4 md:grid-cols-2">
               <div class="space-y-2">
                 <Label for="ai-model">Model</Label>
-                <Input id="ai-model" v-model="aiForm.model" placeholder="gpt-4o-mini" />
+                <Select v-model="aiForm.model">
+                  <SelectTrigger id="ai-model">
+                    <SelectValue placeholder="Select a model" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>OpenRouter (Free)</SelectLabel>
+                      <SelectItem value="z-ai/glm-4.5-air:free">
+                        GLM 4.5 Air (Free) - 131K context
+                      </SelectItem>
+                      <SelectItem value="google/gemini-flash-1.5:free">
+                        Gemini 1.5 Flash (Free) - Fast & efficient
+                      </SelectItem>
+                      <SelectItem value="meta-llama/llama-3.2-3b-instruct:free">
+                        Llama 3.2 3B (Free) - Lightweight
+                      </SelectItem>
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectLabel>OpenRouter (Paid)</SelectLabel>
+                      <SelectItem value="anthropic/claude-3.5-sonnet">
+                        Claude 3.5 Sonnet - Most capable
+                      </SelectItem>
+                      <SelectItem value="openai/gpt-4o">
+                        GPT-4o - Multimodal
+                      </SelectItem>
+                      <SelectItem value="google/gemini-pro-1.5">
+                        Gemini 1.5 Pro - 2M context
+                      </SelectItem>
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectLabel>OpenAI (Direct)</SelectLabel>
+                      <SelectItem value="gpt-4o-mini">
+                        GPT-4o Mini - Cost-effective
+                      </SelectItem>
+                      <SelectItem value="gpt-4o">
+                        GPT-4o - Standard
+                      </SelectItem>
+                      <SelectItem value="gpt-4-turbo">
+                        GPT-4 Turbo - Legacy
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <p class="text-xs text-muted-foreground">
+                  OpenRouter models require OPENROUTER_API_KEY env var
+                </p>
               </div>
               <div class="space-y-2">
                 <Label for="ai-temperature">Temperature</Label>
@@ -197,6 +242,15 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Textarea } from '@/components/ui/textarea'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -238,7 +292,7 @@ const flagForm = reactive({
 const isSavingAi = ref(false)
 const aiForm = reactive({
   enabled: true,
-  model: 'gpt-4o-mini',
+  model: 'z-ai/glm-4.5-air:free',
   systemPrompt: '',
   greeting: 'Hi! Ask me anything about the product.',
   ctaLabel: '',
