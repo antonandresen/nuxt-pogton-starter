@@ -6,7 +6,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="flex gap-3">
+    <div class="flex gap-3 flex-wrap">
       <Select v-model="statusFilter">
         <SelectTrigger class="w-[180px]">
           <SelectValue placeholder="All statuses" />
@@ -18,6 +18,20 @@
           <SelectItem value="waiting_customer">Waiting on Customer</SelectItem>
           <SelectItem value="resolved">Resolved</SelectItem>
           <SelectItem value="closed">Closed</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select v-model="categoryFilter">
+        <SelectTrigger class="w-[180px]">
+          <SelectValue placeholder="All categories" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All categories</SelectItem>
+          <SelectItem value="technical">Technical Issue</SelectItem>
+          <SelectItem value="bug">Bug Report</SelectItem>
+          <SelectItem value="billing">Billing Question</SelectItem>
+          <SelectItem value="feature">Feature Request</SelectItem>
+          <SelectItem value="general">General Support</SelectItem>
         </SelectContent>
       </Select>
 
@@ -89,6 +103,7 @@
                 <TableHead class="w-12" />
                 <TableHead>Subject</TableHead>
                 <TableHead>Customer</TableHead>
+                <TableHead>Category</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Priority</TableHead>
                 <TableHead>Assigned To</TableHead>
@@ -114,6 +129,19 @@
                 <TableCell>
                   <div class="text-sm">{{ ticket.customer?.email || 'Unknown' }}</div>
                   <div class="text-xs text-muted-foreground">{{ ticket.customer?.name || '—' }}</div>
+                </TableCell>
+                <TableCell>
+                  <span v-if="ticket.category" class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset"
+                    :class="{
+                      'bg-red-50 text-red-700 ring-red-600/20': ticket.category === 'bug',
+                      'bg-blue-50 text-blue-700 ring-blue-600/20': ticket.category === 'technical',
+                      'bg-green-50 text-green-700 ring-green-600/20': ticket.category === 'billing',
+                      'bg-purple-50 text-purple-700 ring-purple-600/20': ticket.category === 'feature',
+                      'bg-gray-50 text-gray-700 ring-gray-600/20': ticket.category === 'general',
+                    }">
+                    {{ ticket.category.charAt(0).toUpperCase() + ticket.category.slice(1) }}
+                  </span>
+                  <span v-else class="text-xs text-muted-foreground">—</span>
                 </TableCell>
                 <TableCell>
                   <Select
@@ -268,6 +296,7 @@ initSEO()
 const { toast } = useToast()
 
 const statusFilter = ref('all')
+const categoryFilter = ref('all')
 const assigneeFilter = ref('all')
 
 const { data: tickets } = useConvexQuery(api.supportTickets.listAll, computed(() => ({
@@ -291,6 +320,10 @@ const { data: ticketData } = useConvexQuery(
 const filteredTickets = computed(() => {
   if (!tickets.value) return []
   let result = [...tickets.value]
+
+  if (categoryFilter.value !== 'all') {
+    result = result.filter(t => t.category === categoryFilter.value)
+  }
 
   if (assigneeFilter.value === 'unassigned') {
     result = result.filter(t => !t.assignedTo)

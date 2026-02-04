@@ -336,6 +336,7 @@ export default defineSchema({
     subject: v.string(),
     status: v.string(),
     priority: v.string(),
+    category: v.optional(v.string()), // "technical", "billing", "general", etc.
     tags: v.optional(v.array(v.string())),
     channel: v.string(),
     firstResponseAt: v.optional(v.number()),
@@ -352,6 +353,7 @@ export default defineSchema({
     .index("by_orgId", ["orgId"])
     .index("by_orgId_customerId", ["orgId", "customerId"])
     .index("by_orgId_status", ["orgId", "status"])
+    .index("by_orgId_category", ["orgId", "category"])
     .index("by_customerId", ["customerId"])
     .index("by_assignedToId", ["assignedToId"])
     .index("by_orgId_createdAt", ["orgId", "createdAt"]),

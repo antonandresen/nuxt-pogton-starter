@@ -102,7 +102,10 @@
               <NuxtLink to="/dashboard/support">
                 <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/support')">
                   <MessageCircle class="h-4 w-4" />
-                  <span>Support</span>
+                  <span>My Tickets</span>
+                  <Badge v-if="userUnreadCount && userUnreadCount > 0" variant="destructive" class="ml-auto h-5 px-1.5 text-xs">
+                    {{ userUnreadCount > 99 ? '99+' : userUnreadCount }}
+                  </Badge>
                 </SidebarMenuButton>
               </NuxtLink>
             </SidebarMenuItem>
@@ -197,6 +200,9 @@
                 <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/admin/support')">
                   <Headphones class="h-4 w-4" />
                   <span>Support Tickets</span>
+                  <Badge v-if="unreadTicketCount && unreadTicketCount > 0" variant="destructive" class="ml-auto h-5 px-1.5 text-xs">
+                    {{ unreadTicketCount > 99 ? '99+' : unreadTicketCount }}
+                  </Badge>
                 </SidebarMenuButton>
               </NuxtLink>
             </SidebarMenuItem>
@@ -307,6 +313,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import { 
   LayoutDashboard, 
   Users, 
@@ -339,6 +346,20 @@ const route = useRoute()
 const colorMode = useColorMode()
 const showAvatarDialog = ref(false)
 const { data: appSettings } = useConvexQuery(api.appSettings.getPublic, {})
+
+// Unread support ticket count for admin
+const { data: unreadTicketCount } = useConvexQuery(
+  api.supportTickets.countUnreadForAdmin, 
+  {},
+  () => user.value?.role === 'ADMIN'
+)
+
+// Unread ticket count for regular users
+const { data: userUnreadCount } = useConvexQuery(
+  api.supportTickets.countUnreadForCurrentUser, 
+  {},
+  () => user.value?.role === 'USER'
+)
 
 const avatarUrl = computed(() => {
   if (!user.value) return ''

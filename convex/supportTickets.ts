@@ -6,6 +6,7 @@ import { requireOrgPermission, requireAdmin } from "./helpers"
 const STATUS_VALUES = ["open", "in_progress", "waiting_customer", "resolved", "closed"] as const
 const PRIORITY_VALUES = ["low", "normal", "high", "urgent"] as const
 const CHANNEL_VALUES = ["email", "chat", "form", "api"] as const
+const CATEGORY_VALUES = ["technical", "billing", "general", "bug", "feature"] as const
 
 // Create a new support ticket
 export const create = mutation({
@@ -13,6 +14,7 @@ export const create = mutation({
     subject: v.string(),
     body: v.string(),
     priority: v.optional(v.string()),
+    category: v.optional(v.string()),
     channel: v.optional(v.string()),
     tags: v.optional(v.array(v.string())),
   },
@@ -34,6 +36,9 @@ export const create = mutation({
     const priority = args.priority && PRIORITY_VALUES.includes(args.priority as any) 
       ? args.priority 
       : "normal"
+    const category = args.category && CATEGORY_VALUES.includes(args.category as any)
+      ? args.category
+      : undefined
     const channel = args.channel && CHANNEL_VALUES.includes(args.channel as any)
       ? args.channel
       : "form"
@@ -44,6 +49,7 @@ export const create = mutation({
       subject: args.subject,
       status: "open",
       priority,
+      category,
       channel,
       tags: args.tags,
       unreadByCustomer: false,
@@ -85,6 +91,50 @@ export const create = mutation({
     }
 
     return ticketId
+  },
+})
+
+// Count unread tickets (admin sidebar badge)
+export const countUnreadForAdmin = query({
+  args: {},
+  handler: async (ctx) => {
+    await requireAdmin(ctx)
+
+    const tickets = await ctx.db
+      .query("supportTickets")
+      .filter((q) => q.and(
+        q.eq(q.field("unreadByTeam"), true),
+        q.eq(q.field("deletedAt"), undefined)
+      ))
+      .collect()
+
+    return tickets.length
+  },
+})
+
+// Count unread tickets for current user (user notification badge)
+export const countUnreadForCurrentUser = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) return 0
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", identity.email!))
+      .first()
+    if (!user) return 0
+
+    const tickets = await ctx.db
+      .query("supportTickets")
+      .withIndex("by_customerId", (q) => q.eq("customerId", user._id))
+      .filter((q) => q.and(
+        q.eq(q.field("unreadByCustomer"), true),
+        q.eq(q.field("deletedAt"), undefined)
+      ))
+      .collect()
+
+    return tickets.length
   },
 })
 

@@ -146,6 +146,8 @@ export const api = {
     listAll: 'supportTickets:listAll',
     listForOrg: 'supportTickets:listForOrg',
     listForCurrentUser: 'supportTickets:listForCurrentUser',
+    countUnreadForAdmin: 'supportTickets:countUnreadForAdmin',
+    countUnreadForCurrentUser: 'supportTickets:countUnreadForCurrentUser',
     get: 'supportTickets:get',
     markAsRead: 'supportTickets:markAsRead',
     sendMessage: 'supportTickets:sendMessage',
