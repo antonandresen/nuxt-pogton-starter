@@ -1,11 +1,22 @@
 <script setup lang="ts">
 import { Check, ShoppingCart, Loader2, AlertCircle } from 'lucide-vue-next'
 import { loadStripe } from '@stripe/stripe-js'
+import { api, useConvexQuery } from '@/composables/useConvex'
 
 definePageMeta({
   layout: 'dashboard',
   middleware: ['auth'],
   breadcrumb: 'Shop'
+})
+
+// Check if shop is enabled
+const { data: appSettings } = useConvexQuery(api.appSettings.getPublic, {})
+const router = useRouter()
+
+watchEffect(() => {
+  if (appSettings.value && !appSettings.value.shopEnabled) {
+    router.push('/dashboard')
+  }
 })
 
 const { initSEO } = useSEO({

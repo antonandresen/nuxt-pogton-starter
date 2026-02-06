@@ -215,6 +215,13 @@
               </div>
               <Switch v-model:checked="appSettingsForm.onboardingEnabled" />
             </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <Label>Shop</Label>
+                <p class="text-xs text-muted-foreground">Enable the shop page for all users.</p>
+              </div>
+              <Switch v-model:checked="appSettingsForm.shopEnabled" />
+            </div>
             <div class="flex items-center gap-2">
               <Button :disabled="isSavingAppSettings" @click="saveAppSettings">
                 <Loader2 v-if="isSavingAppSettings" class="mr-2 h-4 w-4 animate-spin" />
@@ -306,6 +313,7 @@ const appSettingsForm = reactive({
   workspacesEnabled: true,
   invitationsEnabled: true,
   onboardingEnabled: true,
+  shopEnabled: true,
 })
 
 
@@ -392,6 +400,8 @@ watchEffect(() => {
     appSettings.value.invitationsEnabled ?? appSettingsForm.invitationsEnabled
   appSettingsForm.onboardingEnabled =
     appSettings.value.onboardingEnabled ?? appSettingsForm.onboardingEnabled
+  appSettingsForm.shopEnabled =
+    appSettings.value.shopEnabled ?? appSettingsForm.shopEnabled
 })
 
 const saveAiConfig = async () => {
@@ -429,6 +439,7 @@ const saveAppSettings = async () => {
       workspacesEnabled: appSettingsForm.workspacesEnabled,
       invitationsEnabled: appSettingsForm.invitationsEnabled,
       onboardingEnabled: appSettingsForm.onboardingEnabled,
+      shopEnabled: appSettingsForm.shopEnabled,
     })
     toast({
       title: 'App settings updated',

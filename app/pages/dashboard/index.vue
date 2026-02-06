@@ -153,7 +153,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { 
   Folder, 
   CreditCard, 
@@ -175,6 +175,7 @@ import {
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { api, useConvexQuery } from '@/composables/useConvex'
 
 definePageMeta({
   layout: 'dashboard',
@@ -189,6 +190,10 @@ const { initSEO } = useSEO({
 })
 
 initSEO()
+
+// Fetch app settings for feature flags
+const { data: appSettings } = useConvexQuery(api.appSettings.getPublic, {})
+const shopEnabled = computed(() => appSettings.value?.shopEnabled ?? true)
 
 // Example stats data - replace with real data fetching
 const stats = ref({
@@ -224,33 +229,41 @@ const recentActivity = ref([
   }
 ])
 
-// Quick links
-const quickLinks = ref([
-  {
-    title: 'Settings',
-    description: 'Manage your account',
-    icon: Settings,
-    href: '/dashboard/settings'
-  },
-  {
-    title: 'Shop',
-    description: 'Browse products',
-    icon: ShoppingCart,
-    href: '/dashboard/shop'
-  },
-  {
-    title: 'Subscription',
-    description: 'Manage billing',
-    icon: CreditCard,
-    href: '/dashboard/subscription'
-  },
-  {
-    title: 'Documentation',
-    description: 'Learn more',
-    icon: FileText,
-    href: '/docs'
+// Quick links - computed to filter based on enabled features
+const quickLinks = computed(() => {
+  const links = [
+    {
+      title: 'Settings',
+      description: 'Manage your account',
+      icon: Settings,
+      href: '/dashboard/settings'
+    },
+    {
+      title: 'Subscription',
+      description: 'Manage billing',
+      icon: CreditCard,
+      href: '/dashboard/subscription'
+    },
+    {
+      title: 'Documentation',
+      description: 'Learn more',
+      icon: FileText,
+      href: '/docs'
+    }
+  ]
+  
+  // Add shop link if enabled
+  if (shopEnabled.value) {
+    links.splice(1, 0, {
+      title: 'Shop',
+      description: 'Browse products',
+      icon: ShoppingCart,
+      href: '/dashboard/shop'
+    })
   }
-])
+  
+  return links
+})
 
 const formatTimeAgo = (date: Date) => {
   const now = new Date()

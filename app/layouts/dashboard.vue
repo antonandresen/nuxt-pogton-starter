@@ -89,7 +89,7 @@
               </NuxtLink>
             </SidebarMenuItem>
 
-            <SidebarMenuItem>
+            <SidebarMenuItem v-if="shopEnabled">
               <NuxtLink to="/dashboard/shop">
                 <SidebarMenuButton :is-active="route.path.startsWith('/dashboard/shop')">
                   <ShoppingCart class="h-4 w-4" />
@@ -393,6 +393,7 @@ const currentOrg = computed(() => {
 })
 
 const workspacesEnabled = computed(() => appSettings.value?.workspacesEnabled ?? true)
+const shopEnabled = computed(() => appSettings.value?.shopEnabled ?? true)
 
 const handleLogout = async () => {
   await logout()

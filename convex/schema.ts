@@ -234,6 +234,7 @@ export default defineSchema({
     workspacesEnabled: v.boolean(),
     invitationsEnabled: v.boolean(),
     onboardingEnabled: v.optional(v.boolean()),
+    shopEnabled: v.optional(v.boolean()),
     updatedBy: v.optional(v.id("users")),
     updatedAt: v.number(),
   })

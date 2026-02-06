@@ -8,6 +8,7 @@ const defaultSettings = {
   workspacesEnabled: true,
   invitationsEnabled: true,
   onboardingEnabled: true,
+  shopEnabled: true,
 }
 
 export const getPublic = query({
@@ -26,6 +27,7 @@ export const getPublic = query({
       workspacesEnabled: settings.workspacesEnabled,
       invitationsEnabled: settings.invitationsEnabled,
       onboardingEnabled: settings.onboardingEnabled ?? defaultSettings.onboardingEnabled,
+      shopEnabled: settings.shopEnabled ?? defaultSettings.shopEnabled,
     }
   },
 })
@@ -50,6 +52,7 @@ export const getAdmin = query({
     return {
       ...settings,
       onboardingEnabled: settings.onboardingEnabled ?? defaultSettings.onboardingEnabled,
+      shopEnabled: settings.shopEnabled ?? defaultSettings.shopEnabled,
     }
   },
 })
@@ -59,6 +62,7 @@ export const upsertAdmin = mutation({
     workspacesEnabled: v.boolean(),
     invitationsEnabled: v.boolean(),
     onboardingEnabled: v.boolean(),
+    shopEnabled: v.boolean(),
   },
   handler: async (ctx, args) => {
     const { user } = await requireAdmin(ctx)
@@ -73,6 +77,7 @@ export const upsertAdmin = mutation({
         workspacesEnabled: args.workspacesEnabled,
         invitationsEnabled: args.invitationsEnabled,
         onboardingEnabled: args.onboardingEnabled,
+        shopEnabled: args.shopEnabled,
         updatedBy: user._id,
         updatedAt: now,
       })
@@ -84,6 +89,7 @@ export const upsertAdmin = mutation({
       workspacesEnabled: args.workspacesEnabled,
       invitationsEnabled: args.invitationsEnabled,
       onboardingEnabled: args.onboardingEnabled,
+      shopEnabled: args.shopEnabled,
       updatedBy: user._id,
       updatedAt: now,
     })
