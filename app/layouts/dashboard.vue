@@ -211,26 +211,26 @@
       </SidebarContent>
 
       <SidebarFooter class="border-t p-4">
-        <DropdownMenu>
+        <DropdownMenu v-if="isHydrated && user">
           <DropdownMenuTrigger class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg hover:bg-muted focus:outline-none focus:bg-muted">
             <div class="relative w-10 h-10 flex-shrink-0">
               <Avatar class="h-10 w-10 ring-2 ring-background">
-                <AvatarImage :src="avatarUrl" :alt="user?.email" />
+                <AvatarImage :src="avatarUrl" :alt="user.email" />
                 <AvatarFallback class="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground text-sm font-semibold">
-                  {{ user?.email?.charAt(0).toUpperCase() }}
+                  {{ user.email.charAt(0).toUpperCase() }}
                 </AvatarFallback>
               </Avatar>
               <div class="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500 ring-2 ring-background" />
             </div>
             <div class="flex-1 min-w-0 text-left">
-              <div class="text-sm font-medium truncate">{{ user?.email?.split('@')[0] }}</div>
-              <div class="text-xs text-muted-foreground capitalize">{{ user?.role?.toLowerCase() }}</div>
+              <div class="text-sm font-medium truncate">{{ user.email.split('@')[0] }}</div>
+              <div class="text-xs text-muted-foreground capitalize">{{ user.role.toLowerCase() }}</div>
             </div>
             <ChevronDown class="h-4 w-4 flex-shrink-0 text-muted-foreground" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" side="top" class="w-56 mb-2">
             <div class="px-2 py-1.5 text-xs text-muted-foreground">
-              {{ user?.email }}
+              {{ user.email }}
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem @click="showAvatarDialog = true" class="flex items-center gap-2 cursor-pointer">
@@ -254,6 +254,13 @@
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <div v-else class="flex items-center gap-3 px-3 py-2.5">
+          <div class="h-10 w-10 rounded-full bg-muted animate-pulse" />
+          <div class="flex-1 space-y-2">
+            <div class="h-4 bg-muted rounded animate-pulse" />
+            <div class="h-3 bg-muted rounded w-2/3 animate-pulse" />
+          </div>
+        </div>
       </SidebarFooter>
     </Sidebar>
 

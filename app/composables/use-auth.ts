@@ -22,22 +22,18 @@ interface User {
 }
 
 export function useAuth() {
-  const user = useState<User | null>('auth-user', () => null)
-  const convexAuthState = useState<boolean>('convex-authenticated', () => true)
-  // SSR data is available immediately, so we're hydrated from the start
-  const isHydrated = useState<boolean>('auth-hydrated', () => false)
-  
   // SSR: Fetch user from our API (this runs on server AND client first load)
   // The server has access to auth cookies and can query Convex
   const { data: ssrUser } = useFetch('/api/auth/me', {
     credentials: 'include',
     key: 'auth-user-ssr',
+    lazy: false, // Block SSR until auth data is fetched - ensures admin role is available immediately
     // Don't refetch on client navigation - Convex handles real-time updates
     getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key] || nuxtApp.static.data[key],
   })
 
-  // Set user from SSR data immediately (works on both server and client)
-  watchEffect(() => {
+  // Transform SSR data into User format synchronously using computed
+  const userFromSSR = computed(() => {
     const userData = ssrUser.value?.user as {
       id: string
       email: string
@@ -48,22 +44,35 @@ export function useAuth() {
       currentOrgId?: string | null
     } | null | undefined
     
-    if (userData) {
-      isHydrated.value = true
-      user.value = {
-        id: userData.id,
-        email: userData.email,
-        role: userData.role,
-        createdAt: new Date(userData.createdAt),
-        avatar: userData.avatar,
-        name: userData.name,
-        currentOrgId: userData.currentOrgId ?? null,
-      }
-    } else if (ssrUser.value && !ssrUser.value.user) {
-      // SSR returned but user is null (not authenticated)
-      isHydrated.value = true
+    if (!userData) return null
+    
+    return {
+      id: userData.id,
+      email: userData.email,
+      role: userData.role,
+      createdAt: new Date(userData.createdAt),
+      avatar: userData.avatar,
+      name: userData.name,
+      currentOrgId: userData.currentOrgId ?? null,
     }
   })
+
+  // Initialize state with SSR data
+  const user = useState<User | null>('auth-user', () => userFromSSR.value)
+  const convexAuthState = useState<boolean>('convex-authenticated', () => true)
+  const isHydrated = useState<boolean>('auth-hydrated', () => !!ssrUser.value)
+  
+  // Keep user in sync with SSR data
+  watch(userFromSSR, (newUser) => {
+    if (newUser) {
+      user.value = newUser
+      isHydrated.value = true
+    } else if (ssrUser.value && !ssrUser.value.user) {
+      // SSR returned but user is null (not authenticated)
+      user.value = null
+      isHydrated.value = true
+    }
+  }, { immediate: true })
 
   // Client-side: Convex subscription for real-time updates (avatar changes, etc.)
   const { data: convexUser } = process.client 

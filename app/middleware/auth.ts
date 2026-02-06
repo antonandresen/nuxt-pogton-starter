@@ -1,15 +1,42 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  // On SSR, only check that the auth cookie exists
-  // (avoids crypto/env issues during SSR in production)
+  const loginRedirect = {
+    path: '/login',
+    query: { redirect: to.fullPath },
+  }
+
   if (process.server) {
     const cookie = useCookie('auth_token')
     if (!cookie.value) {
-      return navigateTo({
-        path: '/login',
-        query: {
-          redirect: to.fullPath,
-        },
-      })
+      return navigateTo(loginRedirect)
+    }
+
+    // Fetch user data during SSR and populate state so downstream
+    // middleware (admin) and components have it immediately.
+    const nuxtApp = useNuxtApp()
+    if (!nuxtApp.payload.data['auth-user-ssr']) {
+      try {
+        const requestFetch = useRequestFetch()
+        const data = await requestFetch('/api/auth/me') as { user: Record<string, any> | null }
+
+        // Seed the useFetch cache key so useAuth() won't re-fetch
+        nuxtApp.payload.data['auth-user-ssr'] = data
+
+        if (data?.user) {
+          useState('auth-user').value = {
+            id: data.user.id,
+            email: data.user.email,
+            role: data.user.role,
+            createdAt: new Date(data.user.createdAt),
+            avatar: data.user.avatar,
+            name: data.user.name,
+            currentOrgId: data.user.currentOrgId ?? null,
+          }
+        } else {
+          return navigateTo(loginRedirect)
+        }
+      } catch {
+        return navigateTo(loginRedirect)
+      }
     }
     return
   }
@@ -31,11 +58,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   if (!isAuthenticated.value) {
-    return navigateTo({
-      path: '/login',
-      query: {
-        redirect: to.fullPath,
-      },
-    })
+    return navigateTo(loginRedirect)
   }
 })
