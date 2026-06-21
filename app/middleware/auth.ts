@@ -1,63 +1,74 @@
+import { getCookie } from 'h3'
+
+/**
+ * Decode a JWT payload without verification (verification happens at API layer).
+ * Returns the parsed payload object or null if decoding fails.
+ */
+function decodeJwtPayload(token: string): Record<string, any> | null {
+  try {
+    const parts = token.split('.')
+    if (parts.length !== 3) return null
+    // Base64url → Base64 → decode
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
+    const json = atob(base64)
+    return JSON.parse(json)
+  } catch {
+    return null
+  }
+}
+
 export default defineNuxtRouteMiddleware(async (to) => {
   const loginRedirect = {
     path: '/login',
     query: { redirect: to.fullPath },
   }
 
-  if (process.server) {
-    const cookie = useCookie('auth_token')
-    if (!cookie.value) {
-      return navigateTo(loginRedirect)
-    }
+  // ── Server-side: decode JWT from cookie directly (no network call) ──────
+  if (import.meta.server) {
+    const event = useRequestEvent()
+    if (!event) return navigateTo(loginRedirect)
 
-    // Fetch user data during SSR and populate state so downstream
-    // middleware (admin) and components have it immediately.
-    const nuxtApp = useNuxtApp()
-    if (!nuxtApp.payload.data['auth-user-ssr']) {
-      try {
-        const requestFetch = useRequestFetch()
-        const data = await requestFetch('/api/auth/me') as { user: Record<string, any> | null }
+    const token = getCookie(event, 'auth_token')
+    if (!token) return navigateTo(loginRedirect)
 
-        // Seed the useFetch cache key so useAuth() won't re-fetch
-        nuxtApp.payload.data['auth-user-ssr'] = data
+    // Populate user state for subsequent middleware + layout rendering
+    const user = useState<any>('auth-user')
+    if (!user.value) {
+      const payload = decodeJwtPayload(token)
+      if (!payload || !payload.sub) return navigateTo(loginRedirect)
 
-        if (data?.user) {
-          useState('auth-user').value = {
-            id: data.user.id,
-            email: data.user.email,
-            role: data.user.role,
-            createdAt: new Date(data.user.createdAt),
-            avatar: data.user.avatar,
-            name: data.user.name,
-            currentOrgId: data.user.currentOrgId ?? null,
-          }
-        } else {
-          return navigateTo(loginRedirect)
-        }
-      } catch {
+      // Check expiry
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
         return navigateTo(loginRedirect)
+      }
+
+      user.value = {
+        id: payload.sub,
+        email: payload.email,
+        name: payload.name,
+        role: payload.role,
+        currentOrgId: payload.currentOrgId ?? null,
       }
     }
     return
   }
 
-  // Client-side: use Convex auth state
-  const tokenState = useState<string | null>('convex-auth-token', () => null)
-  const isAuthenticated = useState<boolean>('convex-authenticated', () => true)
+  // ── Client-side: wait for auth plugin to finish loading ─────────────────
+  const user = useState('auth-user')
+  const authReady = useState<boolean>('auth-ready', () => false)
 
-  if (!tokenState.value) {
-    try {
-      const response = await $fetch<{ token: string }>('/api/convex/token', {
-        credentials: 'include',
-      })
-      tokenState.value = response.token
-      isAuthenticated.value = true
-    } catch (error) {
-      isAuthenticated.value = false
-    }
+  if (!authReady.value) {
+    await new Promise<void>((resolve) => {
+      const stop = watch(authReady, (ready) => {
+        if (ready) {
+          stop()
+          resolve()
+        }
+      }, { immediate: true })
+    })
   }
 
-  if (!isAuthenticated.value) {
+  if (!user.value) {
     return navigateTo(loginRedirect)
   }
 })

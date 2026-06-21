@@ -1,7 +1,7 @@
-import { defineEventHandler, readBody, createError, setCookie, setHeader } from 'h3'
+import { readBody, createError, setCookie, setHeader } from 'h3'
 import bcrypt from 'bcryptjs'
-import * as jose from 'jose'
 import { convex, api } from '../../utils/convex'
+import { signSessionToken } from '../../utils/jwt'
 import { toSlug } from '../../utils/slug'
 import crypto from 'node:crypto'
 import { getClientIdentifier, rateLimit } from '../../utils/rate-limit'
@@ -16,11 +16,10 @@ export default defineEventHandler(async (event) => {
   }
 
   const { email, password } = await readBody(event)
-  const config = useRuntimeConfig()
 
   // Check if user already exists
   const existingUser = await convex.query(api.users.getByEmail, { email })
-  
+
   if (existingUser) {
     throw createError({ statusCode: 400, statusMessage: 'User already exists' })
   }
@@ -77,12 +76,14 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'Failed to create user' })
   }
 
-  // Generate JWT using jose
-  const secret = new TextEncoder().encode(config.JWT_SECRET)
-  const token = await new jose.SignJWT({ userId: newUser._id, role: newUser.role })
-    .setProtectedHeader({ alg: 'HS256' })
-    .setExpirationTime('7d')
-    .sign(secret)
+  // Sign RS256 session token (same keypair as Convex auth)
+  const token = await signSessionToken({
+    id: newUser._id,
+    email: newUser.email,
+    name: newUser.name,
+    role: newUser.role,
+    currentOrgId: newUser.currentOrgId ?? null,
+  })
 
   // Set HTTP-only cookie
   setCookie(event, 'auth_token', token, {

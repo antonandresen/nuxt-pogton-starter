@@ -1,5 +1,5 @@
 import { getCookie } from 'h3'
-import * as jose from 'jose'
+import { jwtVerify, importSPKI } from 'jose'
 import { convex, api, type Id } from '../../utils/convex'
 
 /**
@@ -15,14 +15,10 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const secretValue = (config.JWT_SECRET || config.jwtSecret) as string | undefined
-    if (!secretValue) {
-      return { onboarding: null }
-    }
-
-    const secret = new TextEncoder().encode(secretValue)
-    const { payload } = await jose.jwtVerify(token, secret)
-    const userId = payload.userId as Id<"users">
+    const publicKey = (config.convexAuthPublicKey as string).replace(/\\n/g, '\n')
+    const key = await importSPKI(publicKey, 'RS256')
+    const { payload } = await jwtVerify(token, key)
+    const userId = payload.sub as Id<"users">
 
     // Fetch onboarding status from Convex
     const onboarding = await convex.query(api.onboarding.getByUser, { userId })

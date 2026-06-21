@@ -11,7 +11,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   const tokenState = useState<string | null>('convex-auth-token', () => null)
-  const isAuthenticated = useState<boolean>('convex-authenticated', () => true)
+  const isAuthenticated = useState<boolean>('convex-authenticated', () => false)
   const isLoading = useState<boolean>('convex-auth-loading', () => false)
 
   const convexVue = createConvexVue({

@@ -1,22 +1,18 @@
 import type { H3Event } from 'h3'
-import { convex, api, type Id } from './convex'
 
+/**
+ * Admin middleware - checks that the authenticated user has ADMIN role.
+ * Role is extracted from the RS256 JWT payload set by authMiddleware.
+ * Must be called AFTER authMiddleware.
+ */
 export default async function adminMiddleware(event: H3Event) {
-  const userId = event.context.userId as Id<"users"> | undefined
-  
-  if (!userId) {
-    throw createError({
-      statusCode: 401,
-      message: 'Unauthorized'
-    })
+  const userRole = event.context.userRole
+
+  if (!userRole) {
+    throw createError({ statusCode: 401, message: 'Unauthorized' })
   }
 
-  const user = await convex.query(api.users.getById, { id: userId })
-
-  if (!user || user.role !== 'ADMIN') {
-    throw createError({
-      statusCode: 403,
-      message: 'Forbidden: Admin access required'
-    })
+  if (userRole !== 'ADMIN') {
+    throw createError({ statusCode: 403, message: 'Forbidden: Admin access required' })
   }
 }

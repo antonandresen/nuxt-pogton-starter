@@ -1,8 +1,10 @@
 import Stripe from 'stripe'
-import { requireAdmin } from '../../../utils/auth'
+import authMiddleware from '../../../utils/auth'
+import adminMiddleware from '../../../utils/admin'
 
 export default defineEventHandler(async (event) => {
-  await requireAdmin(event)
+  await authMiddleware(event)
+  await adminMiddleware(event)
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 

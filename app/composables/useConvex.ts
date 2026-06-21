@@ -158,7 +158,7 @@ export const api = {
 
 // Re-export composables
 export function useConvexQuery(...args: any[]) {
-  if (process.server) {
+  if (import.meta.server) {
     return {
       data: ref(null),
       isLoading: ref(false),
@@ -169,7 +169,7 @@ export function useConvexQuery(...args: any[]) {
 }
 
 export function useConvexMutation(mutation: any) {
-  if (process.server) {
+  if (import.meta.server) {
     return {
       mutate: async () => {
         throw new Error('Convex mutations are client-only')
@@ -182,7 +182,7 @@ export function useConvexMutation(mutation: any) {
 }
 
 export function useConvexAction(action: any) {
-  if (process.server) {
+  if (import.meta.server) {
     return {
       mutate: async () => {
         throw new Error('Convex actions are client-only')

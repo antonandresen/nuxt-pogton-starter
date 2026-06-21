@@ -1,7 +1,7 @@
-import { defineEventHandler, readBody, createError, setCookie, setHeader } from 'h3'
+import { readBody, createError, setCookie, setHeader } from 'h3'
 import bcrypt from 'bcryptjs'
-import * as jose from 'jose'
 import { convex, api } from '../../utils/convex'
+import { signSessionToken } from '../../utils/jwt'
 import { getClientIdentifier, rateLimit } from '../../utils/rate-limit'
 
 export default defineEventHandler(async (event) => {
@@ -14,7 +14,6 @@ export default defineEventHandler(async (event) => {
   }
 
   const { email, password } = await readBody(event)
-  const config = useRuntimeConfig()
 
   const foundUser = await convex.query(api.users.getByEmail, { email })
 
@@ -22,12 +21,14 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Invalid email or password' })
   }
 
-  // Generate JWT using jose
-  const secret = new TextEncoder().encode(config.JWT_SECRET)
-  const token = await new jose.SignJWT({ userId: foundUser._id, role: foundUser.role })
-    .setProtectedHeader({ alg: 'HS256' })
-    .setExpirationTime('7d')
-    .sign(secret)
+  // Sign RS256 session token (same keypair as Convex auth)
+  const token = await signSessionToken({
+    id: foundUser._id,
+    email: foundUser.email,
+    name: foundUser.name,
+    role: foundUser.role,
+    currentOrgId: foundUser.currentOrgId ?? null,
+  })
 
   // Set HTTP-only cookie
   setCookie(event, 'auth_token', token, {

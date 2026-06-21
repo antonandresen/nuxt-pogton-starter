@@ -3,11 +3,10 @@ import { api, useConvexQuery } from './useConvex'
 
 interface User {
   id: string
-  email: string
-  role: 'USER' | 'ADMIN'
-  createdAt: Date
-  avatar?: string
+  email?: string
   name?: string
+  avatar?: string
+  role: 'USER' | 'STAFF' | 'ADMIN'
   currentOrgId?: string | null
   currentOrg?: {
     id: string
@@ -19,69 +18,21 @@ interface User {
     role: string
     status: string
   } | null
+  createdAt?: Date
 }
 
 export function useAuth() {
-  // SSR: Fetch user from our API (this runs on server AND client first load)
-  // The server has access to auth cookies and can query Convex
-  const { data: ssrUser } = useFetch('/api/auth/me', {
-    credentials: 'include',
-    key: 'auth-user-ssr',
-    lazy: false, // Block SSR until auth data is fetched - ensures admin role is available immediately
-    // Don't refetch on client navigation - Convex handles real-time updates
-    getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key] || nuxtApp.static.data[key],
-  })
+  const user = useState<User | null>('auth-user')
+  const isAuthenticated = computed(() => !!user.value)
 
-  // Transform SSR data into User format synchronously using computed
-  const userFromSSR = computed(() => {
-    const userData = ssrUser.value?.user as {
-      id: string
-      email: string
-      role: 'USER' | 'ADMIN'
-      createdAt: number
-      avatar?: string
-      name?: string
-      currentOrgId?: string | null
-    } | null | undefined
-    
-    if (!userData) return null
-    
-    return {
-      id: userData.id,
-      email: userData.email,
-      role: userData.role,
-      createdAt: new Date(userData.createdAt),
-      avatar: userData.avatar,
-      name: userData.name,
-      currentOrgId: userData.currentOrgId ?? null,
-    }
-  })
-
-  // Initialize state with SSR data
-  const user = useState<User | null>('auth-user', () => userFromSSR.value)
-  const convexAuthState = useState<boolean>('convex-authenticated', () => true)
-  const isHydrated = useState<boolean>('auth-hydrated', () => !!ssrUser.value)
-  
-  // Keep user in sync with SSR data
-  watch(userFromSSR, (newUser) => {
-    if (newUser) {
-      user.value = newUser
-      isHydrated.value = true
-    } else if (ssrUser.value && !ssrUser.value.user) {
-      // SSR returned but user is null (not authenticated)
-      user.value = null
-      isHydrated.value = true
-    }
-  }, { immediate: true })
-
-  // Client-side: Convex subscription for real-time updates (avatar changes, etc.)
-  const { data: convexUser } = process.client 
+  // Client-side: Convex subscription for real-time updates (avatar, name, role changes)
+  const { data: convexUser } = import.meta.client
     ? useConvexQuery(api.users.getCurrent, {})
     : { data: ref(null) }
 
   // When Convex updates (client-only), sync to user state
   watchEffect(() => {
-    if (process.client && convexUser.value) {
+    if (import.meta.client && convexUser.value) {
       user.value = {
         id: convexUser.value._id,
         email: convexUser.value.email,
@@ -94,8 +45,13 @@ export function useAuth() {
     }
   })
 
-  const isAuthenticated = computed(() => !!user.value)
-  
+  /** Check if the current user has a specific permission (ADMIN implicitly has all) */
+  const hasPermission = (permission: string) => {
+    if (!user.value) return false
+    if (user.value.role === 'ADMIN') return true
+    return false // Extend: check user.value.permissions array if you add per-user permissions
+  }
+
   const login = async (email: string, password: string) => {
     try {
       const response = await $fetch('/api/auth/login', {
@@ -103,7 +59,8 @@ export function useAuth() {
         body: { email, password },
         credentials: 'include',
       })
-      convexAuthState.value = true
+      // Reload to trigger SSR auth flow with new cookie
+      window.location.href = '/dashboard'
       return response
     } catch (error: any) {
       throw new Error(error.data?.message || error.message)
@@ -117,7 +74,8 @@ export function useAuth() {
         body: { email, password },
         credentials: 'include',
       })
-      convexAuthState.value = true
+      // Reload to trigger SSR auth flow with new cookie
+      window.location.href = '/dashboard'
       return response
     } catch (error: any) {
       throw new Error(error.data?.message || error.message)
@@ -133,19 +91,31 @@ export function useAuth() {
       user.value = null
       const convexToken = useState<string | null>('convex-auth-token')
       convexToken.value = null
-      convexAuthState.value = false
       window.location.href = '/login'
     } catch (error: any) {
       throw new Error(error.data?.message || error.message)
     }
   }
 
+  /** Re-fetch user data from the server */
+  const refreshUser = async () => {
+    try {
+      const response = await $fetch<{ user: User }>('/api/auth/me', {
+        credentials: 'include',
+      })
+      user.value = response.user
+    } catch (_) {
+      user.value = null
+    }
+  }
+
   return {
     user,
     isAuthenticated,
-    isHydrated,
+    hasPermission,
     login,
     register,
     logout,
+    refreshUser,
   }
 }

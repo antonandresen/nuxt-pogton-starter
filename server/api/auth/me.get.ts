@@ -1,10 +1,10 @@
 import { getCookie } from 'h3'
-import * as jose from 'jose'
+import { jwtVerify, importSPKI } from 'jose'
 import { convex, api, type Id } from '../../utils/convex'
 
 /**
  * Returns the current user's data if authenticated.
- * Used for SSR to render the correct UI on first load.
+ * Used by the auth plugin for SSR to render the correct UI on first load.
  */
 export default defineEventHandler(async (event) => {
   const token = getCookie(event, 'auth_token')
@@ -15,18 +15,14 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const secretValue = (config.JWT_SECRET || config.jwtSecret) as string | undefined
-    if (!secretValue) {
-      return { user: null }
-    }
-
-    const secret = new TextEncoder().encode(secretValue)
-    const { payload } = await jose.jwtVerify(token, secret)
-    const userId = payload.userId as Id<"users">
+    const publicKey = (config.convexAuthPublicKey as string).replace(/\\n/g, '\n')
+    const key = await importSPKI(publicKey, 'RS256')
+    const { payload } = await jwtVerify(token, key)
+    const userId = payload.sub as Id<"users">
 
     // Fetch full user from Convex
     const user = await convex.query(api.users.getById, { id: userId })
-    
+
     if (!user) {
       return { user: null }
     }
