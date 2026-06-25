@@ -60,6 +60,20 @@
       </Card>
     </div>
 
+    <!-- Revenue Chart -->
+    <Card>
+      <CardHeader>
+        <CardTitle>Revenue Overview</CardTitle>
+        <CardDescription>Monthly revenue performance</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <RevenueChart 
+          :data="revenueData.data" 
+          :labels="revenueData.labels" 
+        />
+      </CardContent>
+    </Card>
+
     <!-- Recent Activity -->
     <Card>
       <CardHeader>
@@ -91,6 +105,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Users, CreditCard, DollarSign, Activity, UserPlus, CreditCard as CreditCardIcon, Settings } from 'lucide-vue-next'
+import RevenueChart from '@/components/ui/RevenueChart.vue'
 import {
   Card,
   CardContent,
@@ -123,6 +138,11 @@ const stats = ref({
   revenueIncrease: 1234.56,
   activeNow: 123,
   activeNowChange: 14
+})
+
+const revenueData = ref({
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  data: [12000, 15000, 14000, 18000, 20000, 22000, 25000, 28000, 30000, 32000, 35000, 40000]
 })
 
 // Example recent activity - replace with real data
